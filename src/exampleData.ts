@@ -1,6 +1,7 @@
 import type { InferenceCurveSeries } from './inferenceCurveChart';
 import agentxReference from './data/inferencexAgentx39596624542.json';
 import agentxBaseline from './data/agentxSimOpusMi355xBaseline.json';
+import agentx1200 from './data/agentxSimOpusMi355x20261027_1200s.json';
 
 // Repository-maintained data enters the normal editable workspace. Saved browser
 // edits take precedence; Reset All restores this dataset without a special URL.
@@ -80,6 +81,43 @@ export const exampleSeries: InferenceCurveSeries[] = [{
     concurrency: point.concurrency,
     strategy: `TP${point.tp} ADP${point.adp}`,
     label: `TP${point.tp} ADP${point.adp} C${point.concurrency}${point.limited ? ' (limited)' : ''}; run ${point.point_id}; source SHA256 ${point.source_sha256}`,
+    note: point.note
+  }))
+}, {
+  id: agentx1200.id,
+  name: agentx1200.name,
+  group: agentx1200.group,
+  hwKey: 'mi355x_sglang',
+  model: agentx1200.model,
+  islOsl: agentx1200.scenario,
+  precision: 'fp4',
+  color: '#f59e0b',
+  marker: 'triangle',
+  lineStyle: 'solid',
+  title: 'DeepSeek-V4.1-Flash | MI355X | AgentX simulation | 1200s | 4/10 configs',
+  note: '2026-10-27 1200s simulation, 4/10 configurations available: TP2 C1/C4 and TP4 C1/C2. Each short window completed; not a full 3600s reference run. Accuracy acceptance pending; source hashes and metric evidence retained in src/data/agentxSimOpusMi355x20261027_1200s.json. TP4 C2 has an outer cleanup CPU-affinity assertion (exit 1, saved inspect absent). TP2 C4 uses source-observed warm buffer1; the other three use cold0 natural growth.',
+  points: agentx1200.points.map((point) => ({
+    precision: 'fp4',
+    meanInteractivity: point.mean_interactivity,
+    totalThroughput: point.total_throughput,
+    interactivity: point.p90_interactivity,
+    interactivityPercentiles: { p90: point.p90_interactivity },
+    throughput: point.tput_per_gpu,
+    tp: point.tp,
+    prefill_tp: point.tp,
+    decode_tp: point.tp,
+    prefill_ep: 1,
+    decode_ep: 1,
+    dp_attention: point.adp > 1,
+    prefill_dp_attention: point.adp > 1,
+    decode_dp_attention: point.adp > 1,
+    num_prefill_gpu: point.gpu_count,
+    num_decode_gpu: point.gpu_count,
+    disagg: false,
+    spec_decoding: 'mtp',
+    concurrency: point.concurrency,
+    strategy: `TP${point.tp} ADP${point.adp}`,
+    label: `TP${point.tp} ADP${point.adp} C${point.concurrency}; 1200s; run ${point.point_id}; source SHA256 ${point.source_sha256}`,
     note: point.note
   }))
 }];

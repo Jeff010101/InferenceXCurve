@@ -1,7 +1,8 @@
 # Maintaining real, reference and simulation comparisons
 
 The hosted app is <https://jeffxing.com/InferenceXCurve/>. The InferenceX workspace
-includes one repository-maintained AgentX reference curve. API sync starts disabled.
+includes the repository-maintained AgentX reference, first simulation baseline
+and partial 2026-10-27 1200s simulation curve. API sync starts disabled.
 
 ## Repository-maintained AgentX reference
 
@@ -70,7 +71,32 @@ as one common implementation revision.
 Existing browser data is preserved on deployment. To add only this curve, import
 the [baseline editor CSV](../public/data/e2e-simopus-mi355x-baseline.editor.csv),
 clear the preview's Line ID Suffix, and choose Add Selected. Reset All restores
-both repository curves but also resets browser edits and settings.
+all repository curves but also resets browser edits and settings.
+
+## Partial 2026-10-27 1200s simulation
+
+TP4/C2 completed the measurement window but has an outer cleanup CPU-affinity
+assertion (exit 1, saved inspect absent). TP2/C4 uses source-observed warm
+buffer1; the other three use cold0 natural growth. These limits remain in the
+curve and point notes and the evidence JSON.
+
+Group **E2E-SimOpus-Mi355x** also contains
+**E2E-SimOpus-Mi355x-20261027-1200s**, stable ID
+`e2e-simopus-mi355x-20261027-1200s`. It currently includes **4/10** configurations:
+TP2/ADP1 C1 and C4, plus TP4/ADP1 C1 and C2. The six missing configurations
+remain absent; no baseline points or interpolated configuration results fill them.
+
+[Data and provenance](../src/data/agentxSimOpusMi355x20261027_1200s.json) preserve
+each original request-export hash, completion receipt, actual token counts and
+request envelope. X and Y use the same mean-interactivity and all-GPU
+input-plus-output definitions as the other curves. Each point completed its
+1200s measurement window; this does not turn it into a 3600s reference run or an
+accuracy-accepted point. Query coverage and residual participation remain
+unavailable in this metric projection. The curve title and line note record the
+partial configuration coverage and shorter horizon.
+
+Import the [1200s editor CSV](../public/data/e2e-simopus-mi355x-20261027-1200s.editor.csv)
+with an empty Line ID Suffix to append only this curve to an existing workspace.
 
 ## Choose the workspace and metric contract
 
@@ -159,7 +185,8 @@ heuristics for unrecognized simulator fields.
   repository curves and settings. Plot Tool Reset All returns to an empty plot.
 - Published result data is versioned in the repository. The ten-point
   InferenceX-AgentX reference and the first ten-configuration simulation baseline
-  above are included; later 1200s simulations and fixed-length results are not.
+  above and the four-point 2026-10-27 1200s simulation curve are included;
+  fixed-length results are not.
 
 ## External data access
 

@@ -15,7 +15,10 @@ Throughput (all GPUs)** by default. All reference, measured and simulation curve
 for this model belong under `DeepSeek-V4.1-Flash`, with separate curve IDs/names.
 The `E2E-SimOpus-Mi355x` group contains `E2E-SimOpus-Mi355x-baseline`:
 the first ten 3600s simulation configurations (nine full results and one limited
-ADP2/C64 result), separate from later 1200s runs. The generic Plot Tool starts empty;
+ADP2/C64 result). The same group also contains
+`E2E-SimOpus-Mi355x-20261027-1200s`, currently four of ten configurations
+(TP2 C1/C4 and TP4 C1/C2), with missing configurations left absent.
+The generic Plot Tool starts empty;
 no API sync configurations are enabled automatically. The old `?reference=...`
 link redirects to the ordinary InferenceX workspace.
 
