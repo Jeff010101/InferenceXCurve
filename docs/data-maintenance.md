@@ -43,6 +43,35 @@ Use the same `Model=DeepSeek-V4.1-Flash` for every curve of this model. Distingu
 reference, measured and simulation results with curve IDs/names/groups, and
 keep Agentic Traces versus fixed-length workloads as separate scenarios.
 
+## First AgentX simulation baseline
+
+The ordinary workspace also includes group **E2E-SimOpus-Mi355x**, curve
+**E2E-SimOpus-Mi355x-baseline**, with stable ID `e2e-simopus-mi355x-baseline`.
+It contains the first ten 3600s configuration results collected on 2026-10-26,
+not the later 1200s results. All points remain simulations under model
+`DeepSeek-V4.1-Flash` and scenario `Agentic Traces`.
+
+[Baseline data and provenance](../src/data/agentxSimOpusMi355xBaseline.json)
+retain the original point IDs, reference IDs, request counts, token counts,
+physical GPU counts, raw/rounded ITL, actual throughput duration, source hashes,
+simulator/SDK versions and available query summaries. Mean X follows the same
+reciprocal-of-rounded-mean-ITL convention as the reference. Total Y is successful
+input plus output tokens divided by the actual request envelope, not a fixed
+3600s denominator. Per-GPU throughput is derived once using physical GPU count.
+
+All ten request exports and completion receipts were hash-checked, and the mean
+and total coordinates were independently reproduced. Nine are full configuration
+results. **ADP2/C64 is limited:** its original evidence records a grace timeout,
+`full_AgentX_point=false`, unavailable query coverage and source-only uncalibrated
+joint cost. No point has passed accuracy acceptance. These historical results
+also retain different per-point code/cost versions; the baseline is not presented
+as one common implementation revision.
+
+Existing browser data is preserved on deployment. To add only this curve, import
+the [baseline editor CSV](../public/data/e2e-simopus-mi355x-baseline.editor.csv),
+clear the preview's Line ID Suffix, and choose Add Selected. Reset All restores
+both repository curves but also resets browser edits and settings.
+
 ## Choose the workspace and metric contract
 
 | Workspace | Use | Y coordinate | Data contract |
@@ -128,9 +157,9 @@ heuristics for unrecognized simulator fields.
   file. Empty drafts do not create exported point rows.
 - **Clear Data** removes local chart data. InferenceX **Reset All** restores
   repository curves and settings. Plot Tool Reset All returns to an empty plot.
-- Shared result snapshots must be explicit, reviewed, versioned files. Only the
-  public ten-point InferenceX-AgentX reference above is published so far; no
-  InferCast measurements or simulation results have been published.
+- Published result data is versioned in the repository. The ten-point
+  InferenceX-AgentX reference and the first ten-configuration simulation baseline
+  above are included; later 1200s simulations and fixed-length results are not.
 
 ## External data access
 

@@ -10,10 +10,12 @@ GitHub Pages inherits this account's existing `jeffxing.com` domain. The
 `jeff010101.github.io/InferenceXCurve/` address redirects to this HTTPS site.
 
 The InferenceX workspace starts with the repository-maintained AgentX reference
-as an ordinary editable curve. It uses **Mean Interactivity** and **Total
+and first simulation baseline as ordinary editable curves. It uses **Mean Interactivity** and **Total
 Throughput (all GPUs)** by default. All reference, measured and simulation curves
 for this model belong under `DeepSeek-V4.1-Flash`, with separate curve IDs/names.
-Only the public reference is included so far. The generic Plot Tool starts empty;
+The `E2E-SimOpus-Mi355x` group contains `E2E-SimOpus-Mi355x-baseline`:
+the first ten 3600s simulation configurations (nine full results and one limited
+ADP2/C64 result), separate from later 1200s runs. The generic Plot Tool starts empty;
 no API sync configurations are enabled automatically. The old `?reference=...`
 link redirects to the ordinary InferenceX workspace.
 

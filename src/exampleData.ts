@@ -1,5 +1,6 @@
 import type { InferenceCurveSeries } from './inferenceCurveChart';
 import agentxReference from './data/inferencexAgentx39596624542.json';
+import agentxBaseline from './data/agentxSimOpusMi355xBaseline.json';
 
 // Repository-maintained data enters the normal editable workspace. Saved browser
 // edits take precedence; Reset All restores this dataset without a special URL.
@@ -43,5 +44,42 @@ export const exampleSeries: InferenceCurveSeries[] = [{
     strategy: `TP${point.tp} ADP${point.adp}`,
     label: `TP${point.tp} ADP${point.adp} C${point.concurrency}`,
     note: `Config ${point.configId}; reference result ${point.referenceId}; ${point.gpuCount} physical GPUs; source ${agentxReference.sourceUrl}`
+  }))
+}, {
+  id: agentxBaseline.id,
+  name: agentxBaseline.name,
+  group: agentxBaseline.group,
+  hwKey: 'mi355x_sglang',
+  model: agentxBaseline.model,
+  islOsl: agentxBaseline.scenario,
+  precision: 'fp4',
+  color: '#38bdf8',
+  marker: 'square',
+  lineStyle: 'solid',
+  title: 'DeepSeek-V4.1-Flash | MI355X | AgentX simulation baseline | 3600s',
+  note: `First batch simulation baseline, ${agentxBaseline.sourceDate}. Nine full configuration results plus one limited ADP2/C64 result; accuracy acceptance pending. ADP2/C64 has a grace timeout, full_AgentX_point=false, unknown query coverage and source-only uncalibrated joint cost. Mean and all-GPU input + output total use the same definitions as InferenceX-AgentX. Source hashes and per-point versions: src/data/agentxSimOpusMi355xBaseline.json.`,
+  points: agentxBaseline.points.map((point) => ({
+    precision: 'fp4',
+    meanInteractivity: point.mean_interactivity,
+    totalThroughput: point.total_throughput,
+    interactivity: point.p90_interactivity,
+    interactivityPercentiles: { p90: point.p90_interactivity },
+    throughput: point.tput_per_gpu,
+    tp: point.tp,
+    prefill_tp: point.tp,
+    decode_tp: point.tp,
+    prefill_ep: 1,
+    decode_ep: 1,
+    dp_attention: point.adp > 1,
+    prefill_dp_attention: point.adp > 1,
+    decode_dp_attention: point.adp > 1,
+    num_prefill_gpu: point.gpu_count,
+    num_decode_gpu: point.gpu_count,
+    disagg: false,
+    spec_decoding: 'mtp',
+    concurrency: point.concurrency,
+    strategy: `TP${point.tp} ADP${point.adp}`,
+    label: `TP${point.tp} ADP${point.adp} C${point.concurrency}${point.limited ? ' (limited)' : ''}; run ${point.point_id}; source SHA256 ${point.source_sha256}`,
+    note: point.note
   }))
 }];

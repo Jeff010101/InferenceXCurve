@@ -6011,8 +6011,9 @@ function ensureSelectedPrecisions(precisions: string[]): void {
 }
 
 function createInitialState(series: InferenceCurveSeries[]): AppState {
-  const isRepositoryAgentx = series.length === 1 &&
-    series[0]!.id === 'inferencex-agentx-mi355x-fp4-run39596624542';
+  const isRepositoryAgentx = series.length > 0 && series.every((line) =>
+    exampleSeries.some((repositoryLine) => repositoryLine.id === line.id)
+  );
   const modelFilter = uniqueSorted(series.map(getSeriesModel))[0] ?? ALL_VALUE;
   const modelFiltered = filterSeriesByModel(series, modelFilter);
   const scenarioFilter = getAvailableScenarios(modelFiltered)[0] ?? FIXED_SEQUENCE_SCENARIO;
