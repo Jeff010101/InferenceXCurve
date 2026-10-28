@@ -665,7 +665,7 @@ function loadPersistedAppData(): PersistedAppData | null {
 
 function createInferenceXSyncState(saved?: PersistedInferenceXSyncState): InferenceXSyncState {
   const configs = normalizeInferenceXSyncConfigs(saved?.configs);
-  const addConfig = configs[0] ?? createDefaultInferenceXSyncConfigs()[0]!;
+  const addConfig = configs[0] ?? normalizeInferenceXSyncConfig({});
   const restoredStatus = saved?.status === 'updates-available' ? 'idle' : (saved?.status ?? 'idle');
   return {
     configs,
@@ -1471,7 +1471,7 @@ document.querySelector('#reset-data')?.addEventListener('click', () => {
   editorSelectionMode = false;
   editingEditorGroup = null;
   currentSeries = structuredClone(exampleSeries);
-  seriesDrafts = seriesToDrafts(currentSeries);
+  seriesDrafts = draftsFromSeriesForRestore(currentSeries);
   inferenceXSync = createInferenceXSyncState();
   sortSeriesDraftsByLayer();
   normalizeDraftRenderOrderFromPanelOrder();
@@ -1484,7 +1484,7 @@ document.querySelector('#reset-data')?.addEventListener('click', () => {
   renderAll();
   resetImportState();
   resetStoredAppData();
-  setStatus('All settings and data restored to the default example');
+  setStatus('All settings reset; the workspace is empty');
   setImportStatus('');
   clearMergePreview();
 });
@@ -2065,7 +2065,7 @@ function renderInferenceXSyncManager(): string {
           </button>
           <button type="button" class="series-action-button danger" data-sync-action="reset-configs">
             ${renderIcon('trash')}
-            <span>Reset to Default Configs</span>
+            <span>Clear Sync Configs</span>
           </button>
         </div>
       </div>
@@ -2388,38 +2388,8 @@ function handleInferenceXSyncChange(event: Event): void {
 }
 
 async function initializeInferenceXSync(): Promise<void> {
-  if (!initialData.loadedFromStorage) {
-    await loadInitialInferenceXSyncData();
-    return;
-  }
+  if (!inferenceXSync.configs.some((config) => config.enabled)) return;
   await checkInferenceXUpdates({ automatic: true });
-}
-
-async function loadInitialInferenceXSyncData(): Promise<void> {
-  inferenceXSync.status = 'checking';
-  inferenceXSync.lastError = '';
-  renderInferenceXSyncPanel();
-  try {
-    const result = await fetchInferenceXSyncSeries(inferenceXSync.configs);
-    if (result.series.length === 0) {
-      inferenceXSync.status = 'error';
-      inferenceXSync.lastError = 'No benchmark rows matched the default InferenceX sync configs.';
-      renderInferenceXSyncPanel();
-      setStatus('Using bundled example data; InferenceX sync returned no matching rows.', true);
-      scheduleLocalSave();
-      return;
-    }
-    applyInferenceXSyncResult(result, { initial: true });
-    setStatus(`Loaded ${result.series.length} lines from InferenceX public API`);
-  } catch (error) {
-    inferenceXSync.status = 'error';
-    inferenceXSync.lastError = error instanceof Error ? error.message : 'Could not fetch InferenceX data.';
-    inferenceXSync.availableUpdateCount = 0;
-    inferenceXSync.stagedResult = null;
-    renderInferenceXSyncPanel();
-    setStatus('Using bundled example data; InferenceX sync failed.', true);
-    scheduleLocalSave();
-  }
 }
 
 async function checkInferenceXUpdates({ automatic }: { automatic: boolean }): Promise<void> {
@@ -2877,7 +2847,7 @@ function removeInferenceXSyncConfig(index: number): void {
 
 function resetInferenceXSyncConfigs(): void {
   inferenceXSync.configs = createDefaultInferenceXSyncConfigs();
-  inferenceXSync.addDraft = createInferenceXSyncAddDraft(inferenceXSync.configs[0]!);
+  inferenceXSync.addDraft = createInferenceXSyncAddDraft(normalizeInferenceXSyncConfig({}));
   inferenceXSync.addShapeSelection = ALL_VALUE;
   inferenceXSync.addPrecisionSelection = ALL_VALUE;
   inferenceXSync.addFrameworkSelection = ALL_VALUE;

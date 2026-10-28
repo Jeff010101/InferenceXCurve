@@ -155,14 +155,8 @@ interface InferenceXDerivedAgenticMetrics {
 }
 
 export function createDefaultInferenceXSyncConfigs(): InferenceXSyncConfig[] {
-  return [
-    normalizeInferenceXSyncConfig(DEFAULT_SYNC_CONFIG),
-    normalizeInferenceXSyncConfig({
-      ...DEFAULT_SYNC_CONFIG,
-      hardware: 'b200',
-      framework: 'dynamo-sglang'
-    })
-  ];
+  // This workspace starts empty; configurations are added explicitly by the user.
+  return [];
 }
 
 export function normalizeInferenceXSyncConfigs(value: unknown): InferenceXSyncConfig[] {
@@ -181,8 +175,7 @@ export function normalizeInferenceXSyncConfigs(value: unknown): InferenceXSyncCo
       }
       configsByLineId.set(lineId, config);
     });
-  const configs = Array.from(configsByLineId.values());
-  return configs.length > 0 ? configs : createDefaultInferenceXSyncConfigs();
+  return Array.from(configsByLineId.values());
 }
 
 export function normalizeInferenceXSyncConfig(value: Partial<InferenceXSyncConfig>): InferenceXSyncConfig {

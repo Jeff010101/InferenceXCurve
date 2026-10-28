@@ -35,7 +35,6 @@ const DEFAULT_COLORS = [
   '#9c755f',
   '#bab0ab'
 ];
-const DEFAULT_PLOT_LINE_ID = 'four-direction-example';
 const COLOR_PRESETS = [
   { name: 'Green', value: '#22c55e' },
   { name: 'Emerald', value: '#10b981' },
@@ -121,7 +120,7 @@ function createDefaultState(): PlotToolState {
     watermark: DEFAULT_CHART_WATERMARK,
     xGoal: 'maximize',
     yGoal: 'maximize',
-    activeLineIds: new Set([DEFAULT_PLOT_LINE_ID]),
+    activeLineIds: new Set(),
     search: '',
     showNonOptimalPoints: false,
     logX: false,
@@ -133,27 +132,7 @@ function createDefaultState(): PlotToolState {
 }
 
 function createDefaultLines(): PlotLineDraft[] {
-  return [
-    {
-      id: DEFAULT_PLOT_LINE_ID,
-      name: 'Four-Direction Example',
-      color: '#4e79a7',
-      lineStyle: 'solid',
-      marker: 'circle',
-      renderOrder: 1,
-      collapsed: false,
-      points: [
-        { x: '1', y: '3' },
-        { x: '1.6', y: '4.2' },
-        { x: '3', y: '5' },
-        { x: '4.4', y: '4.2' },
-        { x: '5', y: '3' },
-        { x: '4.4', y: '1.8' },
-        { x: '3', y: '1' },
-        { x: '1.6', y: '1.8' }
-      ]
-    }
-  ];
+  return [];
 }
 
 export function mountPlotTool(root: HTMLElement): () => void {
@@ -813,7 +792,7 @@ export function mountPlotTool(root: HTMLElement): () => void {
     }
     setStatus(
       resetAll
-        ? 'Plot Tool reset to the four-direction Pareto example.'
+        ? 'Plot Tool settings reset; the workspace is empty.'
         : 'Plot data cleared.'
     );
   }
@@ -992,10 +971,6 @@ function loadPlotToolData(): { lines: PlotLineDraft[]; state: PlotToolState } | 
         points: points.length ? points : [{ x: '', y: '' }]
       } satisfies PlotLineDraft];
     });
-    if (storageVersion <= 3) {
-      const exampleIndex = lines.findIndex(isLegacyDefaultExampleLine);
-      if (exampleIndex >= 0) lines[exampleIndex] = createDefaultLines()[0]!;
-    }
     const savedState = isRecord(data.state) ? data.state : {};
     const defaults = createDefaultState();
     const lineIds = new Set(lines.map((line) => line.id));
@@ -1029,14 +1004,6 @@ function loadPlotToolData(): { lines: PlotLineDraft[]; state: PlotToolState } | 
     console.warn('Could not load Plot Tool browser data.', error);
     return null;
   }
-}
-
-function isLegacyDefaultExampleLine(line: PlotLineDraft): boolean {
-  if (line.id !== DEFAULT_PLOT_LINE_ID || line.points.length !== 8) return false;
-  const legacyCoordinates = ['1|3', '2|4', '3|5', '4|4', '5|3', '4|2', '3|1', '2|2'];
-  return line.points.every(
-    (point, index) => `${point.x.trim()}|${point.y.trim()}` === legacyCoordinates[index]
-  );
 }
 
 export function parsePlotToolCsv(text: string): PlotLineDraft[] {

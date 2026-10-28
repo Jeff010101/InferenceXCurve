@@ -1,5 +1,23 @@
 # InferenceX Curve
 
+## Jeff's comparison workspace
+
+- **Benchmark workspace:** <https://jeffxing.com/InferenceXCurve/>
+- **Generic Pareto workspace:** <https://jeffxing.com/InferenceXCurve/#/plot-tool>
+
+GitHub Pages inherits this account's existing `jeffxing.com` domain. The
+`jeff010101.github.io/InferenceXCurve/` address redirects to this HTTPS site.
+
+This fork starts empty: no bundled benchmark points, example curves, or enabled
+InferenceX sync configurations. Import data explicitly when it is ready. Reset
+All returns to an empty workspace; ordinary reloads preserve your saved work.
+No InferCast measurements or simulation results are included in this setup.
+
+See [Data maintenance guide](docs/data-maintenance.md) for choosing a workspace,
+keeping real/reference/simulation curves distinct, metric units, and backups.
+The site is a static browser app, not a shared benchmark database. Each browser
+keeps its own data; opening the site URL on another device does not share curves.
+
 This Vite + TypeScript app recreates the InferenceX `Token Throughput per GPU vs.
 Interactivity` chart with editable custom data. It focuses on matching the
 reference chart behavior while letting users paste table data, import benchmark
@@ -178,30 +196,13 @@ The importer normalizes common InferenceX artifact fields:
 The `InferenceX Sync` panel can keep chart data aligned with the public
 InferenceX API without editing `src/exampleData.ts`.
 
-On first open, if no browser data exists, the app tries to load the default
-InferenceX sync configurations from the API. If the request fails or no matching
-rows are returned, it falls back to the bundled `exampleSeries`. On later opens,
-the app checks for updates once and stages the result, but it does not overwrite
-the current chart until you click `Update`.
-
-The two enabled default sync configs use **DeepSeek-V4-Pro / Agentic Traces /
-FP4**:
-
-- **MI355X / MoRI SGLang** (`mi355x` / `mori-sglang`).
-- **B200 / Dynamo SGLang** (`b200` / `dynamo-sglang`).
-
-The bundled fallback contains eight MI355X points and three B200 points from
-the October 21, 2026 curve snapshots, fetched on October 26, 2026 (Asia/Shanghai).
-It uses the same snapshot selection as live sync and preserves Agentic latency
-percentiles, derived normalized interactivity, offload, and speculative decoding
-metadata. B200 is matched strictly and is not an alias for GB200.
-
-Ordinary reloads retain the user's saved workspace and configs. If an existing
-browser still shows older R1 configs, use **Manage Configs → Reset to Default
-Configs** to replace the config list with these two defaults, then **Check
-Updates → Update** to load their curves. Resetting configs leaves chart data
-intact. **Reset All** replaces both saved chart data and configs with the bundled
-defaults.
+First open leaves chart data and sync configurations empty. There is no initial
+automatic benchmark fetch or fallback dataset in this fork. Add an explicit
+configuration in **Manage Configs**, then use **Check Updates → Update** to apply
+the staged curves. Ordinary reloads preserve saved data/configurations and may
+stage updates for enabled saved configurations; they never silently replace the
+chart. Resetting configs empties the config list without erasing chart data.
+**Reset All** returns chart data and configurations to an empty workspace.
 
 For each enabled sync config, the API may return historical rows across many
 dates. Sync mirrors the upstream chart behavior by keeping only the newest
@@ -242,7 +243,7 @@ an `Access-Control-Allow-Origin` header. This app is different:
 - **Local `npm run dev`** works because the Vite dev server proxies
   `/inferencex-api` to the API (see `vite.config.ts`), so the browser only makes
   same-origin requests.
-- **The deployed GitHub Pages site** (`duyi-wang.github.io`) is a static site on a
+- **The deployed GitHub Pages site** (`jeffxing.com`) is a static site on a
   different origin. Its browser requests to the API are cross-origin, and because
   the API sends no `Access-Control-Allow-Origin` header, the browser blocks the
   response. This is a browser security mechanism: the missing header is a
@@ -252,9 +253,9 @@ an `Access-Control-Allow-Origin` header. This app is different:
 When this happens, the Sync panel reports an explicit **CORS** error (rather than a
 generic "Failed to fetch") with these workarounds:
 
-- **Temporary, no infrastructure:** install and enable a CORS-unblocking browser
-  extension (e.g. "Allow CORS" / "CORS Unblock"), then retry. This relaxes the
-  check in your own browser only; it does not change anything for other visitors.
+- **Without a deployed proxy:** use local dev sync with the existing Vite proxy,
+  export CSV, and import that file into the hosted page. Downloaded benchmark
+  files can also be imported directly without public-API access.
 - **Permanent:** route requests through a proxy you control. Server-to-server
   requests are not subject to CORS, so a proxy (e.g. a free Cloudflare Worker that
   forwards to the API and adds CORS headers) makes Sync work for everyone. A build
@@ -296,7 +297,8 @@ the InferenceX benchmark CSV/TSV contract above.
 Reusable chart logic lives in `src/inferenceCurveChart.ts`.
 
 - Points are filtered to finite `interactivity` and `throughput` values.
-- The upper-left Pareto roofline keeps optimal points only.
+- Pareto filtering uses the selected metric's optimization direction. For
+  interactivity and throughput, higher is better on both axes.
 - Rooflines use `d3.curveMonotoneX`.
 - Line colors are automatically grouped by vendor: NVIDIA green family, AMD red
   family, with MTP variants treated separately.
@@ -315,7 +317,7 @@ included.
 - `src/inferenceXSync.ts`: public InferenceX API client, availability parsing,
   benchmark filtering, fingerprints, and sync line generation.
 - `src/inferenceCurveChart.ts`: D3 chart rendering and curve logic.
-- `src/exampleData.ts`: offline fallback DeepSeek R1 0528 example series.
+- `src/exampleData.ts`: empty initial series for this fork.
 - `src/styles.css`: application and chart styling.
 - `vite.config.ts`: Vite base path and dev proxy for `/inferencex-api`.
 - `docs/import-csv.md`: CSV/TSV import contract for external integrations.
