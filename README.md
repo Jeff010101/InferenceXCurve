@@ -4,25 +4,27 @@
 
 - **Benchmark workspace:** <https://jeffxing.com/InferenceXCurve/>
 - **Generic Pareto workspace:** <https://jeffxing.com/InferenceXCurve/#/plot-tool>
-- **Published InferenceX-AgentX reference (10 configurations):** <https://jeffxing.com/InferenceXCurve/?reference=inferencex-agentx-run39596624542#/plot-tool>
+- **InferenceX-AgentX reference (10 configurations):** <https://jeffxing.com/InferenceXCurve/#/inferencex>
 
 GitHub Pages inherits this account's existing `jeffxing.com` domain. The
 `jeff010101.github.io/InferenceXCurve/` address redirects to this HTTPS site.
 
-The ordinary workspaces start empty, with no example curves or enabled
-InferenceX sync configurations. Import data explicitly when it is ready. Reset
-All returns to an empty workspace. The optional reference link above restores
-one published, versioned public InferenceX snapshot on each load; it does not
-read or overwrite the ordinary browser workspace. No InferCast measurements or
-simulation results are included.
+The InferenceX workspace starts with the repository-maintained AgentX reference
+as an ordinary editable curve. It uses **Mean Interactivity** and **Total
+Throughput (all GPUs)** by default. All reference, measured and simulation curves
+for this model belong under `DeepSeek-V4.1-Flash`, with separate curve IDs/names.
+Only the public reference is included so far. The generic Plot Tool starts empty;
+no API sync configurations are enabled automatically. The old `?reference=...`
+link redirects to the ordinary InferenceX workspace.
 
 See [Data maintenance guide](docs/data-maintenance.md) for choosing a workspace,
 keeping real/reference/simulation curves distinct, metric units, and backups.
-The site is a static browser app, not a shared benchmark database. Each browser
-keeps its own data; opening the ordinary site URL on another device does not
-share curves. Browser isolation or storage restrictions can also discard local
-edits. Published reference links are reproducible without browser storage;
-edits made in those views are temporary and can be exported as CSV.
+The site is a static browser app. The repository holds the baseline data and
+provenance; browser edits use normal persistent workspace storage and take
+precedence on reload. Browser edits do not automatically commit to GitHub. Use
+CSV export for backups or to submit updated data to the repository. **Reset All**
+restores repository data/settings; **Clear Data** empties the workspace. Browser
+isolation or storage restrictions can still discard local edits.
 
 This Vite + TypeScript app recreates the InferenceX `Token Throughput per GPU vs.
 Interactivity` chart with editable custom data. It focuses on matching the
@@ -202,13 +204,13 @@ The importer normalizes common InferenceX artifact fields:
 The `InferenceX Sync` panel can keep chart data aligned with the public
 InferenceX API without editing `src/exampleData.ts`.
 
-First open leaves chart data and sync configurations empty. There is no initial
-automatic benchmark fetch or fallback dataset in this fork. Add an explicit
+First open loads the repository AgentX reference with no enabled sync
+configurations and no automatic benchmark fetch. Add an explicit
 configuration in **Manage Configs**, then use **Check Updates → Update** to apply
 the staged curves. Ordinary reloads preserve saved data/configurations and may
 stage updates for enabled saved configurations; they never silently replace the
 chart. Resetting configs empties the config list without erasing chart data.
-**Reset All** returns chart data and configurations to an empty workspace.
+**Reset All** restores repository data/settings and clears sync configurations.
 
 For each enabled sync config, the API may return historical rows across many
 dates. Sync mirrors the upstream chart behavior by keeping only the newest
@@ -323,7 +325,7 @@ included.
 - `src/inferenceXSync.ts`: public InferenceX API client, availability parsing,
   benchmark filtering, fingerprints, and sync line generation.
 - `src/inferenceCurveChart.ts`: D3 chart rendering and curve logic.
-- `src/exampleData.ts`: empty initial series for this fork.
+- `src/exampleData.ts`: repository-maintained ordinary reference curve.
 - `src/styles.css`: application and chart styling.
 - `vite.config.ts`: Vite base path and dev proxy for `/inferencex-api`.
 - `docs/import-csv.md`: CSV/TSV import contract for external integrations.

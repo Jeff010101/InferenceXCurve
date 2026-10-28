@@ -409,12 +409,14 @@ const pointColumns: TableColumn[] = [
   { key: 'concurrency', label: 'Concurrency', numeric: true },
   { key: 'shape', label: 'Marker' },
   { key: 'interactivity', label: 'Interactivity', numeric: true },
+  { key: 'meanInteractivity', label: 'Mean Interactivity', numeric: true },
   {
     key: 'e2eNormalizedInteractivity',
     label: 'E2E Normalized Interactivity',
     numeric: true
   },
   { key: 'throughput', label: 'Throughput/GPU', required: true, numeric: true },
+  { key: 'totalThroughput', label: 'Total Throughput (All GPUs)', numeric: true },
   { key: 'ttft', label: 'TTFT (s)', numeric: true },
   { key: 'endToEnd', label: 'End-to-end (s)', numeric: true },
   { key: 'num_prefill_gpu', label: 'Prefill GPUs', numeric: true },
@@ -501,6 +503,7 @@ const knownPointKeys = new Set([
   ...hiddenPointKeys
 ]);
 const xMetricPointKeys: InferenceCurveXAxisMetric[] = [
+  'meanInteractivity',
   'interactivity',
   'e2eNormalizedInteractivity',
   'endToEnd',
@@ -521,8 +524,10 @@ const pointConfigSplitKeys = [
 ] as const;
 // Point columns whose data-panel display is normalized to two decimal places.
 const DECIMAL_DISPLAY_KEYS = new Set([
+  'meanInteractivity',
   'interactivity',
   'throughput',
+  'totalThroughput',
   'ttft',
   'endToEnd',
   'e2eNormalizedInteractivity',
@@ -593,12 +598,14 @@ const lineStyleOptions: LineStyleOption[] = [
 ];
 
 const chartMetricOptions: { value: InferenceCurveXAxisMetric; label: string }[] = [
+  { value: 'meanInteractivity', label: 'Mean Interactivity' },
   { value: 'e2eNormalizedInteractivity', label: 'E2E Normalized Interactivity' },
   { value: 'interactivity', label: 'Interactivity' },
   { value: 'endToEnd', label: 'End-to-end' },
   { value: 'ttft', label: 'TTFT' }
 ];
 const fixedLengthChartMetrics = new Set<InferenceCurveXAxisMetric>([
+  'meanInteractivity',
   'interactivity',
   'endToEnd',
   'ttft'
@@ -801,7 +808,7 @@ function restorePersistedState(value: unknown): PersistedAppState {
   return {
     theme: value.theme === 'light' || value.theme === 'dark' ? value.theme : undefined,
     chartMetric: normalizeChartMetric(value.chartMetric),
-    chartYMetric: value.chartYMetric === 'totalTokensPerDollar' ? 'totalTokensPerDollar' : 'throughput',
+    chartYMetric: normalizeChartYMetric(value.chartYMetric),
     tcoCostMode: normalizeTcoCostMode(value.tcoCostMode),
     tcoCustomCosts: normalizeTcoCustomCosts(value.tcoCustomCosts),
     latencyPercentile: normalizeLatencyPercentile(value.latencyPercentile),
@@ -1196,6 +1203,7 @@ app.innerHTML = `
         <span>Y axis</span>
         <select id="chart-y-metric">
           <option value="throughput">Throughput / GPU</option>
+          <option value="totalThroughput">Total Throughput (All GPUs)</option>
           <option value="totalTokensPerDollar">Total Tokens per Dollar</option>
         </select>
       </label>
@@ -1316,7 +1324,7 @@ app.innerHTML = `
               hidden
             />
             <div class="data-action-group data-action-group-muted" aria-label="Data actions">
-              <button id="reset-data" class="action-button" type="button">
+              <button id="reset-data" class="action-button" type="button" title="Reset settings and restore repository data">
                 ${renderIcon('refresh')}
                 <span>Reset All</span>
               </button>
@@ -1484,7 +1492,7 @@ document.querySelector('#reset-data')?.addEventListener('click', () => {
   renderAll();
   resetImportState();
   resetStoredAppData();
-  setStatus('All settings reset; the workspace is empty');
+  setStatus('All settings reset; repository data restored');
   setImportStatus('');
   clearMergePreview();
 });
@@ -1787,7 +1795,7 @@ function renderTcoControls(): void {
   const selector = document.querySelector<HTMLSelectElement>('#chart-y-metric')!;
   selector.value = state.chartYMetric;
   selector.onchange = () => {
-    state.chartYMetric = selector.value === 'totalTokensPerDollar' ? 'totalTokensPerDollar' : 'throughput';
+    state.chartYMetric = normalizeChartYMetric(selector.value);
     renderAll();
     scheduleLocalSave();
   };
@@ -2883,7 +2891,7 @@ function renderFilterControls(): void {
   precisionFilterEl.innerHTML = renderPrecisionFilterOptions(precisions);
   mtpFilterEl.innerHTML = renderMtpFilterOptions(mtpValues);
   document.querySelector<HTMLElement>('#mtp-filter-control')!.hidden = state.scenarioFilter === AGENTIC_SCENARIO;
-  latencyPercentileControlEl.hidden = !isAgenticTraceView(currentSeries);
+  latencyPercentileControlEl.hidden = !isAgenticTraceView(currentSeries) || state.chartMetric === 'meanInteractivity';
   latencyPercentileControlEl.parentElement?.classList.toggle(
     'has-latency-percentile',
     !latencyPercentileControlEl.hidden
@@ -5027,7 +5035,9 @@ function seriesToDrafts(series: InferenceCurveSeries[]): SeriesDraft[] {
       const dcp = getInferenceCurvePointDcp(point);
       const row: PointRow = {
         interactivity: formatPointFieldValue(point.interactivity),
+        meanInteractivity: formatPointFieldValue(point.meanInteractivity),
         throughput: String(point.throughput),
+        totalThroughput: formatPointFieldValue(point.totalThroughput),
         ttft: formatPointFieldValue(point.ttft),
         endToEnd: formatPointFieldValue(point.endToEnd),
         shape: normalizePointShapeValue(formatPointFieldValue(point.shape)),
@@ -5173,9 +5183,11 @@ function draftsToSeriesInternal(drafts: SeriesDraft[]): InferenceCurveSeries[] {
           : undefined;
         const interactivity = interactivityPercentiles?.p90 ?? parseNumber(row.interactivity);
         const throughput = parseNumber(row.throughput);
+        const meanInteractivity = parseNumber(row.meanInteractivity);
         const ttft = ttftPercentiles?.p90 ?? parseNumber(row.ttft);
         const endToEnd = endToEndPercentiles?.p90 ?? parseNumber(row.endToEnd);
         const hasXMetric =
+          meanInteractivity !== null ||
           interactivity !== null ||
           ttft !== null ||
           endToEnd !== null ||
@@ -5190,6 +5202,8 @@ function draftsToSeriesInternal(drafts: SeriesDraft[]): InferenceCurveSeries[] {
         }
         const point: InferenceCurveSeries['points'][number] = {
           throughput,
+          meanInteractivity: meanInteractivity ?? undefined,
+          totalThroughput: parseNumber(row.totalThroughput) ?? undefined,
           precision: draft.precision.trim() || undefined,
           strategy: (row.strategy ?? '').trim() || undefined,
           tp: parseNumber(row.tp) ?? undefined,
@@ -5317,6 +5331,12 @@ function parseDelimitedRows(text: string): string[][] {
 
 function detectPointHeaderMap(headerRow: string[]): Map<number, string> | null {
   const aliases = new Map<string, string>([
+    ['meaninteractivity', 'meanInteractivity'],
+    ['mean interactivity', 'meanInteractivity'],
+    ['mean interactivity (tok/s/user)', 'meanInteractivity'],
+    ['mean interactivity (output tok/s/user)', 'meanInteractivity'],
+    ['mean_intvty', 'meanInteractivity'],
+    ['metrics.mean_intvty', 'meanInteractivity'],
     ['interactivity', 'interactivity'],
     ['interactivity (tok/s/user)', 'interactivity'],
     ['p90 interactivity', 'interactivity'],
@@ -5341,6 +5361,12 @@ function detectPointHeaderMap(headerRow: string[]): Map<number, string> | null {
     ['y', 'throughput'],
     ['吞吐量', 'throughput'],
     ['gpu吞吐量', 'throughput'],
+    ['totalthroughput', 'totalThroughput'],
+    ['total throughput (tok/s)', 'totalThroughput'],
+    ['total_tput_tps', 'totalThroughput'],
+    ['metrics.total_tput_tps', 'totalThroughput'],
+    ['total throughput (all gpus)', 'totalThroughput'],
+    ['total throughput (tok/s, all gpus)', 'totalThroughput'],
     ['ttft', 'ttft'],
     ['ttft (s)', 'ttft'],
     ['time to first token', 'ttft'],
@@ -5722,6 +5748,10 @@ function normalizeChartMetric(value: unknown): InferenceCurveXAxisMetric | undef
     : undefined;
 }
 
+function normalizeChartYMetric(value: unknown): InferenceCurveYAxisMetric {
+  return value === 'totalThroughput' || value === 'totalTokensPerDollar' ? value : 'throughput';
+}
+
 function normalizeLatencyPercentile(value: unknown): InferenceCurveLatencyPercentile | undefined {
   return typeof value === 'string' && LATENCY_PERCENTILES.includes(value as InferenceCurveLatencyPercentile)
     ? (value as InferenceCurveLatencyPercentile)
@@ -5981,6 +6011,8 @@ function ensureSelectedPrecisions(precisions: string[]): void {
 }
 
 function createInitialState(series: InferenceCurveSeries[]): AppState {
+  const isRepositoryAgentx = series.length === 1 &&
+    series[0]!.id === 'inferencex-agentx-mi355x-fp4-run39596624542';
   const modelFilter = uniqueSorted(series.map(getSeriesModel))[0] ?? ALL_VALUE;
   const modelFiltered = filterSeriesByModel(series, modelFilter);
   const scenarioFilter = getAvailableScenarios(modelFiltered)[0] ?? FIXED_SEQUENCE_SCENARIO;
@@ -5998,8 +6030,8 @@ function createInitialState(series: InferenceCurveSeries[]): AppState {
 
   return {
     theme: getTheme(),
-    chartMetric: 'interactivity',
-    chartYMetric: 'throughput',
+    chartMetric: isRepositoryAgentx ? 'meanInteractivity' : 'interactivity',
+    chartYMetric: isRepositoryAgentx ? 'totalThroughput' : 'throughput',
     tcoCostMode: 'hyperscaler',
     tcoCustomCosts: {},
     latencyPercentile: DEFAULT_LATENCY_PERCENTILE,
@@ -6011,10 +6043,10 @@ function createInitialState(series: InferenceCurveSeries[]): AppState {
     islOslFilter,
     mtpFilter,
     enforceEndToEndPareto: false,
-    showNonOptimalPoints: false,
-    hidePointLabels: true,
+    showNonOptimalPoints: isRepositoryAgentx,
+    hidePointLabels: !isRepositoryAgentx,
     showConcurrencyLabels: false,
-    useAdvancedLabels: false,
+    useAdvancedLabels: isRepositoryAgentx,
     showGradientLabels: false,
     showLineLabels: false,
     lineLabelPositions: {},
@@ -6025,7 +6057,7 @@ function createInitialState(series: InferenceCurveSeries[]): AppState {
     search: '',
     collapsedEditorGroups: new Set(),
     collapsedCurveGroups: new Set(),
-    watermark: DEFAULT_CHART_WATERMARK
+    watermark: isRepositoryAgentx ? '' : DEFAULT_CHART_WATERMARK
   };
 }
 
@@ -6250,6 +6282,9 @@ function getChartTitle(): string {
     undefined,
     isAgenticTraceView(currentSeries) ? state.latencyPercentile : undefined
   );
+  if (state.chartYMetric === 'totalThroughput') {
+    return title.replace('Token Throughput per GPU', 'Total Throughput (All GPUs)');
+  }
   return state.chartYMetric === 'totalTokensPerDollar'
     ? title.replace('Token Throughput per GPU', 'Total Tokens per Dollar') : title;
 }
@@ -6614,6 +6649,8 @@ function comparePointRowsForMerge(a: PointRow, b: PointRow): number {
       parseNumber(b[e2eNormalizedInteractivityRowKeys.p90] || b[e2eNormalizedInteractivityRowKeys.p75])
     ) ||
     compareNullableNumbers(parseNumber(a.throughput), parseNumber(b.throughput)) ||
+    compareNullableNumbers(parseNumber(a.totalThroughput), parseNumber(b.totalThroughput)) ||
+    compareNullableNumbers(parseNumber(a.meanInteractivity), parseNumber(b.meanInteractivity)) ||
     compareNullableNumbers(parseNumber(a.ttft), parseNumber(b.ttft)) ||
     compareNullableNumbers(parseNumber(a.endToEnd), parseNumber(b.endToEnd));
 }
@@ -7536,6 +7573,8 @@ function readNativeSeries(value: unknown): InferenceCurveSeries[] {
               point.p90_intvty ?? point.p90_interactivity
           ),
           throughput: Number(point.throughput),
+          meanInteractivity: asOptionalNumber(point.meanInteractivity),
+          totalThroughput: asOptionalNumber(point.totalThroughput),
           ttft: asOptionalNumber(point.ttft ?? ttftPercentiles?.p90 ?? point.median_ttft),
           endToEnd: asOptionalNumber(
             point.endToEnd ?? endToEndPercentiles?.p90 ?? point.end_to_end ?? point.e2el ??
@@ -7647,6 +7686,13 @@ function readImportedXAxisMetric(
   key: InferenceCurveXAxisMetric,
   options: { preferP90?: boolean } = {}
 ): number | null {
+  if (key === 'meanInteractivity') {
+    return readMetricNumber(record, [
+      'meanInteractivity', 'mean_intvty', 'metrics.mean_intvty',
+      'Mean Interactivity', 'Mean Interactivity (tok/s/user)',
+      'Mean Interactivity (output tok/s/user)'
+    ]);
+  }
   if (key === 'interactivity') {
     const p90Aliases = [
       'request_metrics.latency.intvty.p90',
@@ -7734,9 +7780,19 @@ function readImportedThroughput(record: Record<string, unknown>): number | null 
   ]);
 }
 
+function readImportedTotalThroughput(record: Record<string, unknown>): number | null {
+  // Read the original all-GPU measurement; do not reconstruct it from per-GPU values.
+  return readMetricNumber(record, [
+    'totalThroughput', 'metrics.total_tput_tps', 'total_tput_tps',
+    'Total Throughput (tok/s)', 'Total Throughput (All GPUs)',
+    'Total Throughput (tok/s, all GPUs)'
+  ]);
+}
+
 // Extra header aliases so a CSV produced by Download CSV (whose headers carry
 // units / different wording) round-trips through the editor import path.
 const POINT_IMPORT_ALIASES: Record<string, string[]> = {
+  meanInteractivity: ['meanInteractivity', 'Mean Interactivity', 'Mean Interactivity (tok/s/user)', 'Mean Interactivity (output tok/s/user)', 'mean_intvty', 'metrics.mean_intvty'],
   interactivity: [
     'interactivity',
     'Interactivity (tok/s/user)',
@@ -7751,6 +7807,15 @@ const POINT_IMPORT_ALIASES: Record<string, string[]> = {
     'tok/s/user'
   ],
   throughput: ['throughput', 'Throughput/GPU', 'Throughput/GPU (tok/s/gpu)', 'tok/s/gpu'],
+  totalThroughput: [
+    'totalThroughput',
+    'Total Throughput (tok/s)',
+    'total_tput_tps',
+    'metrics.total_tput_tps',
+    'Total Throughput (All GPUs)',
+    'Total Throughput (tok/s, all GPUs)',
+    'total throughput'
+  ],
   ttft: [
     'ttft',
     'TTFT',
@@ -8040,6 +8105,8 @@ function importedPointFromBenchmarkRecord(
   const interactivity = interactivityPercentiles?.p90 ??
     readImportedXAxisMetric(record, 'interactivity', metricReadOptions);
   const throughput = readImportedThroughput(record);
+  const totalThroughput = readImportedTotalThroughput(record);
+  const meanInteractivity = readImportedXAxisMetric(record, 'meanInteractivity');
   const ttft = ttftPercentiles?.p90 ?? readImportedXAxisMetric(record, 'ttft', metricReadOptions);
   const endToEnd = endToEndPercentiles?.p90 ??
     readImportedXAxisMetric(record, 'endToEnd', metricReadOptions);
@@ -8047,6 +8114,7 @@ function importedPointFromBenchmarkRecord(
     throughput === null ||
     (
       interactivity === null &&
+      meanInteractivity === null &&
       ttft === null &&
       endToEnd === null &&
       interactivityPercentiles === undefined &&
@@ -8147,6 +8215,8 @@ function importedPointFromBenchmarkRecord(
 
   const point: InferenceCurveSeries['points'][number] = {
     throughput,
+    meanInteractivity: meanInteractivity ?? undefined,
+    totalThroughput: totalThroughput ?? undefined,
     precision,
     strategy: makeStrategyLabel(decodeTp, decodeEp, decodeDcp),
     tp: totalGpu ?? decodeTp ?? undefined,
@@ -8279,9 +8349,11 @@ function mergeImportedSeries(series: InferenceCurveSeries[]): InferenceCurveSeri
     const seen = new Set<string>();
     const points = line.points.filter((point) => {
       const key = JSON.stringify([
+        point.meanInteractivity,
         point.interactivity,
         point.interactivityPercentiles,
         point.throughput,
+        point.totalThroughput,
         point.ttft,
         point.ttftPercentiles,
         point.endToEnd,
@@ -8892,7 +8964,9 @@ function buildChartCsvRows(mode: CsvExportMode): string[][] {
       'Roofline Point',
       'Point Marker',
       'Interactivity (tok/s/user)',
+      'Mean Interactivity (tok/s/user)',
       'Throughput/GPU (tok/s/gpu)',
+      'Total Throughput (tok/s)',
       'TTFT (s)',
       'End-to-end (s)',
       ...getLatencyPercentileCsvHeaders(),
@@ -8966,7 +9040,9 @@ function buildChartCsvRows(mode: CsvExportMode): string[][] {
         formatExportValue(currentPoint?.roof ?? false),
         normalizePointShapeValue(String(point.shape ?? '')) || '',
         formatExportValue(point.interactivity),
+        formatExportValue(point.meanInteractivity),
         formatExportValue(point.throughput),
+        formatExportValue(point.totalThroughput),
         formatExportValue(point.ttft),
         formatExportValue(point.endToEnd),
         ...getLatencyPercentileExportValues(point, line),

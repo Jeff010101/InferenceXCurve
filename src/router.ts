@@ -4,6 +4,14 @@ import { getTheme, setTheme, THEME_CHANGE_EVENT } from './theme';
 type Workspace = 'inferencex' | 'plot-tool';
 type PlotToolModule = typeof import('./plotTool');
 
+// Retire the temporary reference view: old bookmarks open the ordinary editor.
+const entryUrl = new URL(window.location.href);
+if (entryUrl.searchParams.get('reference') === 'inferencex-agentx-run39596624542') {
+  entryUrl.searchParams.delete('reference');
+  entryUrl.hash = '/inferencex';
+  window.history.replaceState(null, '', entryUrl);
+}
+
 const app = document.querySelector<HTMLDivElement>('#app');
 if (!app) throw new Error('Missing #app root');
 

@@ -7,7 +7,7 @@ This is a Vite + TypeScript single-page app for recreating the InferenceX throug
 - `src/main.ts`: application state, filters, editable data panels, CSV/GitHub Actions import, InferenceX sync state, and UI event wiring.
 - `src/inferenceXSync.ts`: public InferenceX API client, availability parsing, benchmark filtering, fingerprints, and sync line generation.
 - `src/inferenceCurveChart.ts`: reusable D3 chart rendering, roofline calculation, labels, colors, tooltips, and export logic.
-- `src/exampleData.ts`: intentionally empty initial benchmark data for this workspace.
+- `src/exampleData.ts`: repository-maintained default AgentX reference curve for the ordinary workspace.
 - `src/plotTool.ts`: generic X/Y plotting workspace; starts with no example curves.
 - `src/styles.css`: global theme, chart layout, legend, and data editor styling.
 - `vite.config.ts`: Vite base path and `/inferencex-api` dev proxy.
@@ -96,10 +96,10 @@ Agent-specific rules:
 
 ## Agent Notes: InferenceX Data Sync
 
-This fork starts as an empty comparison workspace. Sync implementation lives in `src/inferenceXSync.ts`; UI state and local persistence live in `src/main.ts`.
+This fork starts with the explicitly requested repository AgentX reference curve. Sync implementation lives in `src/inferenceXSync.ts`; UI state and local persistence live in `src/main.ts`.
 
-- App startup with no saved browser data must show no benchmark curves and no configured sync targets. Do not fetch or apply benchmark data automatically. The Add Config form may use a template without creating an enabled config.
-- Empty saved config arrays must remain empty. Saved browser curves and user-created configs remain unchanged on reload. `Reset All` returns each workspace to empty data; `Clear Sync Configs` removes configs without erasing chart data. The generic Plot Tool also starts and resets empty.
+- App startup with no saved browser data loads only the explicitly requested repository curves and no configured sync targets. Do not fetch/apply live benchmark data automatically. The Add Config form may use a template without creating an enabled config.
+- Empty saved config arrays must remain empty. Saved browser curves and user-created configs remain unchanged on reload. InferenceX `Reset All` restores repository curves/settings; `Clear Data` empties the working dataset and `Clear Sync Configs` removes configs without erasing chart data. The generic Plot Tool starts and resets empty.
 - App startup with saved enabled configs checks for updates only once and does not overwrite chart data until the user clicks `Update`. With no enabled configs, it performs no benchmark update check.
 - Agentic configs omit `specMethod` and use `isl: 0`, `osl: 0`. Never alias B200 to GB200.
 - `Check Updates` fetches enabled configs and stages changed series; `Update` applies staged series.
@@ -121,6 +121,6 @@ The InferenceX API does **not** send an `Access-Control-Allow-Origin` header (th
 
 ## Agent Notes: Adding Benchmark Data
 
-Keep `src/exampleData.ts` empty unless the user explicitly requests publishing a bundled snapshot. Prefer user-initiated CSV/JSON import or configured API sync. Do not silently restore upstream examples during merges or resets. Imported Agentic data must retain source percentiles, speculative method and provenance rather than being relabeled as fixed-length data.
+The user requested ordinary editable repository data, not a dedicated snapshot view. `src/exampleData.ts` maps the ten-point AgentX reference into the normal InferenceX workspace; existing browser edits take precedence. Do not restore unrelated upstream examples. Keep all DeepSeek V4.1 Flash curves under model `DeepSeek-V4.1-Flash`, with distinct curve IDs/names/groups and correct workload scenarios. Imported Agentic data must retain source percentiles, speculative method and provenance.
 
-The explicitly requested `?reference=inferencex-agentx-run39596624542#/plot-tool` view loads its frozen JSON snapshot without reading or writing the normal Plot Tool storage. Only the named bundled reference is accepted; arbitrary URLs must not trigger imports. Edits in this view are temporary and exportable. Reload and `Reset All` restore the published reference, including its axes, all ten points and empty watermark. The ordinary workspace continues to start and reset empty and preserves user imports on reload.
+The selected comparison uses `meanInteractivity` from `metrics.mean_intvty` and `totalThroughput` from `metrics.total_tput_tps` (input plus output across all physical GPUs). Keep `throughput` as input plus output per GPU for existing/TCO compatibility, and keep P90 separate. Never populate missing mean/total values from P90 or per-GPU guesses. The retired reference query redirects to the normal workspace; Plot Tool has no reference-specific behavior.

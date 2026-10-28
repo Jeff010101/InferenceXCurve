@@ -213,17 +213,6 @@ body {
   gap: 12px;
 }
 
-.filter-card.published-reference {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  font-size: 14px;
-}
-
-.published-reference a {
-  color: var(--brand);
-}
-
 .plot-settings-card label {
   display: grid;
   min-width: 0;

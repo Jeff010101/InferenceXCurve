@@ -1,9 +1,12 @@
 import * as d3 from 'd3';
 
 export interface InferenceCurvePoint {
+  meanInteractivity?: number;
   interactivity?: number;
   interactivityPercentiles?: InferenceCurveLatencyPercentiles;
   throughput: number;
+  // Input plus output tokens per second across all GPUs; never inferred from rounded per-GPU values.
+  totalThroughput?: number;
   ttft?: number;
   ttftPercentiles?: InferenceCurveLatencyPercentiles;
   endToEnd?: number;
@@ -141,7 +144,7 @@ export function normalizeInferenceCurveLineLabelPositions(value: unknown): Infer
 
 export type ParetoGoal = 'maximize' | 'minimize';
 
-export type InferenceCurveYAxisMetric = 'throughput' | 'totalTokensPerDollar';
+export type InferenceCurveYAxisMetric = 'throughput' | 'totalThroughput' | 'totalTokensPerDollar';
 export type InferenceCurveTcoCostMode = 'hyperscaler' | 'rental' | 'custom';
 
 // Public InferenceX costs, retrieved 2026-09-20. USD per GPU-hour.
@@ -180,6 +183,7 @@ export function getInferenceCurvePointYValue(
   hourlyCosts: Record<string, number> = {}
 ): number {
   if (metric === 'throughput') return point.throughput;
+  if (metric === 'totalThroughput') return readFiniteNumber(point.totalThroughput) ?? Number.NaN;
   const cost = hourlyCosts[getInferenceCurveTcoHardware(line)];
   if (!Number.isFinite(cost) || cost <= 0 || !Number.isFinite(point.throughput) || point.throughput < 0) {
     return Number.NaN;
@@ -189,6 +193,7 @@ export function getInferenceCurvePointYValue(
 }
 
 export function getInferenceCurveYAxisLabel(metric: InferenceCurveYAxisMetric): string {
+  if (metric === 'totalThroughput') return 'Total Throughput (input + output tok/s, all GPUs)';
   return metric === 'totalTokensPerDollar'
     ? 'Total Tokens per Dollar (tok/$)'
     : 'Token Throughput per GPU (tok/s/gpu)';
@@ -210,6 +215,7 @@ export type InferenceCurveE2ENormalizedInteractivityPercentiles = Partial<
 >;
 
 export type InferenceCurveXAxisMetric =
+  | 'meanInteractivity'
   | 'interactivity'
   | 'e2eNormalizedInteractivity'
   | 'endToEnd'
@@ -402,6 +408,13 @@ type XAxisMetricConfig = {
 };
 
 const X_AXIS_METRICS: Record<InferenceCurveXAxisMetric, XAxisMetricConfig> = {
+  meanInteractivity: {
+    label: 'Mean Interactivity (output tok/s/user)',
+    tooltipLabel: 'Mean Interactivity',
+    unit: 'output tok/s/user',
+    title: 'Token Throughput per GPU vs. Mean Interactivity',
+    higherIsBetter: true
+  },
   interactivity: {
     label: 'Interactivity (tok/s/user)',
     tooltipLabel: 'Interactivity',
@@ -433,6 +446,7 @@ const X_AXIS_METRICS: Record<InferenceCurveXAxisMetric, XAxisMetricConfig> = {
 };
 
 const X_AXIS_METRIC_ORDER: InferenceCurveXAxisMetric[] = [
+  'meanInteractivity',
   'e2eNormalizedInteractivity',
   'interactivity',
   'endToEnd',
@@ -656,7 +670,7 @@ export function prepareInferenceCurveSeries(
     // `points` so Show Non-Optimal can still reveal excluded configurations.
     const gateApplies = enforceEndToEndPareto && xMetric !== 'endToEnd';
     const e2eWinnerIndexes = gateApplies
-      ? getEndToEndParetoPointIndexes(line, latencyPercentile)
+      ? getEndToEndParetoPointIndexes(line, latencyPercentile, yMetric, tcoHourlyCosts)
       : null;
     const rooflineSeed = e2eWinnerIndexes
       ? points.filter((point) => point.x > 0 && e2eWinnerIndexes.has(point.pointIndex))
@@ -692,7 +706,9 @@ export function prepareInferenceCurveSeries(
 
 function getEndToEndParetoPointIndexes(
   series: InferenceCurveSeries,
-  latencyPercentile: InferenceCurveLatencyPercentile
+  latencyPercentile: InferenceCurveLatencyPercentile,
+  yMetric: InferenceCurveYAxisMetric,
+  tcoHourlyCosts: Record<string, number>
 ): Set<number> {
   const candidatesByPrecision = new Map<
     string,
@@ -701,7 +717,7 @@ function getEndToEndParetoPointIndexes(
 
   series.points.forEach((point, pointIndex) => {
     const x = readPointMetricValue(point, 'endToEnd', latencyPercentile);
-    const y = readFiniteNumber(point.throughput);
+    const y = readFiniteNumber(getInferenceCurvePointYValue(point, series, yMetric, tcoHourlyCosts));
     if (x === undefined || x <= 0 || y === undefined) return;
     const precision = String(point.precision ?? series.precision ?? 'default');
     const candidates = candidatesByPrecision.get(precision) ?? [];
@@ -932,6 +948,7 @@ function readPointMetricValue(
   metric: InferenceCurveXAxisMetric,
   latencyPercentile: InferenceCurveLatencyPercentile = 'p90'
 ): number | undefined {
+  if (metric === 'meanInteractivity') return readFiniteNumber(point.meanInteractivity);
   if (metric === 'interactivity') {
     return readLatencyPercentileValue(
       point.interactivityPercentiles,
@@ -973,6 +990,9 @@ export function renderInferenceCurveChart(
   if (!userOptions.yLabel) options.yLabel = getInferenceCurveYAxisLabel(options.yMetric);
   if (!userOptions.title && options.yMetric === 'totalTokensPerDollar') {
     options.title = getInferenceCurveTitle(options.xMetric).replace('Token Throughput per GPU', 'Total Tokens per Dollar');
+  }
+  if (!userOptions.title && options.yMetric === 'totalThroughput') {
+    options.title = getInferenceCurveTitle(options.xMetric).replace('Token Throughput per GPU', 'Total Throughput (All GPUs)');
   }
   if (userOptions.latencyPercentile) {
     options.metricDisplayOverrides = makeLatencyPercentileDisplayOverrides(
@@ -2629,9 +2649,12 @@ function formatTooltip(
   const fields = [
     `<strong>${escapeHtml(point.seriesName)}</strong>`,
     formatTooltipMetricField(metricConfig.tooltipLabel, point.x, metricConfig.unit),
-    `Throughput: ${formatTooltipMetric(point.throughput)} tok/s/gpu`,
+    `Total Throughput/GPU: ${formatTooltipMetric(point.throughput)} tok/s/gpu`,
     `Precision: ${escapeHtml(formatPrecision(point.precision))}`
   ];
+  if (Number.isFinite(point.totalThroughput)) {
+    fields.splice(2, 0, `Total Throughput (All GPUs): ${formatTooltipMetric(point.totalThroughput!)} tok/s`);
+  }
   if (options.yMetric === 'totalTokensPerDollar') {
     fields.splice(2, 0,
       `Total Tokens per Dollar: ${formatTooltipMetric(point.y)} tok/$`,

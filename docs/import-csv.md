@@ -17,7 +17,7 @@ round-trips through the app, and is more deterministic than raw benchmark CSV.
 Use this header order for generated CSV:
 
 ```csv
-Line ID,Line Name,Title,Line Note,Group,Model,Scenario,Precision,MTP,HW Key,Color Mode,Resolved Color,Line Type,Line Marker,Layer,Included in Chart,Active Line,Point Index,Roofline Point,Point Marker,Interactivity (tok/s/user),Throughput/GPU (tok/s/gpu),TTFT (s),End-to-end (s),P50 Interactivity (tok/s/user),P75 Interactivity (tok/s/user),P90 Interactivity (tok/s/user),P95 Interactivity (tok/s/user),P50 TTFT (s),P75 TTFT (s),P90 TTFT (s),P95 TTFT (s),P50 End-to-end (s),P75 End-to-end (s),P90 End-to-end (s),P95 End-to-end (s),P75 E2E Normalized Interactivity (tok/s/user),P90 E2E Normalized Interactivity (tok/s/user),Prefill GPUs,Decode GPUs,Total GPUs,Prefill TP,Prefill EP,Prefill DCP,Prefill DPA,Prefill Workers,Decode TP,Decode EP,Decode DCP,Decode DPA,Decode Workers,DPA,Disagg,Multi-node,KV Offload,Chip Cache Hit Rate,External Cache Hit Rate,CPU Cache Hit Rate,Theoretical Cache Hit Rate,Concurrency,Strategy,Note,Speculative Decoding
+Line ID,Line Name,Title,Line Note,Group,Model,Scenario,Precision,MTP,HW Key,Color Mode,Resolved Color,Line Type,Line Marker,Layer,Included in Chart,Active Line,Point Index,Roofline Point,Point Marker,Interactivity (tok/s/user),Mean Interactivity (tok/s/user),Throughput/GPU (tok/s/gpu),Total Throughput (tok/s),TTFT (s),End-to-end (s),P50 Interactivity (tok/s/user),P75 Interactivity (tok/s/user),P90 Interactivity (tok/s/user),P95 Interactivity (tok/s/user),P50 TTFT (s),P75 TTFT (s),P90 TTFT (s),P95 TTFT (s),P50 End-to-end (s),P75 End-to-end (s),P90 End-to-end (s),P95 End-to-end (s),P75 E2E Normalized Interactivity (tok/s/user),P90 E2E Normalized Interactivity (tok/s/user),Prefill GPUs,Decode GPUs,Total GPUs,Prefill TP,Prefill EP,Prefill DCP,Prefill DPA,Prefill Workers,Decode TP,Decode EP,Decode DCP,Decode DPA,Decode Workers,DPA,Disagg,Multi-node,KV Offload,Chip Cache Hit Rate,External Cache Hit Rate,CPU Cache Hit Rate,Theoretical Cache Hit Rate,Concurrency,Strategy,Note,Speculative Decoding
 ```
 
 The importer uses the editor parser when at least one row has a non-empty
@@ -40,6 +40,7 @@ These fields should always be present and non-empty in generated editor CSV:
 
 Each point row with data must also include at least one numeric X-axis metric:
 
+- `Mean Interactivity (tok/s/user)`
 - `Interactivity (tok/s/user)`
 - `TTFT (s)`
 - `End-to-end (s)`
@@ -64,6 +65,17 @@ rows keep their existing unprefixed metric semantics.
 currently publishes only P75 and P90 for it through the derived Agentic
 metrics associated with persisted per-request traces. The app therefore stores
 only those two percentiles and does not synthesize P50 or P95 values.
+
+For mean/all-GPU comparisons, add `Mean Interactivity (tok/s/user)` and
+`Total Throughput (tok/s)`. These map to the independent `meanInteractivity`
+and `totalThroughput` fields and are selected explicitly in the chart. Total
+throughput includes input plus output across all allocated physical GPUs.
+`Throughput/GPU (tok/s/gpu)` remains the per-GPU input-plus-output value used
+by the existing per-GPU view and TCO; do not put an all-GPU total in that column.
+Missing mean or all-GPU values are unavailable, not inferred from P90 or from
+TP/ADP counts. In particular, AgentX TP2/ADP2/C64 uses two physical GPUs.
+The mean selector ignores the latency-percentile selector. Use identical model
+names and separate curve IDs/names/groups when comparing results of one model.
 
 Avoid relying on the app's internal fallbacks for empty `Line ID`, `Line Name`,
 `Model`, `Scenario`, or `Precision`; those defaults depend on current app state

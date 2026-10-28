@@ -29,7 +29,20 @@
       "tp": 2,
       "adp": 2,
       "concurrency": 64,
-      "gpuCount": 2
+      "gpuCount": 2,
+      "metrics": {
+        "mean_intvty": 99.00990099009901,
+        "total_tput_tps": 368116.297,
+        "tput_per_gpu": 184058.1485,
+        "output_tput_per_gpu": 1343.33774,
+        "p90_intvty": 75.18796992481204,
+        "p90_full_response_itl": 0.0133,
+        "p90_full_response_intvty": 75.18907,
+        "mean_full_response_intvty": 99.02968,
+        "p90_ttft": 2.31536,
+        "p90_e2el": 24.96784,
+        "duration_seconds": 3624.05474
+      }
     },
     {
       "x": 201.61290322580646,
@@ -40,7 +53,20 @@
       "tp": 2,
       "adp": 1,
       "concurrency": 32,
-      "gpuCount": 2
+      "gpuCount": 2,
+      "metrics": {
+        "mean_intvty": 201.61290322580646,
+        "total_tput_tps": 225852.80128,
+        "tput_per_gpu": 112926.40064,
+        "output_tput_per_gpu": 657.64465,
+        "p90_intvty": 142.85714285714286,
+        "p90_full_response_itl": 0.007,
+        "p90_full_response_intvty": 142.7713,
+        "mean_full_response_intvty": 201.80765,
+        "p90_ttft": 2.30492,
+        "p90_e2el": 14.75842,
+        "duration_seconds": 3608.34911
+      }
     },
     {
       "x": 352.11267605633805,
@@ -51,7 +77,20 @@
       "tp": 2,
       "adp": 1,
       "concurrency": 16,
-      "gpuCount": 2
+      "gpuCount": 2,
+      "metrics": {
+        "mean_intvty": 352.11267605633805,
+        "total_tput_tps": 114619.65616,
+        "tput_per_gpu": 57309.82808,
+        "output_tput_per_gpu": 364.11757,
+        "p90_intvty": 254.45292620865138,
+        "p90_full_response_itl": 0.00393,
+        "p90_full_response_intvty": 254.77088,
+        "mean_full_response_intvty": 352.14932,
+        "p90_ttft": 2.14098,
+        "p90_e2el": 8.66009,
+        "duration_seconds": 3607.2017
+      }
     },
     {
       "x": 458.7155963302752,
@@ -62,7 +101,20 @@
       "tp": 2,
       "adp": 1,
       "concurrency": 8,
-      "gpuCount": 2
+      "gpuCount": 2,
+      "metrics": {
+        "mean_intvty": 458.7155963302752,
+        "total_tput_tps": 62048.31321,
+        "tput_per_gpu": 31024.15661,
+        "output_tput_per_gpu": 221.64696,
+        "p90_intvty": 357.14285714285717,
+        "p90_full_response_itl": 0.0028,
+        "p90_full_response_intvty": 357.68921,
+        "mean_full_response_intvty": 459.14107,
+        "p90_ttft": 1.82874,
+        "p90_e2el": 7.69542,
+        "duration_seconds": 3597.07169
+      }
     },
     {
       "x": 478.4688995215311,
@@ -73,7 +125,20 @@
       "tp": 4,
       "adp": 1,
       "concurrency": 16,
-      "gpuCount": 4
+      "gpuCount": 4,
+      "metrics": {
+        "mean_intvty": 478.4688995215311,
+        "total_tput_tps": 116511.62608,
+        "tput_per_gpu": 29127.90652,
+        "output_tput_per_gpu": 187.30931,
+        "p90_intvty": 374.5318352059925,
+        "p90_full_response_itl": 0.00267,
+        "p90_full_response_intvty": 374.1063,
+        "mean_full_response_intvty": 477.8259,
+        "p90_ttft": 1.55092,
+        "p90_e2el": 6.70324,
+        "duration_seconds": 3601.15434
+      }
     },
     {
       "x": 512.8205128205128,
@@ -84,7 +149,20 @@
       "tp": 2,
       "adp": 1,
       "concurrency": 4,
-      "gpuCount": 2
+      "gpuCount": 2,
+      "metrics": {
+        "mean_intvty": 512.8205128205128,
+        "total_tput_tps": 36913.55505,
+        "tput_per_gpu": 18456.77753,
+        "output_tput_per_gpu": 127.46217,
+        "p90_intvty": 440.5286343612335,
+        "p90_full_response_itl": 0.00227,
+        "p90_full_response_intvty": 440.6742,
+        "mean_full_response_intvty": 512.06474,
+        "p90_ttft": 1.61211,
+        "p90_e2el": 8.80077,
+        "duration_seconds": 3599.55043
+      }
     },
     {
       "x": 552.4861878453039,
@@ -95,7 +173,20 @@
       "tp": 2,
       "adp": 1,
       "concurrency": 1,
-      "gpuCount": 2
+      "gpuCount": 2,
+      "metrics": {
+        "mean_intvty": 552.4861878453039,
+        "total_tput_tps": 26942.37111,
+        "tput_per_gpu": 13471.18555,
+        "output_tput_per_gpu": 85.70232,
+        "p90_intvty": 537.6344086021505,
+        "p90_full_response_itl": 0.00186,
+        "p90_full_response_intvty": 536.31433,
+        "mean_full_response_intvty": 552.40023,
+        "p90_ttft": 1.66636,
+        "p90_e2el": 10.44267,
+        "duration_seconds": 3601.00533
+      }
     },
     {
       "x": 568.1818181818181,
@@ -106,7 +197,20 @@
       "tp": 4,
       "adp": 1,
       "concurrency": 8,
-      "gpuCount": 4
+      "gpuCount": 4,
+      "metrics": {
+        "mean_intvty": 568.1818181818181,
+        "total_tput_tps": 64602.7521,
+        "tput_per_gpu": 16150.68803,
+        "output_tput_per_gpu": 113.82339,
+        "p90_intvty": 467.2897196261682,
+        "p90_full_response_itl": 0.00214,
+        "p90_full_response_intvty": 466.44534,
+        "mean_full_response_intvty": 568.95629,
+        "p90_ttft": 1.49538,
+        "p90_e2el": 6.60828,
+        "duration_seconds": 3603.07981
+      }
     },
     {
       "x": 645.1612903225806,
@@ -117,7 +221,20 @@
       "tp": 4,
       "adp": 1,
       "concurrency": 2,
-      "gpuCount": 4
+      "gpuCount": 4,
+      "metrics": {
+        "mean_intvty": 645.1612903225806,
+        "total_tput_tps": 29366.76982,
+        "tput_per_gpu": 7341.69245,
+        "output_tput_per_gpu": 50.88515,
+        "p90_intvty": 555.5555555555555,
+        "p90_full_response_itl": 0.0018,
+        "p90_full_response_intvty": 555.70027,
+        "mean_full_response_intvty": 646.33842,
+        "p90_ttft": 1.53856,
+        "p90_e2el": 8.18792,
+        "duration_seconds": 3599.61574
+      }
     },
     {
       "x": 662.251655629139,
@@ -128,7 +245,21 @@
       "tp": 4,
       "adp": 1,
       "concurrency": 1,
-      "gpuCount": 4
+      "gpuCount": 4,
+      "metrics": {
+        "mean_intvty": 662.251655629139,
+        "total_tput_tps": 28934.26691,
+        "tput_per_gpu": 7233.56673,
+        "output_tput_per_gpu": 44.31782,
+        "p90_intvty": 641.025641025641,
+        "p90_full_response_itl": 0.00156,
+        "p90_full_response_intvty": 639.90185,
+        "mean_full_response_intvty": 661.81994,
+        "p90_ttft": 1.71718,
+        "p90_e2el": 9.11147,
+        "duration_seconds": 3599.84417
+      }
     }
-  ]
+  ],
+  "model": "DeepSeek-V4.1-Flash"
 }

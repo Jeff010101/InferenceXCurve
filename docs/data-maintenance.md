@@ -1,16 +1,17 @@
 # Maintaining real, reference and simulation comparisons
 
-The hosted app is <https://jeffxing.com/InferenceXCurve/>. Ordinary workspaces
-start with no benchmark points and no active sync configurations.
+The hosted app is <https://jeffxing.com/InferenceXCurve/>. The InferenceX workspace
+includes one repository-maintained AgentX reference curve. API sync starts disabled.
 
-## Published AgentX reference
+## Repository-maintained AgentX reference
 
-Open the [InferenceX-AgentX reference](https://jeffxing.com/InferenceXCurve/?reference=inferencex-agentx-run39596624542#/plot-tool)
-to restore the ten configurations used in the AgentX simulation comparison.
-This explicit link loads a versioned snapshot on every visit without relying
-on browser storage. It neither reads nor overwrites the ordinary workspace.
-Changes in this reference view are temporary; export CSV to retain edited
-curves and record chart settings separately.
+Open the [normal InferenceX workspace](https://jeffxing.com/InferenceXCurve/#/inferencex)
+to edit the ten configurations used in the AgentX simulation comparison.
+There is no separate snapshot view. Existing browser edits take precedence on
+reload; Reset All restores repository data/settings, while Clear Data removes
+the working curves. Export edits for backup; saving in the browser does not
+write a Git commit. An existing empty workspace can use Reset All to load this
+repository dataset.
 
 - Source: [InferenceX run 39596624542, attempt 1](https://github.com/SemiAnalysisAI/InferenceX/actions/runs/39596624542/attempts/1), dated 2026-10-22.
 - Model/runtime: DeepSeek-V4.1-Flash FP4, MI355X, SGLang, MTP, Agentic Traces.
@@ -24,17 +25,29 @@ curves and record chart settings separately.
 - Configurations: TP2/ADP1 C1, C4, C8, C16, C32; TP4/ADP1 C1, C2, C8, C16;
   TP2/ADP2 C64. The last configuration uses two physical GPUs.
 
-The [snapshot and provenance](../src/data/inferencexAgentx39596624542.json)
+The [data and provenance](../src/data/inferencexAgentx39596624542.json)
 retain reference IDs, TP/ADP/concurrency, GPU counts and the original decoded
-source SHA-256. The [Plot Tool CSV](../public/data/inferencex-agentx-run39596624542.plot.csv)
-contains the same ten coordinates for manual import. It contains no simulator
-points and no fixed-length measurements.
+source SHA-256. The [editor CSV](../public/data/inferencex-agentx-run39596624542.editor.csv)
+round-trips through the ordinary workspace with configuration metadata and
+separate mean/P90 and all-GPU/per-GPU values. The [Plot Tool CSV](../public/data/inferencex-agentx-run39596624542.plot.csv)
+remains available for generic X/Y use. Neither file contains simulator points
+or fixed-length measurements.
+
+The older gray-dot plot used X=`metrics.p90_intvty` (the reciprocal of rounded
+`p90_full_response_itl`) and Y=`metrics.output_tput_per_gpu`. Those are different
+coordinates from the chosen mean/all-GPU-total view. Do not change data values
+to make the two views overlap. For example TP2/ADP2/C64 is `(75.18797, 1343.33774)`
+in the gray-dot view and `(99.00990, 368116.297)` in the chosen view.
+
+Use the same `Model=DeepSeek-V4.1-Flash` for every curve of this model. Distinguish
+reference, measured and simulation results with curve IDs/names/groups, and
+keep Agentic Traces versus fixed-length workloads as separate scenarios.
 
 ## Choose the workspace and metric contract
 
 | Workspace | Use | Y coordinate | Data contract |
 | --- | --- | --- | --- |
-| InferenceX Curve | Benchmark metadata, scenario/model filters, TP/concurrency labels, source notes | Total input + output throughput **per GPU**, or tokens per dollar | [Editor CSV](import-csv.md) |
+| InferenceX Curve | Benchmark metadata, scenario/model filters, TP/concurrency labels, source notes | Total input + output throughput across **all GPUs**, per GPU, or tokens per dollar (explicit selector) | [Editor CSV](import-csv.md) |
 | Plot Tool | Generic Pareto comparisons, including existing all-GPU total-throughput plots | Explicit numeric Y; label its units yourself | [Plot Tool CSV](import-plot-tool-csv.md) |
 
 For the existing fixed-length comparison, open
@@ -108,13 +121,13 @@ heuristics for unrecognized simulator fields.
 
 - Chart edits are saved in this browser's localStorage, not to GitHub or a
   server database. The benchmark and Plot Tool workspaces have separate stores.
-- A URL shares the application, not your browser's chart contents. To reproduce
-  a view on another machine, import the exported CSV and restore chart settings.
+- The ordinary URL loads repository defaults on a new browser. It does not share
+  browser edits; transfer those with exported CSV and restore chart settings.
 - Plot Tool CSV preserves curves, coordinates and styles, but not chart title,
   axis labels/goals, visibility or log-scale settings. Record those beside the
   file. Empty drafts do not create exported point rows.
-- **Clear Data** removes local chart data. **Reset All** also resets the
-  workspace settings. This fork's resets do not restore demonstration curves.
+- **Clear Data** removes local chart data. InferenceX **Reset All** restores
+  repository curves and settings. Plot Tool Reset All returns to an empty plot.
 - Shared result snapshots must be explicit, reviewed, versioned files. Only the
   public ten-point InferenceX-AgentX reference above is published so far; no
   InferCast measurements or simulation results have been published.
@@ -125,8 +138,8 @@ heuristics for unrecognized simulator fields.
 does not currently provide cross-origin browser access, so direct hosted sync
 can fail with CORS. Local `npm run dev` uses the existing Vite proxy. Until a
 controlled proxy or CI snapshot path is added, sync locally and transfer an
-exported CSV, or import a downloaded reference snapshot. The empty deployment
-does not require a proxy and does not perform an initial benchmark sync.
+exported CSV, or import downloaded reference data. The repository data does not
+require a proxy and does not perform an initial benchmark sync.
 
 **GitHub Actions import:** Artifact download requires a token with access to the
 source repository even for public artifacts. A repository-scoped, read-only
