@@ -1,7 +1,34 @@
 # Maintaining real, reference and simulation comparisons
 
-The hosted app is <https://jeffxing.com/InferenceXCurve/>. The initial
-deployment contains no benchmark points and no active sync configurations.
+The hosted app is <https://jeffxing.com/InferenceXCurve/>. Ordinary workspaces
+start with no benchmark points and no active sync configurations.
+
+## Published AgentX reference
+
+Open the [InferenceX-AgentX reference](https://jeffxing.com/InferenceXCurve/?reference=inferencex-agentx-run39596624542#/plot-tool)
+to restore the ten configurations used in the AgentX simulation comparison.
+This explicit link loads a versioned snapshot on every visit without relying
+on browser storage. It neither reads nor overwrites the ordinary workspace.
+Changes in this reference view are temporary; export CSV to retain edited
+curves and record chart settings separately.
+
+- Source: [InferenceX run 39596624542, attempt 1](https://github.com/SemiAnalysisAI/InferenceX/actions/runs/39596624542/attempts/1), dated 2026-10-22.
+- Model/runtime: DeepSeek-V4.1-Flash FP4, MI355X, SGLang, MTP, Agentic Traces.
+- X: the original `metrics.mean_intvty`, using the frozen dashboard's reciprocal
+  of rounded mean full-response ITL. Do not replace it with P90, mean TPOT, or
+  `mean_full_response_intvty`; those have different values/definitions.
+- Y: the original `metrics.total_tput_tps`, input plus output tok/s across all
+  allocated GPUs, without scaling or fitting.
+- All ten points are retained and shown, including four dominated points;
+  the six nondominated points form the Pareto frontier.
+- Configurations: TP2/ADP1 C1, C4, C8, C16, C32; TP4/ADP1 C1, C2, C8, C16;
+  TP2/ADP2 C64. The last configuration uses two physical GPUs.
+
+The [snapshot and provenance](../src/data/inferencexAgentx39596624542.json)
+retain reference IDs, TP/ADP/concurrency, GPU counts and the original decoded
+source SHA-256. The [Plot Tool CSV](../public/data/inferencex-agentx-run39596624542.plot.csv)
+contains the same ten coordinates for manual import. It contains no simulator
+points and no fixed-length measurements.
 
 ## Choose the workspace and metric contract
 
@@ -88,9 +115,9 @@ heuristics for unrecognized simulator fields.
   file. Empty drafts do not create exported point rows.
 - **Clear Data** removes local chart data. **Reset All** also resets the
   workspace settings. This fork's resets do not restore demonstration curves.
-- Future shared result snapshots should be explicit, reviewed, versioned files
-  in a chosen data repository. No real/reference/simulation data has been
-  published with this empty application setup.
+- Shared result snapshots must be explicit, reviewed, versioned files. Only the
+  public ten-point InferenceX-AgentX reference above is published so far; no
+  InferCast measurements or simulation results have been published.
 
 ## External data access
 

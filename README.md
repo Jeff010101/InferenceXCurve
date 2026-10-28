@@ -4,19 +4,25 @@
 
 - **Benchmark workspace:** <https://jeffxing.com/InferenceXCurve/>
 - **Generic Pareto workspace:** <https://jeffxing.com/InferenceXCurve/#/plot-tool>
+- **Published InferenceX-AgentX reference (10 configurations):** <https://jeffxing.com/InferenceXCurve/?reference=inferencex-agentx-run39596624542#/plot-tool>
 
 GitHub Pages inherits this account's existing `jeffxing.com` domain. The
 `jeff010101.github.io/InferenceXCurve/` address redirects to this HTTPS site.
 
-This fork starts empty: no bundled benchmark points, example curves, or enabled
+The ordinary workspaces start empty, with no example curves or enabled
 InferenceX sync configurations. Import data explicitly when it is ready. Reset
-All returns to an empty workspace; ordinary reloads preserve your saved work.
-No InferCast measurements or simulation results are included in this setup.
+All returns to an empty workspace. The optional reference link above restores
+one published, versioned public InferenceX snapshot on each load; it does not
+read or overwrite the ordinary browser workspace. No InferCast measurements or
+simulation results are included.
 
 See [Data maintenance guide](docs/data-maintenance.md) for choosing a workspace,
 keeping real/reference/simulation curves distinct, metric units, and backups.
 The site is a static browser app, not a shared benchmark database. Each browser
-keeps its own data; opening the site URL on another device does not share curves.
+keeps its own data; opening the ordinary site URL on another device does not
+share curves. Browser isolation or storage restrictions can also discard local
+edits. Published reference links are reproducible without browser storage;
+edits made in those views are temporary and can be exported as CSV.
 
 This Vite + TypeScript app recreates the InferenceX `Token Throughput per GPU vs.
 Interactivity` chart with editable custom data. It focuses on matching the

@@ -1,0 +1,134 @@
+{
+  "id": "inferencex-agentx-run39596624542",
+  "name": "InferenceX-AgentX",
+  "title": "AgentX reference",
+  "subtitle": "DeepSeek-V4.1-Flash FP4 | MI355X / SGLang | run 39596624542 | 10 configs",
+  "xLabel": "Mean interactivity (output tok/s/user)",
+  "yLabel": "Total throughput (input + output tok/s, all GPUs)",
+  "sourceUrl": "https://github.com/SemiAnalysisAI/InferenceX/actions/runs/39596624542/attempts/1",
+  "sourceDate": "2026-10-22",
+  "color": "#ff7f0e",
+  "provenance": {
+    "sourceCommit": "2633e9a443958ad87d3dbea1cb98bc829712fcaa",
+    "apiUrl": "https://inferencex.semianalysis.com/api/v1/benchmarks?model=DeepSeek-V4.1-Flash&runId=39596624542&exactRun=true",
+    "decodedSourceSha256": "08faeb93f749075bafa3ed70e9327458dcb4cae904174d8b2c15274ed132ce52",
+    "xField": "metrics.mean_intvty",
+    "yField": "metrics.total_tput_tps",
+    "xDefinition": "Frozen dashboard mean interactivity: reciprocal of dashboard-rounded mean full-response ITL; not P90 and not metrics.mean_full_response_intvty.",
+    "yDefinition": "Input plus output tokens per second across all allocated GPUs; copied from source without per-GPU scaling.",
+    "selection": "The ten reference_result_id values in the AgentX simulation comparison scope; no removal of dominated points.",
+    "note": "Every point is measured InferenceX AgentX reference data, not simulation or fixed-length data. TP2 ADP2 C64 uses two physical GPUs."
+  },
+  "points": [
+    {
+      "x": 99.00990099009901,
+      "y": 368116.297,
+      "configId": "tp2-adp2-c64",
+      "label": "TP2 ADP2 C64",
+      "referenceId": "446046",
+      "tp": 2,
+      "adp": 2,
+      "concurrency": 64,
+      "gpuCount": 2
+    },
+    {
+      "x": 201.61290322580646,
+      "y": 225852.80128,
+      "configId": "tp2-adp1-c32",
+      "label": "TP2 C32",
+      "referenceId": "446043",
+      "tp": 2,
+      "adp": 1,
+      "concurrency": 32,
+      "gpuCount": 2
+    },
+    {
+      "x": 352.11267605633805,
+      "y": 114619.65616,
+      "configId": "tp2-adp1-c16",
+      "label": "TP2 C16",
+      "referenceId": "446040",
+      "tp": 2,
+      "adp": 1,
+      "concurrency": 16,
+      "gpuCount": 2
+    },
+    {
+      "x": 458.7155963302752,
+      "y": 62048.31321,
+      "configId": "tp2-adp1-c8",
+      "label": "TP2 C8",
+      "referenceId": "446047",
+      "tp": 2,
+      "adp": 1,
+      "concurrency": 8,
+      "gpuCount": 2
+    },
+    {
+      "x": 478.4688995215311,
+      "y": 116511.62608,
+      "configId": "tp4-adp1-c16",
+      "label": "TP4 C16",
+      "referenceId": "446048",
+      "tp": 4,
+      "adp": 1,
+      "concurrency": 16,
+      "gpuCount": 4
+    },
+    {
+      "x": 512.8205128205128,
+      "y": 36913.55505,
+      "configId": "tp2-adp1-c4",
+      "label": "TP2 C4",
+      "referenceId": "446045",
+      "tp": 2,
+      "adp": 1,
+      "concurrency": 4,
+      "gpuCount": 2
+    },
+    {
+      "x": 552.4861878453039,
+      "y": 26942.37111,
+      "configId": "tp2-adp1-c1",
+      "label": "TP2 C1",
+      "referenceId": "446041",
+      "tp": 2,
+      "adp": 1,
+      "concurrency": 1,
+      "gpuCount": 2
+    },
+    {
+      "x": 568.1818181818181,
+      "y": 64602.7521,
+      "configId": "tp4-adp1-c8",
+      "label": "TP4 C8",
+      "referenceId": "446052",
+      "tp": 4,
+      "adp": 1,
+      "concurrency": 8,
+      "gpuCount": 4
+    },
+    {
+      "x": 645.1612903225806,
+      "y": 29366.76982,
+      "configId": "tp4-adp1-c2",
+      "label": "TP4 C2",
+      "referenceId": "446050",
+      "tp": 4,
+      "adp": 1,
+      "concurrency": 2,
+      "gpuCount": 4
+    },
+    {
+      "x": 662.251655629139,
+      "y": 28934.26691,
+      "configId": "tp4-adp1-c1",
+      "label": "TP4 C1",
+      "referenceId": "446049",
+      "tp": 4,
+      "adp": 1,
+      "concurrency": 1,
+      "gpuCount": 4
+    }
+  ]
+}

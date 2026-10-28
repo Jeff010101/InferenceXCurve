@@ -122,3 +122,5 @@ The InferenceX API does **not** send an `Access-Control-Allow-Origin` header (th
 ## Agent Notes: Adding Benchmark Data
 
 Keep `src/exampleData.ts` empty unless the user explicitly requests publishing a bundled snapshot. Prefer user-initiated CSV/JSON import or configured API sync. Do not silently restore upstream examples during merges or resets. Imported Agentic data must retain source percentiles, speculative method and provenance rather than being relabeled as fixed-length data.
+
+The explicitly requested `?reference=inferencex-agentx-run39596624542#/plot-tool` view loads its frozen JSON snapshot without reading or writing the normal Plot Tool storage. Only the named bundled reference is accepted; arbitrary URLs must not trigger imports. Edits in this view are temporary and exportable. Reload and `Reset All` restore the published reference, including its axes, all ten points and empty watermark. The ordinary workspace continues to start and reset empty and preserves user imports on reload.

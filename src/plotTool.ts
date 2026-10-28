@@ -9,8 +9,10 @@ import {
   type ParetoGoal
 } from './inferenceCurveChart';
 import { getTheme, THEME_CHANGE_EVENT } from './theme';
+import agentxReference from './data/inferencexAgentx39596624542.json';
 
 const PLOT_TOOL_STORAGE_KEY = 'inferencex-curve:plot-tool-data:v1';
+const AGENTX_REFERENCE_LINE_ID = 'inferencex-agentx-mi355x-fp4-run39596624542';
 const SAVE_DEBOUNCE_MS = 300;
 const MAX_WATERMARK_LENGTH = 64;
 const CSV_HEADERS = [
@@ -135,10 +137,44 @@ function createDefaultLines(): PlotLineDraft[] {
   return [];
 }
 
+function createReferenceLines(): PlotLineDraft[] {
+  return [{
+    id: AGENTX_REFERENCE_LINE_ID,
+    name: agentxReference.name,
+    color: agentxReference.color,
+    lineStyle: 'solid',
+    marker: 'circle',
+    renderOrder: 1,
+    collapsed: false,
+    points: agentxReference.points.map((point) => ({ x: String(point.x), y: String(point.y) }))
+  }];
+}
+
+function createReferenceState(): PlotToolState {
+  return {
+    ...createDefaultState(),
+    title: agentxReference.title,
+    subtitle: agentxReference.subtitle,
+    xLabel: agentxReference.xLabel,
+    yLabel: agentxReference.yLabel,
+    watermark: '',
+    showNonOptimalPoints: true,
+    activeLineIds: new Set([AGENTX_REFERENCE_LINE_ID])
+  };
+}
+
 export function mountPlotTool(root: HTMLElement): () => void {
-  const restored = loadPlotToolData();
-  let lines = restored?.lines ?? createDefaultLines();
-  let state = restored?.state ?? createDefaultState();
+  // Only this explicitly published snapshot is accepted; URLs never trigger remote imports.
+  const reference = new URLSearchParams(window.location.search).get('reference') === agentxReference.id
+    ? agentxReference
+    : null;
+  const restored = reference ? null : loadPlotToolData();
+  let lines = reference ? createReferenceLines() : restored?.lines ?? createDefaultLines();
+  let state = reference ? createReferenceState() : restored?.state ?? createDefaultState();
+  const workspaceUrl = new URL(window.location.href);
+  workspaceUrl.searchParams.delete('reference');
+  workspaceUrl.hash = '/plot-tool';
+  const referenceCsvUrl = new URL('./data/inferencex-agentx-run39596624542.plot.csv', document.baseURI);
   let pendingImport: PendingPlotImport[] = [];
   let saveTimer: number | null = null;
   let resetWithoutPersistence = false;
@@ -157,6 +193,13 @@ export function mountPlotTool(root: HTMLElement): () => void {
         </div>
         <a class="workspace-shortcut" href="#/inferencex">Explore benchmarks <span aria-hidden="true">↗</span></a>
       </header>
+      ${reference ? `
+        <section class="filter-card published-reference no-export" aria-label="Published reference">
+          <p><strong>Published reference: ${escapeHtml(reference.name)}</strong> · ${escapeHtml(reference.sourceDate)} · ${reference.points.length} configurations</p>
+          <p>Edits in this view are temporary. Export CSV to keep changes; reopening or resetting restores the published reference. Your saved workspace is unchanged.</p>
+          <p><a href="${escapeAttribute(reference.sourceUrl)}" target="_blank" rel="noopener noreferrer">Source run</a> · <a href="${escapeAttribute(referenceCsvUrl.href)}" download>Original reference CSV</a> · <a href="${escapeAttribute(workspaceUrl.href)}">Open my saved workspace</a></p>
+        </section>
+      ` : ''}
       <section class="filter-card plot-settings-card no-export" aria-label="Plot settings">
         ${renderTextSetting('title', 'Title', state.title)}
         ${renderTextSetting('subtitle', 'Subtitle', state.subtitle)}
@@ -209,7 +252,7 @@ export function mountPlotTool(root: HTMLElement): () => void {
         <div class="data-card-header">
           <div>
             <h2>Plot Lines</h2>
-            <p>Edit line styles and X/Y points. Plot Tool data is saved separately from InferenceX Curve.</p>
+            <p>${reference ? 'Edit line styles and X/Y points temporarily. Export CSV to keep your changes.' : 'Edit line styles and X/Y points. Plot Tool data is saved separately from InferenceX Curve.'}</p>
           </div>
           <div class="data-header-controls">
             <div class="data-header-actions">
@@ -254,6 +297,7 @@ export function mountPlotTool(root: HTMLElement): () => void {
   const watermarkInputEl = root.querySelector<HTMLInputElement>('#plot-watermark')!;
 
   function scheduleSave(): void {
+    if (reference) return;
     resetWithoutPersistence = false;
     if (saveTimer !== null) window.clearTimeout(saveTimer);
     saveTimer = window.setTimeout(() => {
@@ -263,7 +307,7 @@ export function mountPlotTool(root: HTMLElement): () => void {
   }
 
   function saveNow(): void {
-    if (resetWithoutPersistence) return;
+    if (reference || resetWithoutPersistence) return;
     if (saveTimer !== null) {
       window.clearTimeout(saveTimer);
       saveTimer = null;
@@ -288,7 +332,9 @@ export function mountPlotTool(root: HTMLElement): () => void {
   }
 
   function markDirty(): void {
-    statusEl.textContent = 'Draft changes saved. Render Chart to validate and refresh the plot.';
+    statusEl.textContent = reference
+      ? 'Temporary changes. Render Chart to refresh; export CSV to keep them.'
+      : 'Draft changes saved. Render Chart to validate and refresh the plot.';
     statusEl.classList.remove('error');
     statusEl.classList.add('dirty');
     scheduleSave();
@@ -763,6 +809,18 @@ export function mountPlotTool(root: HTMLElement): () => void {
   }
 
   function clearData(resetAll: boolean): void {
+    if (resetAll && reference) {
+      lines = createReferenceLines();
+      state = createReferenceState();
+      pendingImport = [];
+      syncSettingsInputs(settingsEl, state);
+      watermarkInputEl.value = state.watermark;
+      renderImportPreview();
+      renderEditor();
+      renderChart(false, false);
+      setStatus('Published reference restored. Your saved workspace is unchanged.');
+      return;
+    }
     lines = resetAll ? createDefaultLines() : [];
     pendingImport = [];
     if (resetAll) {
@@ -793,7 +851,7 @@ export function mountPlotTool(root: HTMLElement): () => void {
     setStatus(
       resetAll
         ? 'Plot Tool settings reset; the workspace is empty.'
-        : 'Plot data cleared.'
+        : reference ? 'Temporary view cleared. Reset All or reload to restore the published reference.' : 'Plot data cleared.'
     );
   }
 
@@ -828,7 +886,7 @@ export function mountPlotTool(root: HTMLElement): () => void {
     renderChart();
   }, { signal });
   root.querySelector('#plot-reset-watermark')?.addEventListener('click', () => {
-    state.watermark = DEFAULT_CHART_WATERMARK;
+    state.watermark = reference ? '' : DEFAULT_CHART_WATERMARK;
     watermarkInputEl.value = state.watermark;
     renderChart();
     setStatus('Watermark reset to default.');
@@ -927,7 +985,8 @@ export function mountPlotTool(root: HTMLElement): () => void {
   renderEditor();
   renderImportPreview();
   renderChart();
-  if (restored) setStatus('Loaded saved Plot Tool data.');
+  if (reference) setStatus(`Loaded ${reference.points.length} published reference points. Edits are temporary; export CSV to keep changes.`);
+  else if (restored) setStatus('Loaded saved Plot Tool data.');
 
   return () => {
     destroyed = true;
