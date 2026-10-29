@@ -93,6 +93,7 @@ Agent-specific rules:
 - For fixed-length data, prefer explicit `MTP` or `Non-MTP`; do not rely on name inference unless intentionally testing inference. For Agentic data, leave the line-level `MTP` field empty and preserve each point's method in `Speculative Decoding` (`mtp`, `none`, or another upstream method).
 - Optional style/metadata/parallelism columns may be empty as documented in `docs/import-csv.md`.
 - Keep generated CSV canonical: use the documented headers even though the importer accepts aliases.
+- For E-specific fixed workloads, use editor CSV with an explicit `Line ID` and numeric `Scenario`, for example `ISL 131072 / OSL 1024 / E 2048`. E participates in labels, sorting, and Merge Lines grouping; different E values must not merge. Keep legacy two-field ISL/OSL support and preserve unknown suffixes. The raw benchmark heuristic importer does not guarantee E preservation, so do not use it for these workloads.
 
 ## Agent Notes: InferenceX Data Sync
 

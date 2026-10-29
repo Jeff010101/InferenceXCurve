@@ -4,6 +4,7 @@ import { getTheme, THEME_CHANGE_EVENT, type Theme } from './theme';
 import { strFromU8, unzipSync } from 'fflate';
 
 import { exampleSeries } from './exampleData';
+import { formatIslOslLabel, normalizeMergeIslOsl, sortIslOslValues } from './sequenceScenario';
 import {
   fetchInferenceXTcoPrices,
   INFERENCEX_TCO_CACHE_KEY,
@@ -6165,19 +6166,6 @@ function uniqueSorted(values: string[]): string[] {
   return Array.from(new Set(values)).sort((a, b) => a.localeCompare(b));
 }
 
-function sortIslOslValues(values: string[]): string[] {
-  return Array.from(new Set(values)).sort((a, b) => {
-    const aLengths = parseIslOslLengths(a);
-    const bLengths = parseIslOslLengths(b);
-    if (aLengths && bLengths) {
-      return bLengths.isl - aLengths.isl || bLengths.osl - aLengths.osl || a.localeCompare(b);
-    }
-    if (aLengths) return -1;
-    if (bLengths) return 1;
-    return a.localeCompare(b);
-  });
-}
-
 function getAvailableMtpFilters(series: InferenceCurveSeries[]): string[] {
   return sortMtpValues(series.map(getSeriesMtpFilter));
 }
@@ -6190,17 +6178,6 @@ function sortMtpValues(values: string[]): string[] {
   return Array.from(new Set(values)).sort(
     (a, b) => (order.get(a) ?? 99) - (order.get(b) ?? 99) || a.localeCompare(b)
   );
-}
-
-function parseIslOslLengths(value: string): { isl: number; osl: number } | null {
-  const labelled = value.match(/ISL\s*([\d,]+)\s*\/\s*OSL\s*([\d,]+)/iu);
-  const simple = value.match(/([\d,]+)\s*\/\s*([\d,]+)/u);
-  const match = labelled ?? simple;
-  if (!match) return null;
-
-  const isl = Number(match[1]!.replaceAll(',', ''));
-  const osl = Number(match[2]!.replaceAll(',', ''));
-  return Number.isFinite(isl) && Number.isFinite(osl) ? { isl, osl } : null;
 }
 
 function getSeriesModel(series: InferenceCurveSeries): string {
@@ -6314,25 +6291,6 @@ function getChartSubtitle(): string {
 
 function formatModelLabel(model: string): string {
   return model.replace(/[-_]+/gu, ' ').replace(/\s+/gu, ' ').trim();
-}
-
-function formatIslOslLabel(value: string): string {
-  const labelled = value.match(/ISL\s*([\d,]+)\s*\/\s*OSL\s*([\d,]+)/iu);
-  const simple = value.match(/([\d,]+)\s*\/\s*([\d,]+)/u);
-  const match = labelled ?? simple;
-  if (!match) return value;
-
-  return `${formatTokenLength(match[1]!)} / ${formatTokenLength(match[2]!)}`;
-}
-
-function formatTokenLength(value: string): string {
-  const parsed = Number(value.replaceAll(',', ''));
-  if (!Number.isFinite(parsed)) return value;
-  if (parsed < 1024) return String(parsed);
-
-  const inK = parsed / 1024;
-  const compact = Number.isInteger(inK) ? String(inK) : inK.toFixed(1).replace(/\.0$/u, '');
-  return `${compact}K`;
 }
 
 function getDefaultDraftModel(): string {
@@ -6692,11 +6650,6 @@ function getMergeGroupLabel(draft: SeriesDraft): string {
 
 function normalizeMergeKeyPart(value: string): string {
   return value.trim().toLowerCase().replace(/\s+/gu, ' ');
-}
-
-function normalizeMergeIslOsl(value: string): string {
-  const lengths = parseIslOslLengths(value);
-  return lengths ? `${lengths.isl}/${lengths.osl}` : normalizeMergeKeyPart(value);
 }
 
 function createImportBatchSettings(runId = ''): ImportBatchSettings {

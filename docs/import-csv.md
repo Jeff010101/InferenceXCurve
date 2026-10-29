@@ -33,10 +33,18 @@ These fields should always be present and non-empty in generated editor CSV:
 - `Model`: filter value, for example `DeepSeek-R1-0528`.
   `DeepSeek-V4-Pro-0813` (including `deepseek-ai/` paths) is normalized to
   `DeepSeek-V4-Pro`, sharing the same model chart as older V4 Pro data.
-- `Scenario`: sequence/scenario value, for example `ISL 8192 / OSL 1024`, `ISL 1024 / OSL 1024`, or `Agentic Traces`. The UI classifies numeric ISL/OSL values under `Fixed Sequence Length` and agentic labels under `Agentic Traces`.
+- `Scenario`: sequence/scenario value, for example `ISL 8192 / OSL 1024`, `ISL 131072 / OSL 1024 / E 2048`, or `Agentic Traces`. The UI classifies numeric ISL/OSL values under `Fixed Sequence Length` and agentic labels under `Agentic Traces`.
 - `Precision`: filter value, for example `fp4` or `fp8`.
 - `Throughput/GPU (tok/s/gpu)`: numeric total input + output tokens per second
   per GPU. Always export raw throughput here, even when viewing TCO.
+
+For E-specific workloads, use the canonical numeric form
+`ISL 131072 / OSL 1024 / E 2048`. E participates in scenario labels, numeric
+sorting, and Merge Lines grouping: different E values remain separate.
+The original two-field ISL/OSL form remains supported. Unrecognized scenario
+suffixes are preserved instead of being stripped for display or merging.
+Use editor CSV with explicit `Line ID` for these workloads; the raw benchmark
+heuristic importer does not guarantee E preservation.
 
 Each point row with data must also include at least one numeric X-axis metric:
 
