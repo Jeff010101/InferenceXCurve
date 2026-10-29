@@ -12,6 +12,7 @@ This is a Vite + TypeScript single-page app for recreating the InferenceX throug
 - `src/styles.css`: global theme, chart layout, legend, and data editor styling.
 - `vite.config.ts`: Vite base path and `/inferencex-api` dev proxy.
 - `docs/import-csv.md`: public CSV/TSV import contract for external integrations and agent-generated files.
+- `scripts/export-benchmark-results.mjs`: thin converter from one shared benchmark file to existing import formats; `docs/shared-benchmark-file.md` documents usage. Keep the shared file as the maintained source; generated views are not separate datasets.
 - `index.html`: Vite entry HTML.
 - `dist/`: generated production output; do not edit by hand.
 
@@ -87,10 +88,10 @@ Use `docs/import-csv.md` as the source of truth when generating CSV/TSV for `Imp
 
 Agent-specific rules:
 
-- Always include deterministic non-empty `Line ID`, `Line Name`, `Model`, `ISL/OSL`, and `Precision` values in generated editor CSV. Do not rely on app fallback defaults.
-- Always include numeric `Interactivity (tok/s/user)` and `Throughput/GPU (tok/s/gpu)` for every point row with data.
+- Always include deterministic non-empty `Line ID`, `Line Name`, `Model`, `Scenario` (or legacy `ISL/OSL`), and `Precision` values in generated editor CSV. Do not rely on app fallback defaults.
+- Include the explicit metric columns available in the source. For the shared benchmark file, use `Mean Interactivity (tok/s/user)`, `Total Throughput (tok/s)`, and physical-GPU-normalized `Throughput/GPU (tok/s/gpu)`. Never fill the legacy `Interactivity (tok/s/user)` percentile field with a mean.
 - Include `TTFT (s)` and `End-to-end (s)` columns when generating editor CSV; leave them empty when the source data does not provide those metrics.
-- For fixed-length data, prefer explicit `MTP` or `Non-MTP`; do not rely on name inference unless intentionally testing inference. For Agentic data, leave the line-level `MTP` field empty and preserve each point's method in `Speculative Decoding` (`mtp`, `none`, or another upstream method).
+- For fixed-length data, use explicit `MTP`, `Non-MTP`, or `Unknown`; do not infer disabled speculation from missing metadata. For Agentic data, leave the line-level `MTP` field empty and preserve each point's method in `Speculative Decoding` (`mtp`, `none`, or another upstream method).
 - Optional style/metadata/parallelism columns may be empty as documented in `docs/import-csv.md`.
 - Keep generated CSV canonical: use the documented headers even though the importer accepts aliases.
 - For E-specific fixed workloads, use editor CSV with an explicit `Line ID` and numeric `Scenario`, for example `ISL 131072 / OSL 1024 / E 2048`. E participates in labels, sorting, and Merge Lines grouping; different E values must not merge. Keep legacy two-field ISL/OSL support and preserve unknown suffixes. The raw benchmark heuristic importer does not guarantee E preservation, so do not use it for these workloads.

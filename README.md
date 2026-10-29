@@ -278,6 +278,11 @@ generic "Failed to fetch") with these workarounds:
 
 ## Import Data File
 
+To maintain one shared file with configs, workloads, a real reference and multiple
+simulation versions, see [shared benchmark file exports](docs/shared-benchmark-file.md).
+The lightweight exporter generates editor CSV/TSV, native JSON/JSONL/NDJSON,
+ZIP and Plot Tool CSV from that one source.
+
 `Import File` (next to `Import Action Data`) loads a local `.csv`, `.tsv`,
 `.json`, `.jsonl`, `.ndjson`, or `.zip` file through the same review panel. Zip
 files are unpacked in the browser, so a downloaded GitHub Actions artifact zip

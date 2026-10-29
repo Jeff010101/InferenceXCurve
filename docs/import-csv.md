@@ -12,6 +12,23 @@ archives containing those files. For external CSV/TSV integrations, prefer the
 **editor CSV** format below. It is the same shape produced by `Download CSV`,
 round-trips through the app, and is more deterministic than raw benchmark CSV.
 
+## Native JSON and JSON Lines
+
+Native `.json` accepts an array of series or an object containing a `series`
+or `lines` array. Each series uses the app's native keys, including `id`,
+`name`, `model`, `islOsl`, `precision`, and a `points` array. Point metrics use
+`meanInteractivity`, `totalThroughput`, and `throughput` (per GPU); configuration
+labels use `label`. Fixed-length series can set `mtp` to `mtp`, `non-mtp`, or
+`Unknown`.
+
+`.jsonl` and `.ndjson` also accept one native series object per non-empty line.
+This preserves explicit curve/version IDs and scenario strings, including E.
+When native series are present, the importer uses that representation; do not
+mix native series and raw benchmark rows in one file. Files without native
+series retain the raw benchmark fallback. Objects keyed by CSV headers are
+not native series and do not receive the editor CSV parsing behavior in JSON
+or JSON Lines. ZIP entries follow the same format-specific rules.
+
 ## Recommended Editor CSV
 
 Use this header order for generated CSV:
@@ -88,8 +105,10 @@ names and separate curve IDs/names/groups when comparing results of one model.
 Avoid relying on the app's internal fallbacks for empty `Line ID`, `Line Name`,
 `Model`, `Scenario`, or `Precision`; those defaults depend on current app state
 and are not suitable for generated CSV. For fixed-length data, `MTP` is
-technically optional, but generated integrations should prefer explicit `MTP`
-or `Non-MTP`. For Agentic data, leave `MTP` empty and use `Speculative Decoding`
+technically optional, but generated integrations should use explicit `MTP`,
+`Non-MTP`, or `Unknown` when the source does not establish the method. `Unknown`
+remains a separate fixed-length filter and merge group; an empty value retains
+the existing name-based inference. For Agentic data, leave `MTP` empty and use `Speculative Decoding`
 for each point. Agentic sync configs and raw benchmark imports merge speculative
 methods into one curve; the Agentic UI does not offer an MTP filter.
 
@@ -109,7 +128,7 @@ These fields are optional in editor CSV:
 - `Line Note`: optional curve-level notes shown only in the data editor. It is
   not used by the chart, legend, search, or tooltips. Repeat it for each point
   row belonging to the same line when generating CSV.
-- `MTP`: fixed-length line metadata. Empty values are inferred from `Line ID`,
+- `MTP`: fixed-length line metadata; explicit `Unknown` is preserved. Empty values are inferred from `Line ID`,
   `Line Name`, and `Title`; if no `mtp` token is found, the line becomes
   `Non-MTP`. For legacy Agentic files, an explicit value supplies point-level
   speculative decoding metadata when `Speculative Decoding` is absent.

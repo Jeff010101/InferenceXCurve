@@ -320,6 +320,7 @@ const CUSTOM_VALUE = '__custom__';
 const CUSTOM_LINE_STYLE = '__custom_line_style__';
 const MTP_VALUE = 'mtp';
 const NON_MTP_VALUE = 'non-mtp';
+const UNKNOWN_MTP_VALUE = 'Unknown';
 const FIXED_SEQUENCE_SCENARIO = 'fixed-sequence';
 const AGENTIC_SCENARIO = 'agentic';
 const LATENCY_PERCENTILES: InferenceCurveLatencyPercentile[] = ['p50', 'p75', 'p90', 'p95'];
@@ -3684,7 +3685,7 @@ function renderSeriesMtpField(seriesIndex: number, value: string): string {
     <label class="series-field series-field-mtp">
       <span>MTP</span>
       <select data-series-index="${seriesIndex}" data-series-field="mtp">
-        ${[MTP_VALUE, NON_MTP_VALUE]
+        ${[MTP_VALUE, NON_MTP_VALUE, UNKNOWN_MTP_VALUE]
           .map(
             (option) =>
               `<option value="${option}" ${selectedValue === option ? 'selected' : ''}>${formatMtpFilterLabel(option)}</option>`
@@ -6173,7 +6174,8 @@ function getAvailableMtpFilters(series: InferenceCurveSeries[]): string[] {
 function sortMtpValues(values: string[]): string[] {
   const order = new Map([
     [MTP_VALUE, 0],
-    [NON_MTP_VALUE, 1]
+    [NON_MTP_VALUE, 1],
+    [UNKNOWN_MTP_VALUE, 2]
   ]);
   return Array.from(new Set(values)).sort(
     (a, b) => (order.get(a) ?? 99) - (order.get(b) ?? 99) || a.localeCompare(b)
@@ -6227,6 +6229,7 @@ function getExplicitMtpValue(value: string | undefined): string | null {
 function normalizeMtpValue(value: string | undefined): string {
   const normalized = (value ?? '').trim().toLowerCase();
   if (!normalized) return NON_MTP_VALUE;
+  if (normalized === 'unknown') return UNKNOWN_MTP_VALUE;
   if (['none', 'non-mtp', 'non mtp', 'non_mtp', 'no-mtp', 'off', 'false', 'no', 'n', '0'].includes(normalized)) {
     return NON_MTP_VALUE;
   }
@@ -6839,7 +6842,7 @@ function renderImportPreviewMtpField(index: number, value: string): string {
     <label class="import-preview-field">
       <span>MTP</span>
       <select data-import-index="${index}" data-import-field="mtp">
-        ${[MTP_VALUE, NON_MTP_VALUE]
+        ${[MTP_VALUE, NON_MTP_VALUE, UNKNOWN_MTP_VALUE]
           .map(
             (option) =>
               `<option value="${option}" ${selectedValue === option ? 'selected' : ''}>${formatMtpFilterLabel(option)}</option>`
@@ -7460,6 +7463,8 @@ function parseJsonLinesImport(text: string, sourceName: string): InferenceCurveS
     .filter(Boolean)
     .map((line) => JSON.parse(line) as unknown)
     .filter(isRecord);
+  const nativeSeries = readNativeSeries(records);
+  if (nativeSeries.length > 0) return nativeSeries;
   return seriesFromBenchmarkRecords(records, sourceName);
 }
 

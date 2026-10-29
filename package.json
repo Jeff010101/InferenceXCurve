@@ -9,6 +9,8 @@
     "check:dcp": "node scripts/check-dcp.mjs",
     "check:model-tco": "node scripts/check-model-tco.mjs",
     "check:sequence-scenario": "node scripts/check-sequence-scenario.mjs",
+    "check:benchmark-formats": "node scripts/check-benchmark-formats.mjs",
+    "export:benchmark": "node scripts/export-benchmark-results.mjs",
     "preview": "vite preview --host 0.0.0.0"
   },
   "dependencies": {
