@@ -34,7 +34,7 @@ or JSON Lines. ZIP entries follow the same format-specific rules.
 Use this header order for generated CSV:
 
 ```csv
-Line ID,Line Name,Title,Line Note,Group,Model,Scenario,Precision,MTP,HW Key,Color Mode,Resolved Color,Line Type,Line Marker,Layer,Included in Chart,Active Line,Point Index,Roofline Point,Point Marker,Interactivity (tok/s/user),Mean Interactivity (tok/s/user),Throughput/GPU (tok/s/gpu),Total Throughput (tok/s),TTFT (s),End-to-end (s),P50 Interactivity (tok/s/user),P75 Interactivity (tok/s/user),P90 Interactivity (tok/s/user),P95 Interactivity (tok/s/user),P50 TTFT (s),P75 TTFT (s),P90 TTFT (s),P95 TTFT (s),P50 End-to-end (s),P75 End-to-end (s),P90 End-to-end (s),P95 End-to-end (s),P75 E2E Normalized Interactivity (tok/s/user),P90 E2E Normalized Interactivity (tok/s/user),Prefill GPUs,Decode GPUs,Total GPUs,Prefill TP,Prefill EP,Prefill DCP,Prefill DPA,Prefill Workers,Decode TP,Decode EP,Decode DCP,Decode DPA,Decode Workers,DPA,Disagg,Multi-node,KV Offload,Chip Cache Hit Rate,External Cache Hit Rate,CPU Cache Hit Rate,Theoretical Cache Hit Rate,Concurrency,Strategy,Note,Speculative Decoding
+Line ID,Line Name,Title,Line Note,Group,Model,Scenario,Precision,MTP,HW Key,Color Mode,Resolved Color,Line Type,Line Marker,Layer,Included in Chart,Active Line,Point Index,Roofline Point,Point Marker,Interactivity (tok/s/user),Mean Interactivity (tok/s/user),Throughput/GPU (tok/s/gpu),Total Throughput (tok/s),TTFT (s),End-to-end (s),P50 Interactivity (tok/s/user),P75 Interactivity (tok/s/user),P90 Interactivity (tok/s/user),P95 Interactivity (tok/s/user),P99 Interactivity (tok/s/user),P50 TTFT (s),P75 TTFT (s),P90 TTFT (s),P95 TTFT (s),P99 TTFT (s),P50 End-to-end (s),P75 End-to-end (s),P90 End-to-end (s),P95 End-to-end (s),P99 End-to-end (s),P75 E2E Normalized Interactivity (tok/s/user),P90 E2E Normalized Interactivity (tok/s/user),Prefill GPUs,Decode GPUs,Total GPUs,Prefill TP,Prefill EP,Prefill DCP,Prefill DPA,Prefill Workers,Decode TP,Decode EP,Decode DCP,Decode DPA,Decode Workers,DPA,Disagg,Multi-node,KV Offload,Chip Cache Hit Rate,External Cache Hit Rate,CPU Cache Hit Rate,Theoretical Cache Hit Rate,Concurrency,Strategy,Note,Speculative Decoding
 ```
 
 The importer uses the editor parser when at least one row has a non-empty
@@ -76,19 +76,23 @@ Each point row with data must also include at least one numeric X-axis metric:
 - `P75 E2E Normalized Interactivity (tok/s/user)` or
   `P90 E2E Normalized Interactivity (tok/s/user)`
 
-For `Agentic Traces`, use the twelve canonical latency-percentile columns:
+For `Agentic Traces`, use the fifteen canonical latency-percentile columns:
 
-- `P50/P75/P90/P95 Interactivity (tok/s/user)`
-- `P50/P75/P90/P95 TTFT (s)`
-- `P50/P75/P90/P95 End-to-end (s)`
+- `P50/P75/P90/P95/P99 Interactivity (tok/s/user)`
+- `P50/P75/P90/P95/P99 TTFT (s)`
+- `P50/P75/P90/P95/P99 End-to-end (s)`
 
-These four percentiles are stored independently. The app's `Latency
+These five percentiles are stored independently. The app's `Latency
 Percentile` selector applies the selected percentile to all three metrics.
-`P99`, `mean`, and `std` are not percentile columns. The unprefixed
+`mean` and `std` are not percentile columns. The unprefixed
 `Interactivity (tok/s/user)`, `TTFT (s)`, and `End-to-end (s)` columns remain
 the P90 compatibility baseline for older agentic files; they do not make P50,
-P75, or P95 available when the corresponding columns are absent. Fixed-length
-rows keep their existing unprefixed metric semantics.
+P75, P95, or P99 available when the corresponding columns are absent. Fixed-length
+rows keep their existing unprefixed metric semantics. A fixed-length row may
+also carry these percentile columns; when the lines in view have them, the
+`Latency Percentile` selector appears for that fixed-length view, and the
+unprefixed values stay as they are. Percentile interactivity is 1 / the same
+TPOT percentile, so P99 interactivity is the slow tail.
 
 `E2E Normalized Interactivity` is a higher-is-better Agentic metric. InferenceX
 currently publishes only P75 and P90 for it through the derived Agentic
@@ -153,7 +157,7 @@ These fields are optional in editor CSV:
 - `Point Marker`: same marker values as `Line Marker`; empty inherits the line
   marker.
 - `Interactivity (tok/s/user)`, `TTFT (s)`, `End-to-end (s)`,
-  all twelve Agentic `P50/P75/P90/P95` latency columns,
+  all fifteen `P50/P75/P90/P95/P99` latency columns,
   and `P75/P90 E2E Normalized Interactivity (tok/s/user)`: optional numeric
   X-axis metrics, as long as at least one is present for the row.
 - `Prefill GPUs`, `Decode GPUs`, `Prefill TP`, `Prefill EP`, `Prefill DCP`,
@@ -226,12 +230,12 @@ Accepted editor CSV aliases include:
   `End-to-end Latency (s)`, `endToEnd`, `end_to_end`, `E2E`, `E2E Latency`,
   `e2el`, `median_e2el`, `p90_e2el`, `p90_end_to_end`,
   `P90 End-to-end Latency`, `metrics.median_e2el`, `metrics.p90_e2el`
-- Agentic percentile columns also accept lowercase metric aliases such as
+- Percentile columns also accept lowercase metric aliases such as
   `p75_intvty`, `p75_ttft`, and `p75_e2el`, their `metrics.*` forms, and the
   nested JSON/flattened-header aliases
-  `request_metrics.latency.intvty.p50|p75|p90|p95`,
-  `request_metrics.latency.ttft.p50|p75|p90|p95`, and
-  `request_metrics.latency.e2el.p50|p75|p90|p95`.
+  `request_metrics.latency.intvty.p50|p75|p90|p95|p99`,
+  `request_metrics.latency.ttft.p50|p75|p90|p95|p99`, and
+  `request_metrics.latency.e2el.p50|p75|p90|p95|p99`.
 - E2E Normalized Interactivity: `P75 E2E Normalized Interactivity`,
   `P90 E2E Normalized Interactivity`, their canonical `(tok/s/user)` headers,
   `p75_e2e_norm_intvty`, `p90_e2e_norm_intvty`, their `metrics.*` and

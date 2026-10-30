@@ -333,7 +333,7 @@ const NON_MTP_VALUE = 'non-mtp';
 const UNKNOWN_MTP_VALUE = 'Unknown';
 const FIXED_SEQUENCE_SCENARIO = 'fixed-sequence';
 const AGENTIC_SCENARIO = 'agentic';
-const LATENCY_PERCENTILES: InferenceCurveLatencyPercentile[] = ['p50', 'p75', 'p90', 'p95'];
+const LATENCY_PERCENTILES: InferenceCurveLatencyPercentile[] = ['p50', 'p75', 'p90', 'p95', 'p99'];
 const DEFAULT_LATENCY_PERCENTILE: InferenceCurveLatencyPercentile = 'p90';
 const DEFAULT_MODEL = 'Default Model';
 const DEFAULT_ISL_OSL = 'Default Scenario';
@@ -456,12 +456,13 @@ const latencyMetricColumns: Record<
       p50: 'interactivityP50',
       p75: 'interactivityP75',
       p90: 'interactivityP90',
-      p95: 'interactivityP95'
+      p95: 'interactivityP95',
+      p99: 'interactivityP99'
     }
   },
   ttft: {
     label: 'TTFT (s)',
-    rowKeys: { p50: 'ttftP50', p75: 'ttftP75', p90: 'ttftP90', p95: 'ttftP95' }
+    rowKeys: { p50: 'ttftP50', p75: 'ttftP75', p90: 'ttftP90', p95: 'ttftP95', p99: 'ttftP99' }
   },
   endToEnd: {
     label: 'End-to-end (s)',
@@ -469,7 +470,8 @@ const latencyMetricColumns: Record<
       p50: 'endToEndP50',
       p75: 'endToEndP75',
       p90: 'endToEndP90',
-      p95: 'endToEndP95'
+      p95: 'endToEndP95',
+      p99: 'endToEndP99'
     }
   }
 };
@@ -1893,7 +1895,7 @@ function renderTcoControls(): void {
 }
 
 function getChartOptions(): InferenceCurveChartOptions {
-  const latencyPercentile = isAgenticTraceView(currentSeries)
+  const latencyPercentile = isLatencyPercentileView()
     ? state.latencyPercentile
     : undefined;
   return {
@@ -2923,7 +2925,7 @@ function renderFilterControls(): void {
   precisionFilterEl.innerHTML = renderPrecisionFilterOptions(precisions);
   mtpFilterEl.innerHTML = renderMtpFilterOptions(mtpValues);
   document.querySelector<HTMLElement>('#mtp-filter-control')!.hidden = state.scenarioFilter === AGENTIC_SCENARIO;
-  latencyPercentileControlEl.hidden = !isAgenticTraceView(currentSeries) || state.chartMetric === 'meanInteractivity';
+  latencyPercentileControlEl.hidden = !isLatencyPercentileView() || state.chartMetric === 'meanInteractivity';
   latencyPercentileControlEl.parentElement?.classList.toggle(
     'has-latency-percentile',
     !latencyPercentileControlEl.hidden
@@ -5227,21 +5229,20 @@ function draftsToSeriesInternal(drafts: SeriesDraft[]): InferenceCurveSeries[] {
     const points = draft.points
       .map((row, pointIndex) => {
         if (isEmptyPointRow(row)) return null;
-        const interactivityPercentiles = isAgentic
-          ? readPercentilesFromDraftRow(row, 'interactivity')
-          : undefined;
-        const ttftPercentiles = isAgentic ? readPercentilesFromDraftRow(row, 'ttft') : undefined;
-        const endToEndPercentiles = isAgentic
-          ? readPercentilesFromDraftRow(row, 'endToEnd')
-          : undefined;
+        // Explicit percentile columns are kept for every scenario. Only Agentic rows
+        // treat P90 as their unprefixed value; fixed-length rows keep their own.
+        const interactivityPercentiles = readPercentilesFromDraftRow(row, 'interactivity');
+        const ttftPercentiles = readPercentilesFromDraftRow(row, 'ttft');
+        const endToEndPercentiles = readPercentilesFromDraftRow(row, 'endToEnd');
         const e2eNormalizedInteractivityPercentiles = isAgentic
           ? readE2ENormalizedInteractivityFromDraftRow(row)
           : undefined;
-        const interactivity = interactivityPercentiles?.p90 ?? parseNumber(row.interactivity);
+        const interactivity =
+          (isAgentic ? interactivityPercentiles?.p90 : undefined) ?? parseNumber(row.interactivity);
         const throughput = parseNumber(row.throughput);
         const meanInteractivity = parseNumber(row.meanInteractivity);
-        const ttft = ttftPercentiles?.p90 ?? parseNumber(row.ttft);
-        const endToEnd = endToEndPercentiles?.p90 ?? parseNumber(row.endToEnd);
+        const ttft = (isAgentic ? ttftPercentiles?.p90 : undefined) ?? parseNumber(row.ttft);
+        const endToEnd = (isAgentic ? endToEndPercentiles?.p90 : undefined) ?? parseNumber(row.endToEnd);
         const hasXMetric =
           meanInteractivity !== null ||
           interactivity !== null ||
@@ -5862,7 +5863,7 @@ function hasPointLatencyPercentile(
 }
 
 function reconcileLatencyPercentile(): void {
-  if (!isAgenticTraceView(currentSeries)) return;
+  if (!isLatencyPercentileView()) return;
   const available = getAvailableLatencyPercentiles(
     getFilteredSeriesForChart(),
     state.chartMetric
@@ -5887,6 +5888,19 @@ function isChartMetricAvailable(metric: InferenceCurveXAxisMetric, series: Infer
 function ensureChartMetricForCurrentView(series: InferenceCurveSeries[] = currentSeries): void {
   if (isChartMetricAvailable(state.chartMetric, series)) return;
   state.chartMetric = 'interactivity';
+}
+
+// Fixed-length lines use the percentile selector only when they carry explicit
+// percentile values; their unprefixed fields keep their own semantics.
+function isLatencyPercentileView(): boolean {
+  if (isAgenticTraceView(currentSeries)) return true;
+  return getFilteredSeriesForChart().some((line) =>
+    line.points.some((point) =>
+      point.interactivityPercentiles !== undefined ||
+      point.ttftPercentiles !== undefined ||
+      point.endToEndPercentiles !== undefined
+    )
+  );
 }
 
 function isAgenticTraceView(series: InferenceCurveSeries[]): boolean {
@@ -6351,7 +6365,7 @@ function getChartTitle(): string {
   const title = getInferenceCurveTitle(
     state.chartMetric,
     undefined,
-    isAgenticTraceView(currentSeries) ? state.latencyPercentile : undefined
+    isLatencyPercentileView() ? state.latencyPercentile : undefined
   );
   if (state.chartYMetric === 'totalThroughput') {
     return title.replace('Token Throughput per GPU', 'Total Throughput (All GPUs)');
