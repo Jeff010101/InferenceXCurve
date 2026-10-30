@@ -557,7 +557,7 @@ function makeLatencyPercentileDisplayOverrides(
 export function getAvailablePrecisions(series: InferenceCurveSeries[]): string[] {
   const values = new Set<string>();
   series.forEach((line) => {
-    line.points.forEach((point) => values.add(String(point.precision ?? 'default')));
+    line.points.forEach((point) => values.add(String(point.precision ?? line.precision ?? 'default')));
   });
   return Array.from(values);
 }
@@ -579,7 +579,7 @@ export function getInferenceCurveColorSourceSeries(
       activeIds.has(line.id) &&
       line.points.some(
         (point) =>
-          precisionSet.has(String(point.precision ?? 'default')) &&
+          precisionSet.has(String(point.precision ?? line.precision ?? 'default')) &&
           Number.isFinite(getPointXValue(point, xMetric, latencyPercentile)) &&
           Number.isFinite(point.throughput)
       )
@@ -658,7 +658,7 @@ export function prepareInferenceCurveSeries(
         tcoHourlyCost: tcoHourlyCosts[getInferenceCurveTcoHardware(line)],
         pointIndex,
         color,
-        precision: String(point.precision ?? 'default'),
+        precision: String(point.precision ?? line.precision ?? 'default'),
         shape: point.shape || line.marker,
         x,
         y,

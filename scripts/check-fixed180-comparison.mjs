@@ -137,7 +137,34 @@ try {
   assert.equal(empty.currentSeries.length, 0, 'An intentionally cleared workspace stays empty');
   assert.equal(empty.seriesDrafts.length, 1);
   assert.equal(empty.seriesDrafts[0].points.length, 1);
-  console.log('Fixed180 comparison passed: 18 paired cases, 162 unchanged metrics, context guards, JSON/draft/CSV roundtrip, and additive migration.');
+  // Fresh repository/migrated lines may carry precision only on the series.
+  // Put simulations first to reproduce first-entry ordering before a draft reload.
+  const ordered = [...simulation, ...data.exampleSeries.filter(s => !simulation.some(sim => sim.id === s.id))];
+  assert.deepEqual(chart.getAvailablePrecisions(simulation), ['fp4']);
+  const fresh = api(['createInitialState']).createInitialState(ordered);
+  assert.equal(fresh.scenarioFilter, 'agentic');
+  const switching = api([
+    'saveActiveSeriesForCurrentView', 'getDefaultSequenceForScenario', 'getModelFilteredSeries',
+    'reconcileFiltersForSeries', 'resetSelectionsForSeries', 'getModelSequenceMtpFilteredSeries',
+    'restoreActiveSeriesForCurrentView', 'getFilteredSeriesForChart'
+  ], { state: fresh, currentSeries: ordered, scheduleLocalSave: () => {} });
+  switching.saveActiveSeriesForCurrentView();
+  fresh.scenarioFilter = 'fixed-sequence';
+  fresh.islOslFilter = switching.getDefaultSequenceForScenario(switching.getModelFilteredSeries(), fresh.scenarioFilter);
+  fresh.extendFilter = '__all__';
+  switching.reconcileFiltersForSeries(ordered);
+  switching.resetSelectionsForSeries(switching.getModelSequenceMtpFilteredSeries());
+  switching.restoreActiveSeriesForCurrentView();
+  assert.deepEqual([...fresh.selectedPrecisions], ['fp4']);
+  const shown = switching.getFilteredSeriesForChart();
+  assert.equal(shown.length, 10, 'First Agentic to Fixed switch shows five real/simulation case pairs');
+  assert.equal(fresh.activeSeriesIds.size, 10);
+  assert.equal(chart.getInferenceCurveColorSourceSeries(shown, fresh.activeSeriesIds, ['fp4'], 'meanInteractivity').length, 10);
+  const prepared = chart.prepareInferenceCurveSeries(shown, false, 'dark', shown, 'meanInteractivity', false, undefined, 'maximize', 'p90', 'totalThroughput');
+  assert.equal(prepared.flatMap(s => s.points).length, 90);
+  assert.ok(prepared.flatMap(s => s.points).every(p => p.precision === 'fp4'));
+
+  console.log('Fixed180 comparison passed: 18 paired cases, 162 unchanged metrics, context guards, JSON/draft/CSV roundtrip, additive migration, and first Agentic-to-Fixed switch precision.');
 } finally {
   await server.close();
 }
