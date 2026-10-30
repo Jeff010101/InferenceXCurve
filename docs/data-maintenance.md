@@ -141,15 +141,23 @@ Cached workloads share one random 128K or 256K prefix and add E new tokens per
 request, so ISL = context + E. Cold workloads turn the radix cache off and prefill
 the whole ISL. The simulator's fixed grid instead holds ISL at 131072/262144 and caches
 ISL - E. Its cached workloads therefore appear under their own context, not with this
-run. X is 1 / mean TPOT; Y is input plus output tokens/s across all allocated GPUs,
-and input includes the cached prefix. TTFT and End-to-end are request means.
+run. Mean Interactivity is 1 / mean TPOT; Y is input plus output tokens/s across all
+allocated GPUs, and input includes the cached prefix.
+
+For Interactivity, TTFT and End-to-end, the `Latency Percentile` selector offers P50, P90
+and P99; P75 and P95 were not recorded. Percentile interactivity is 1 / the same TPOT
+percentile. The unprefixed TTFT and End-to-end values are request means. Chip Cache Hit
+Rate is cached / (new + cached) prefill tokens counted from the server log inside the
+measurement window; Theoretical Cache Hit Rate is prefix / ISL. Each point's note lists
+mean TTFT and E2E, TPOT mean/P50/P90/P99, ITL mean/P50/P99, acceptance length,
+input and output throughput, request and warm-up counts and the source run.
 
 [Data and provenance](../src/data/fixedRealrunMi355x20261030.json) keep, for every point:
 
 - the case ID and exact geometry;
-- request and warm-up counts;
-- mean, median and P99 TTFT;
-- mean and median TPOT;
+- request and warm-up counts, tokens, duration, and input, output and request throughput;
+- TTFT, TPOT, ITL and E2E mean, median, standard deviation, P90, P99 and P99.9;
+- prefill new and cached tokens in the measurement window;
 - mean acceptance length;
 - the warm-up method;
 - the source InferenceMINI run and commit.

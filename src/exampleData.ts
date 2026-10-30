@@ -49,30 +49,50 @@ function fixedRealrunSeries(): InferenceCurveSeries[] {
       lineStyle: 'solid',
       title: `DeepSeek-V4.1-Flash | MI355X / SGLang | fixed-length real run | ${geometry}`,
       note: `Measured ${fixedRealrun.measured_from} to ${fixedRealrun.measured_to}, ${fixedRealrun.source_repo}; ${fixedRealrun.framework}, MTP (DSPARK). ${fixedRealrun.workload} ${fixedRealrun.limitations}${stalled.length ? ` Compile stall in this workload: ${stalled.join(', ')}.` : ''} Evidence: src/data/fixedRealrunMi355x20261030.json.`,
-      points: points.map((point) => ({
-        precision: 'fp4',
-        meanInteractivity: point.mean_interactivity,
-        totalThroughput: point.total_throughput,
-        throughput: point.tput_per_gpu,
-        ttft: point.mean_ttft_s,
-        endToEnd: point.mean_e2el_s,
-        tp: point.tp,
-        prefill_tp: point.tp,
-        decode_tp: point.tp,
-        prefill_ep: 1,
-        decode_ep: 1,
-        dp_attention: false,
-        prefill_dp_attention: false,
-        decode_dp_attention: false,
-        num_prefill_gpu: point.gpu_count,
-        num_decode_gpu: point.gpu_count,
-        disagg: false,
-        spec_decoding: 'mtp',
-        concurrency: point.concurrency,
-        strategy: `TP${point.tp} ADP${point.adp}`,
-        label: `TP${point.tp} ADP${point.adp} C${point.concurrency}${point.compile_stall ? ' (compile stall)' : ''}`,
-        note: `Case ${point.point_id}; ${point.gpu_count} physical GPUs; ${point.completed_requests} measured requests after ${point.warmup_requests} warm-up (${point.warmup.replaceAll('_', ' ')}); mean accept length ${point.mean_accept_length}; run ${point.source_run_id} @ ${point.source_commit}${point.compile_stall ? `; JIT compile stall in the measurement window (max engine log gap ${point.max_engine_log_gap_s}s)` : ''}`
-      }))
+      points: points.map((point) => {
+        const { ttft, tpot, itl, e2el } = point.latency_s;
+        const ms = (seconds: number) => (seconds * 1e3).toFixed(2);
+        return {
+          precision: 'fp4',
+          meanInteractivity: point.mean_interactivity,
+          interactivityPercentiles: { p50: 1 / tpot.median, p90: 1 / tpot.p90, p99: 1 / tpot.p99 },
+          totalThroughput: point.total_throughput,
+          throughput: point.tput_per_gpu,
+          ttft: ttft.mean,
+          ttftPercentiles: { p50: ttft.median, p90: ttft.p90, p99: ttft.p99 },
+          endToEnd: e2el.mean,
+          endToEndPercentiles: { p50: e2el.median, p90: e2el.p90, p99: e2el.p99 },
+          server_gpu_cache_hit_rate:
+            point.prefill_cached_tokens / (point.prefill_new_tokens + point.prefill_cached_tokens),
+          theoretical_cache_hit_rate: point.prefix_tokens / point.isl_tokens,
+          tp: point.tp,
+          prefill_tp: point.tp,
+          decode_tp: point.tp,
+          prefill_ep: 1,
+          decode_ep: 1,
+          dp_attention: false,
+          prefill_dp_attention: false,
+          decode_dp_attention: false,
+          num_prefill_gpu: point.gpu_count,
+          num_decode_gpu: point.gpu_count,
+          disagg: false,
+          spec_decoding: 'mtp',
+          concurrency: point.concurrency,
+          strategy: `TP${point.tp} ADP${point.adp}`,
+          label: [
+            `TP${point.tp} ADP${point.adp} C${point.concurrency}${point.compile_stall ? ' (compile stall)' : ''}`,
+            `case ${point.point_id}`,
+            `mean TTFT ${ttft.mean.toFixed(3)} s, mean E2E ${e2el.mean.toFixed(2)} s`,
+            `TPOT mean/P50/P90/P99 ${ms(tpot.mean)}/${ms(tpot.median)}/${ms(tpot.p90)}/${ms(tpot.p99)} ms`,
+            `ITL mean/P50/P99 ${ms(itl.mean)}/${ms(itl.median)}/${ms(itl.p99)} ms`,
+            `accept length ${point.mean_accept_length}`,
+            `output ${point.output_throughput.toFixed(1)} tok/s, input ${point.input_throughput.toFixed(0)} tok/s`,
+            `${point.completed_requests} requests after ${point.warmup_requests} warm-up (${point.warmup.replaceAll('_', ' ')})`,
+            `run ${point.source_run_id} @ ${point.source_commit}`,
+            ...(point.compile_stall ? [`JIT compile stall in the window (max engine log gap ${point.max_engine_log_gap_s} s)`] : [])
+          ].join('; ')
+        };
+      })
     };
   });
 }
