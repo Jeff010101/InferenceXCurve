@@ -199,7 +199,7 @@ export function getInferenceCurveYAxisLabel(metric: InferenceCurveYAxisMetric): 
     : 'Token Throughput per GPU (tok/s/gpu)';
 }
 
-export type InferenceCurveLatencyPercentile = 'p50' | 'p75' | 'p90' | 'p95';
+export type InferenceCurveLatencyPercentile = 'p50' | 'p75' | 'p90' | 'p95' | 'p99';
 
 export type InferenceCurveLatencyPercentiles = Partial<
   Record<InferenceCurveLatencyPercentile, number>

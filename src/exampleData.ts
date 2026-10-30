@@ -3,6 +3,99 @@ import agentxReference from './data/inferencexAgentx39596624542.json';
 import agentxBaseline from './data/agentxSimOpusMi355xBaseline.json';
 import agentx1200 from './data/agentxSimOpusMi355x20261027_1200s.json';
 import agentxCompat1200 from './data/agentxSimOpusMi355x20261029_1200s.json';
+import fixedRealrun from './data/fixedRealrunMi355x20261030.json';
+
+type FixedRealrunPoint = (typeof fixedRealrun.points)[number];
+
+const FIXED_REALRUN_COLORS: Record<string, string> = {
+  cold: '#a78bfa',
+  512: '#34d399',
+  1024: '#f472b6',
+  2048: '#facc15',
+  4096: '#fb923c'
+};
+
+function formatK(tokens: number): string {
+  if (tokens < 1024) return String(tokens);
+  return tokens % 1024 === 0 ? `${tokens / 1024}K` : `${(tokens / 1024).toFixed(1)}K`;
+}
+
+// One curve per fixed workload (ISL, OSL, E); cold workloads record E = ISL.
+function fixedRealrunSeries(): InferenceCurveSeries[] {
+  const workloads = new Map<string, FixedRealrunPoint[]>();
+  for (const point of fixedRealrun.points) {
+    const key = `ISL ${point.isl_tokens} / OSL ${point.osl_tokens} / E ${point.extend_tokens}`;
+    workloads.set(key, [...(workloads.get(key) ?? []), point]);
+  }
+  return Array.from(workloads, ([scenario, points]) => {
+    const { isl_tokens: isl, osl_tokens: osl, extend_tokens: e, prefix_tokens: prefix } = points[0]!;
+    const cold = prefix === 0;
+    const extend = cold ? 'Cold' : `E ${formatK(e)}`;
+    const geometry = cold
+      ? `${formatK(isl)} cold (radix cache off) / OSL ${formatK(osl)}`
+      : `C ${formatK(prefix)} cached + E ${formatK(e)} (ISL ${isl}) / OSL ${formatK(osl)}`;
+    const stalled = points.filter((point) => point.compile_stall).map((point) => `TP${point.tp} C${point.concurrency}`);
+    return {
+      id: `${fixedRealrun.id}-isl${isl}-osl${osl}-e${e}`,
+      name: `${fixedRealrun.name} / ${extend}`,
+      group: fixedRealrun.group,
+      hwKey: 'mi355x_sglang',
+      model: fixedRealrun.model,
+      islOsl: scenario,
+      precision: 'fp4',
+      mtp: 'MTP',
+      color: FIXED_REALRUN_COLORS[cold ? 'cold' : String(e)] ?? '#94a3b8',
+      marker: 'diamond',
+      lineStyle: 'solid',
+      title: `DeepSeek-V4.1-Flash | MI355X / SGLang | fixed-length real run | ${geometry}`,
+      note: `Measured ${fixedRealrun.measured_from} to ${fixedRealrun.measured_to}, ${fixedRealrun.source_repo}; ${fixedRealrun.framework}, MTP (DSPARK). ${fixedRealrun.workload} ${fixedRealrun.limitations}${stalled.length ? ` Compile stall in this workload: ${stalled.join(', ')}.` : ''} Evidence: src/data/fixedRealrunMi355x20261030.json.`,
+      points: points.map((point) => {
+        const { ttft, tpot, itl, e2el } = point.latency_s;
+        const ms = (seconds: number) => (seconds * 1e3).toFixed(2);
+        return {
+          precision: 'fp4',
+          meanInteractivity: point.mean_interactivity,
+          interactivityPercentiles: { p50: 1 / tpot.median, p90: 1 / tpot.p90, p99: 1 / tpot.p99 },
+          totalThroughput: point.total_throughput,
+          throughput: point.tput_per_gpu,
+          ttft: ttft.mean,
+          ttftPercentiles: { p50: ttft.median, p90: ttft.p90, p99: ttft.p99 },
+          endToEnd: e2el.mean,
+          endToEndPercentiles: { p50: e2el.median, p90: e2el.p90, p99: e2el.p99 },
+          server_gpu_cache_hit_rate:
+            point.prefill_cached_tokens / (point.prefill_new_tokens + point.prefill_cached_tokens),
+          theoretical_cache_hit_rate: point.prefix_tokens / point.isl_tokens,
+          tp: point.tp,
+          prefill_tp: point.tp,
+          decode_tp: point.tp,
+          prefill_ep: 1,
+          decode_ep: 1,
+          dp_attention: false,
+          prefill_dp_attention: false,
+          decode_dp_attention: false,
+          num_prefill_gpu: point.gpu_count,
+          num_decode_gpu: point.gpu_count,
+          disagg: false,
+          spec_decoding: 'mtp',
+          concurrency: point.concurrency,
+          strategy: `TP${point.tp} ADP${point.adp}`,
+          label: [
+            `TP${point.tp} ADP${point.adp} C${point.concurrency}${point.compile_stall ? ' (compile stall)' : ''}`,
+            `case ${point.point_id}`,
+            `mean TTFT ${ttft.mean.toFixed(3)} s, mean E2E ${e2el.mean.toFixed(2)} s`,
+            `TPOT mean/P50/P90/P99 ${ms(tpot.mean)}/${ms(tpot.median)}/${ms(tpot.p90)}/${ms(tpot.p99)} ms`,
+            `ITL mean/P50/P99 ${ms(itl.mean)}/${ms(itl.median)}/${ms(itl.p99)} ms`,
+            `accept length ${point.mean_accept_length}`,
+            `output ${point.output_throughput.toFixed(1)} tok/s, input ${point.input_throughput.toFixed(0)} tok/s`,
+            `${point.completed_requests} requests after ${point.warmup_requests} warm-up (${point.warmup.replaceAll('_', ' ')})`,
+            `run ${point.source_run_id} @ ${point.source_commit}`,
+            ...(point.compile_stall ? [`JIT compile stall in the window (max engine log gap ${point.max_engine_log_gap_s} s)`] : [])
+          ].join('; ')
+        };
+      })
+    };
+  });
+}
 
 // Repository-maintained data enters the normal editable workspace. Saved browser
 // edits take precedence; Reset All restores this dataset without a special URL.
@@ -158,4 +251,4 @@ export const exampleSeries: InferenceCurveSeries[] = [{
     label: point.label,
     note: point.note
   }))
-}];
+}, ...fixedRealrunSeries()];

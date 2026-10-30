@@ -23,6 +23,10 @@ selected ADP1 configurations from the completed offline compatibility run.
 The requested curve name is retained; its source batch is `agentx-compat1200-20261030`.
 Existing browser workspaces can add it using the
 [editor CSV](public/data/e2e-simopus-mi355x-20261029-1200s.editor.csv).
+Under **Fixed Sequence Length**, the `Fixed-RealRun-Mi355x` group holds the measured
+`Fixed-RealRun-Mi355x-20261030` run: 18 workloads (128K and 256K context, OSL 1K/2K,
+cold or cached prefix + E) with nine TP2/TP4 configurations each. Choose the context
+and OSL, then an `Extend` value.
 The generic Plot Tool starts empty;
 no API sync configurations are enabled automatically. The old `?reference=...`
 link redirects to the ordinary InferenceX workspace.

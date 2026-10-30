@@ -4,7 +4,10 @@ import { createServer } from 'vite';
 const server = await createServer({ server: { middlewareMode: true, hmr: false }, appType: 'custom' });
 try {
   const scenario = await server.ssrLoadModule('/src/sequenceScenario.ts');
-  const { parseIslOslLengths, formatIslOslLabel, normalizeMergeIslOsl, sortIslOslValues } = scenario;
+  const {
+    parseIslOslLengths, formatIslOslLabel, normalizeMergeIslOsl, sortIslOslValues,
+    getSequenceContextKey, getSequenceExtendKey, sortExtendKeys, formatExtendLabel, COLD_EXTEND
+  } = scenario;
   const legacy = 'ISL 131072 / OSL 1024';
   assert.deepEqual(parseIslOslLengths(legacy), { isl: 131072, osl: 1024 });
   assert.equal(formatIslOslLabel(legacy), '128K / 1K');
@@ -48,6 +51,25 @@ try {
   }
   assert.equal(new Set(customScenarios.map(normalizeMergeIslOsl)).size, customScenarios.length,
     'Unknown suffixes must not collapse into a known geometry or each other');
+
+  // Cached C + E workloads and their cold run share one context; E selects among them.
+  const realRun = [
+    'ISL 131072 / OSL 1024 / E 131072',
+    'ISL 131584 / OSL 1024 / E 512',
+    'ISL 132096 / OSL 1024 / E 1024',
+    'ISL 133120 / OSL 1024 / E 2048'
+  ];
+  assert.deepEqual(new Set(realRun.map(getSequenceContextKey)), new Set([legacy]));
+  assert.deepEqual(realRun.map(getSequenceExtendKey), [COLD_EXTEND, '512', '1024', '2048']);
+  assert.deepEqual(sortExtendKeys(['2048', COLD_EXTEND, '512', '', '512']), ['', COLD_EXTEND, '512', '2048']);
+  assert.equal(formatExtendLabel(COLD_EXTEND, legacy), 'Cold (128K uncached)');
+  assert.equal(formatExtendLabel('1024', legacy), 'E 1K (ISL 129K)');
+  assert.equal(getSequenceContextKey(extended), 'ISL 129024 / OSL 1024',
+    'A total-ISL workload groups under its own cached prefix, not a nominal length');
+  assert.equal(getSequenceExtendKey(legacy), '');
+  for (const value of [...customScenarios, legacy]) {
+    assert.equal(getSequenceContextKey(value), value, 'Values without a parsed E keep their own group');
+  }
   console.log('Sequence scenario checks passed: legacy, 18 E geometries, labels, sorting, and unknown suffix isolation.');
 } finally {
   await server.close();
