@@ -56,8 +56,12 @@ These fields should always be present and non-empty in generated editor CSV:
   per GPU. Always export raw throughput here, even when viewing TCO.
 
 For E-specific workloads, use the canonical numeric form
-`ISL 131072 / OSL 1024 / E 2048`. E participates in scenario labels, numeric
-sorting, and Merge Lines grouping: different E values remain separate.
+`ISL 131072 / OSL 1024 / E 2048`. ISL is the total prompt length, so the cached
+prefix is ISL - E; a cold workload with nothing cached records E = ISL. E
+participates in scenario labels, numeric sorting, and Merge Lines grouping:
+different E values remain separate. In the chart filters, E workloads appear under
+`Context / OSL` for their cached prefix (or the whole ISL when cold), and the
+`Extend` selector picks one E or all of them.
 The original two-field ISL/OSL form remains supported. Unrecognized scenario
 suffixes are preserved instead of being stripped for display or merging.
 Use editor CSV with explicit `Line ID` for these workloads; the raw benchmark

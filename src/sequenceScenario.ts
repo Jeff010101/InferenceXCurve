@@ -55,6 +55,38 @@ function formatTokenLength(value: number): string {
   return `${compact}K`;
 }
 
+export const COLD_EXTEND = 'cold';
+
+// E workloads group under the context they extend: the cached prefix ISL - E, or the
+// whole ISL when E covers it (cold). Values without a parsed E remain their own group.
+export function getSequenceContextKey(value: string): string {
+  const lengths = parseIslOslLengths(value);
+  if (lengths?.e === undefined) return value;
+  const context = lengths.e >= lengths.isl ? lengths.isl : lengths.isl - lengths.e;
+  return `ISL ${context} / OSL ${lengths.osl}`;
+}
+
+export function getSequenceExtendKey(value: string): string {
+  const lengths = parseIslOslLengths(value);
+  if (lengths?.e === undefined) return '';
+  return lengths.e >= lengths.isl ? COLD_EXTEND : String(lengths.e);
+}
+
+export function sortExtendKeys(values: string[]): string[] {
+  const rank = (value: string) => (value === '' ? -2 : value === COLD_EXTEND ? -1 : Number(value));
+  return Array.from(new Set(values)).sort((a, b) => rank(a) - rank(b));
+}
+
+export function formatExtendLabel(key: string, contextKey: string): string {
+  if (key === '') return 'Not specified';
+  const context = parseIslOslLengths(contextKey);
+  if (key === COLD_EXTEND) return context ? `Cold (${formatTokenLength(context.isl)} uncached)` : 'Cold';
+  const e = Number(key);
+  return context
+    ? `E ${formatTokenLength(e)} (ISL ${formatTokenLength(context.isl + e)})`
+    : `E ${formatTokenLength(e)}`;
+}
+
 export function normalizeMergeIslOsl(value: string): string {
   const lengths = parseIslOslLengths(value);
   if (!lengths) return value.trim().toLowerCase().replace(/\s+/gu, ' ');

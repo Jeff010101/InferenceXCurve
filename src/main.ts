@@ -4,7 +4,15 @@ import { getTheme, THEME_CHANGE_EVENT, type Theme } from './theme';
 import { strFromU8, unzipSync } from 'fflate';
 
 import { exampleSeries } from './exampleData';
-import { formatIslOslLabel, normalizeMergeIslOsl, sortIslOslValues } from './sequenceScenario';
+import {
+  formatExtendLabel,
+  formatIslOslLabel,
+  getSequenceContextKey,
+  getSequenceExtendKey,
+  normalizeMergeIslOsl,
+  sortExtendKeys,
+  sortIslOslValues
+} from './sequenceScenario';
 import {
   fetchInferenceXTcoPrices,
   INFERENCEX_TCO_CACHE_KEY,
@@ -90,6 +98,7 @@ interface AppState {
   modelFilter: string;
   scenarioFilter: string;
   islOslFilter: string;
+  extendFilter: string;
   mtpFilter: string;
   enforceEndToEndPareto: boolean;
   showNonOptimalPoints: boolean;
@@ -177,6 +186,7 @@ interface PersistedAppState {
   modelFilter?: string;
   scenarioFilter?: string;
   islOslFilter?: string;
+  extendFilter?: string;
   mtpFilter?: string;
   enforceEndToEndPareto?: boolean;
   showNonOptimalPoints?: boolean;
@@ -823,6 +833,7 @@ function restorePersistedState(value: unknown): PersistedAppState {
       ? getInferenceXDisplayModel(readPersistedText(value, 'modelFilter')) : undefined,
     scenarioFilter: readPersistedText(value, 'scenarioFilter') || undefined,
     islOslFilter: readPersistedText(value, 'islOslFilter') || undefined,
+    extendFilter: readPersistedText(value, 'extendFilter') || undefined,
     mtpFilter: readPersistedText(value, 'mtpFilter') || undefined,
     enforceEndToEndPareto: readPersistedBoolean(value.enforceEndToEndPareto),
     showNonOptimalPoints: readPersistedBoolean(value.showNonOptimalPoints),
@@ -878,6 +889,7 @@ function restoreAppState(defaults: AppState, saved: PersistedAppState, series: I
       saved.scenarioFilter ??
       (saved.islOslFilter ? getScenarioForSequence(saved.islOslFilter) : defaults.scenarioFilter),
     islOslFilter: saved.islOslFilter ?? defaults.islOslFilter,
+    extendFilter: saved.extendFilter ?? defaults.extendFilter,
     mtpFilter: saved.mtpFilter ?? defaults.mtpFilter,
     enforceEndToEndPareto: saved.enforceEndToEndPareto ?? defaults.enforceEndToEndPareto,
     showNonOptimalPoints: saved.showNonOptimalPoints ?? defaults.showNonOptimalPoints,
@@ -912,6 +924,7 @@ function serializeAppState(): PersistedAppState {
     modelFilter: state.modelFilter,
     scenarioFilter: state.scenarioFilter,
     islOslFilter: state.islOslFilter,
+    extendFilter: state.extendFilter,
     mtpFilter: state.mtpFilter,
     enforceEndToEndPareto: state.enforceEndToEndPareto,
     showNonOptimalPoints: state.showNonOptimalPoints,
@@ -1183,8 +1196,12 @@ app.innerHTML = `
         <select id="scenario-filter"></select>
       </label>
       <label>
-        <span>ISL / OSL</span>
+        <span id="isl-osl-filter-label">ISL / OSL</span>
         <select id="isl-osl-filter"></select>
+      </label>
+      <label id="extend-filter-control" hidden>
+        <span>Extend</span>
+        <select id="extend-filter"></select>
       </label>
       <label>
         <span>Precision</span>
@@ -1437,6 +1454,9 @@ const modelFilterEl = document.querySelector<HTMLSelectElement>('#model-filter')
 const scenarioFilterEl = document.querySelector<HTMLSelectElement>('#scenario-filter')!;
 const islOslFilterEl = document.querySelector<HTMLSelectElement>('#isl-osl-filter')!;
 const precisionFilterEl = document.querySelector<HTMLSelectElement>('#precision-filter')!;
+const islOslFilterLabelEl = document.querySelector<HTMLElement>('#isl-osl-filter-label')!;
+const extendFilterControlEl = document.querySelector<HTMLElement>('#extend-filter-control')!;
+const extendFilterEl = document.querySelector<HTMLSelectElement>('#extend-filter')!;
 const mtpFilterEl = document.querySelector<HTMLSelectElement>('#mtp-filter')!;
 const latencyPercentileControlEl = document.querySelector<HTMLElement>('#latency-percentile-control')!;
 const latencyPercentileFilterEl = document.querySelector<HTMLSelectElement>('#latency-percentile-filter')!;
@@ -2881,7 +2901,8 @@ function renderFilterControls(): void {
 
   const models = uniqueSorted(currentSeries.map(getSeriesModel));
   const scenarios = getAvailableScenarios(getModelFilteredSeries());
-  const islOslValues = sortIslOslValues(getModelScenarioFilteredSeries().map(getSeriesIslOsl));
+  const islOslValues = sortIslOslValues(getModelScenarioFilteredSeries().map(getSeriesSequenceContext));
+  const extendValues = getAvailableExtendValues();
   const mtpValues = getAvailableMtpFilters(getModelSequenceFilteredSeries());
   const precisions = getAvailablePrecisions(getModelSequenceMtpFilteredSeries());
   ensureSelectedPrecisions(precisions);
@@ -2890,6 +2911,15 @@ function renderFilterControls(): void {
   scenarioFilterEl.innerHTML = renderScenarioFilterOptions(scenarios);
   islOslFilterEl.innerHTML = renderIslOslFilterOptions(islOslValues);
   islOslFilterEl.disabled = state.scenarioFilter === AGENTIC_SCENARIO;
+  const hasExtendScenarios =
+    state.scenarioFilter !== AGENTIC_SCENARIO &&
+    getModelScenarioFilteredSeries().some((line) => getSeriesSequenceContext(line) !== getSeriesIslOsl(line));
+  islOslFilterLabelEl.textContent = hasExtendScenarios ? 'Context / OSL' : 'ISL / OSL';
+  islOslFilterLabelEl.title = hasExtendScenarios
+    ? 'For workloads with Extend, context is the cached prefix and ISL = context + E; cold workloads prefill the whole context.'
+    : '';
+  extendFilterControlEl.hidden = extendValues.length === 0 || extendValues.every((value) => value === '');
+  extendFilterEl.innerHTML = renderExtendFilterOptions(extendValues);
   precisionFilterEl.innerHTML = renderPrecisionFilterOptions(precisions);
   mtpFilterEl.innerHTML = renderMtpFilterOptions(mtpValues);
   document.querySelector<HTMLElement>('#mtp-filter-control')!.hidden = state.scenarioFilter === AGENTIC_SCENARIO;
@@ -2917,6 +2947,7 @@ function renderFilterControls(): void {
     saveActiveSeriesForCurrentView();
     state.scenarioFilter = scenarioFilterEl.value;
     state.islOslFilter = getDefaultSequenceForScenario(getModelFilteredSeries(), state.scenarioFilter);
+    state.extendFilter = ALL_VALUE;
     reconcileFiltersForSeries(currentSeries);
     resetSelectionsForSeries(getModelSequenceMtpFilteredSeries());
     restoreActiveSeriesForCurrentView();
@@ -2929,8 +2960,20 @@ function renderFilterControls(): void {
   islOslFilterEl.onchange = () => {
     saveActiveSeriesForCurrentView();
     state.islOslFilter = islOslFilterEl.value;
+    state.extendFilter = ALL_VALUE;
     reconcileFiltersForSeries(currentSeries);
     resetSelectionsForSeries(getModelSequenceMtpFilteredSeries());
+    restoreActiveSeriesForCurrentView();
+    renderFilterControls();
+    renderSeriesEditor();
+    renderAll();
+    clearMergePreview();
+    scheduleLocalSave();
+  };
+  extendFilterEl.onchange = () => {
+    saveActiveSeriesForCurrentView();
+    state.extendFilter = extendFilterEl.value;
+    reconcileFiltersForSeries(currentSeries);
     restoreActiveSeriesForCurrentView();
     renderFilterControls();
     renderSeriesEditor();
@@ -2994,6 +3037,16 @@ function renderIslOslFilterOptions(values: string[]): string {
         `<option value="${escapeAttribute(value)}" ${state.islOslFilter === value ? 'selected' : ''}>${escapeHtml(formatIslOslLabel(value))}</option>`
     )
     .join('');
+}
+
+function renderExtendFilterOptions(values: string[]): string {
+  return [
+    `<option value="${ALL_VALUE}" ${state.extendFilter === ALL_VALUE ? 'selected' : ''}>All Extend</option>`,
+    ...values.map(
+      (value) =>
+        `<option value="${escapeAttribute(value)}" ${state.extendFilter === value ? 'selected' : ''}>${escapeHtml(formatExtendLabel(value, state.islOslFilter))}</option>`
+    )
+  ].join('');
 }
 
 function renderSelectOptions(values: string[], selected: string, allLabel: string): string {
@@ -4850,7 +4903,8 @@ function getFilteredDraftEntries(): { draft: SeriesDraft; index: number }[] {
       const modelMatches =
         state.modelFilter === ALL_VALUE || getDraftModel(draft) === state.modelFilter;
       const islOslMatches =
-        state.islOslFilter === ALL_VALUE || getDraftIslOsl(draft) === state.islOslFilter;
+        state.islOslFilter === ALL_VALUE ||
+        sequenceMatchesFilters(getDraftIslOsl(draft), state.islOslFilter, state.extendFilter);
       const precisionMatches =
         state.selectedPrecisions.size === 0 || state.selectedPrecisions.has(getDraftPrecision(draft));
       const mtpMatches =
@@ -5860,7 +5914,7 @@ function getAvailableScenarios(series: InferenceCurveSeries[]): string[] {
 
 function getDefaultSequenceForScenario(series: InferenceCurveSeries[], scenario: string): string {
   return sortIslOslValues(
-    filterSeriesByScenario(series, scenario).map(getSeriesIslOsl)
+    filterSeriesByScenario(series, scenario).map(getSeriesSequenceContext)
   )[0] ?? (scenario === AGENTIC_SCENARIO ? 'Agentic Traces' : ALL_VALUE);
 }
 
@@ -5896,6 +5950,7 @@ function revealImportedSeries(series: InferenceCurveSeries[]): void {
   state.scenarioFilter = scenarios[0] ?? FIXED_SEQUENCE_SCENARIO;
   const scenarioSeries = filterSeriesByScenario(series, state.scenarioFilter);
   state.islOslFilter = getDefaultSequenceForScenario(scenarioSeries, state.scenarioFilter);
+  state.extendFilter = ALL_VALUE;
   state.mtpFilter = mtpValues.length === 1 ? mtpValues[0]! : ALL_VALUE;
   state.selectedPrecisions = new Set(getAvailablePrecisions(scenarioSeries));
   reconcileFiltersForSeries(currentSeries);
@@ -5928,7 +5983,7 @@ function activatePendingSeriesForCurrentView(): void {
 
 function getActiveSeriesViewKey(): string {
   const precisionKey = Array.from(state.selectedPrecisions).sort((a, b) => a.localeCompare(b)).join(',');
-  return [state.modelFilter, state.scenarioFilter, state.islOslFilter, state.mtpFilter, precisionKey]
+  return [state.modelFilter, state.scenarioFilter, state.islOslFilter, state.extendFilter, state.mtpFilter, precisionKey]
     .map((value) => encodeURIComponent(value || ''))
     .join('|');
 }
@@ -5979,19 +6034,29 @@ function reconcileFiltersForSeries(series: InferenceCurveSeries[]): void {
   }
 
   const scenarioFiltered = filterSeriesByScenario(modelFiltered, state.scenarioFilter);
-  const islOslValues = new Set(scenarioFiltered.map(getSeriesIslOsl));
-  const sortedIslOslValues = sortIslOslValues(scenarioFiltered.map(getSeriesIslOsl));
+  const islOslValues = new Set(scenarioFiltered.map(getSeriesSequenceContext));
+  const sortedIslOslValues = sortIslOslValues(scenarioFiltered.map(getSeriesSequenceContext));
+  const savedContext = getSequenceContextKey(state.islOslFilter);
+  if (savedContext !== state.islOslFilter && islOslValues.has(savedContext)) {
+    state.extendFilter = getSequenceExtendKey(state.islOslFilter);
+    state.islOslFilter = savedContext;
+  }
   if (state.scenarioFilter === AGENTIC_SCENARIO) {
     state.islOslFilter = sortedIslOslValues[0] ?? 'Agentic Traces';
   } else if (!islOslValues.has(state.islOslFilter)) {
     state.islOslFilter = sortedIslOslValues[0] ?? ALL_VALUE;
+  }
+  const extendValues = getAvailableExtendValues(series);
+  if (extendValues.length <= 1 || !extendValues.includes(state.extendFilter)) {
+    state.extendFilter = ALL_VALUE;
   }
 
   const sequenceFiltered = filterSeriesByModelScenarioAndSequence(
     series,
     state.modelFilter,
     state.scenarioFilter,
-    state.islOslFilter
+    state.islOslFilter,
+    state.extendFilter
   );
   const mtpValues = new Set(getAvailableMtpFilters(sequenceFiltered));
   const sortedMtpValues = sortMtpValues(Array.from(mtpValues));
@@ -6018,7 +6083,10 @@ function createInitialState(series: InferenceCurveSeries[]): AppState {
   );
   const modelFilter = uniqueSorted(series.map(getSeriesModel))[0] ?? ALL_VALUE;
   const modelFiltered = filterSeriesByModel(series, modelFilter);
-  const scenarioFilter = getAvailableScenarios(modelFiltered)[0] ?? FIXED_SEQUENCE_SCENARIO;
+  const scenarios = getAvailableScenarios(modelFiltered);
+  const scenarioFilter = isRepositoryAgentx && scenarios.includes(AGENTIC_SCENARIO)
+    ? AGENTIC_SCENARIO
+    : scenarios[0] ?? FIXED_SEQUENCE_SCENARIO;
   const islOslFilter = getDefaultSequenceForScenario(modelFiltered, scenarioFilter);
   const sequenceFiltered = filterSeriesByModelScenarioAndSequence(
     series,
@@ -6044,6 +6112,7 @@ function createInitialState(series: InferenceCurveSeries[]): AppState {
     modelFilter,
     scenarioFilter,
     islOslFilter,
+    extendFilter: ALL_VALUE,
     mtpFilter,
     enforceEndToEndPareto: false,
     showNonOptimalPoints: isRepositoryAgentx,
@@ -6069,6 +6138,7 @@ function setDefaultFiltersForSeries(series: InferenceCurveSeries[]): void {
   state.modelFilter = defaults.modelFilter;
   state.scenarioFilter = defaults.scenarioFilter;
   state.islOslFilter = defaults.islOslFilter;
+  state.extendFilter = defaults.extendFilter;
   state.mtpFilter = defaults.mtpFilter;
   state.chartMetric = defaults.chartMetric;
   state.latencyPercentile = defaults.latencyPercentile;
@@ -6098,10 +6168,25 @@ function filterSeriesByModelScenarioAndSequence(
   series: InferenceCurveSeries[],
   modelFilter: string,
   scenarioFilter: string,
-  islOslFilter: string
+  islOslFilter: string,
+  extendFilter: string = ALL_VALUE
 ): InferenceCurveSeries[] {
   return filterSeriesByScenario(filterSeriesByModel(series, modelFilter), scenarioFilter).filter(
-    (line) => scenarioFilter === AGENTIC_SCENARIO || getSeriesIslOsl(line) === islOslFilter
+    (line) => scenarioFilter === AGENTIC_SCENARIO ||
+      sequenceMatchesFilters(getSeriesIslOsl(line), islOslFilter, extendFilter)
+  );
+}
+
+function sequenceMatchesFilters(value: string, islOslFilter: string, extendFilter: string): boolean {
+  return getSequenceContextKey(value) === islOslFilter &&
+    (extendFilter === ALL_VALUE || getSequenceExtendKey(value) === extendFilter);
+}
+
+function getAvailableExtendValues(series: InferenceCurveSeries[] = currentSeries): string[] {
+  if (state.scenarioFilter === AGENTIC_SCENARIO) return [];
+  return sortExtendKeys(
+    filterSeriesByModelScenarioAndSequence(series, state.modelFilter, state.scenarioFilter, state.islOslFilter)
+      .map((line) => getSequenceExtendKey(getSeriesIslOsl(line)))
   );
 }
 
@@ -6124,7 +6209,8 @@ function getModelSequenceFilteredSeries(): InferenceCurveSeries[] {
     currentSeries,
     state.modelFilter,
     state.scenarioFilter,
-    state.islOslFilter
+    state.islOslFilter,
+    state.extendFilter
   );
 }
 
@@ -6188,6 +6274,10 @@ function getSeriesModel(series: InferenceCurveSeries): string {
 
 function getSeriesIslOsl(series: InferenceCurveSeries): string {
   return String(series.islOsl ?? DEFAULT_ISL_OSL);
+}
+
+function getSeriesSequenceContext(series: InferenceCurveSeries): string {
+  return getSequenceContextKey(getSeriesIslOsl(series));
 }
 
 function getSeriesPrecision(series: InferenceCurveSeries): string {
@@ -6286,6 +6376,9 @@ function getChartSubtitle(): string {
     state.chartYMetric === 'totalTokensPerDollar' ? `TCO: ${getTcoCostModeLabel()}` : '',
     formatScenarioFilterLabel(state.scenarioFilter),
     state.scenarioFilter === AGENTIC_SCENARIO ? '' : formatIslOslLabel(state.islOslFilter),
+    state.scenarioFilter === AGENTIC_SCENARIO || state.extendFilter === ALL_VALUE
+      ? ''
+      : formatExtendLabel(state.extendFilter, state.islOslFilter),
     state.scenarioFilter === AGENTIC_SCENARIO
       ? ''
       : state.mtpFilter === ALL_VALUE ? 'All MTP' : formatMtpFilterLabel(state.mtpFilter)
@@ -6302,6 +6395,10 @@ function getDefaultDraftModel(): string {
 }
 
 function getDefaultDraftIslOsl(): string {
+  if (state.islOslFilter !== ALL_VALUE && state.extendFilter !== ALL_VALUE) {
+    const match = getModelSequenceFilteredSeries()[0];
+    if (match) return getSeriesIslOsl(match);
+  }
   if (state.islOslFilter !== ALL_VALUE) return state.islOslFilter;
   return sortIslOslValues(currentSeries.map(getSeriesIslOsl))[0] ?? DEFAULT_ISL_OSL;
 }
@@ -8860,7 +8957,8 @@ function buildChartCsvRows(mode: CsvExportMode): string[][] {
       sourceSeries,
       state.modelFilter,
       state.scenarioFilter,
-      state.islOslFilter
+      state.islOslFilter,
+      state.extendFilter
     ),
     state.mtpFilter
   ).filter((series) => state.selectedPrecisions.has(getSeriesPrecision(series)));
