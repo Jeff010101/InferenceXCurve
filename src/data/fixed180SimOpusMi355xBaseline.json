@@ -38,7 +38,7 @@
   "series": [
     {
       "id": "e2e-simopus-mi355x-baseline::fixed180-20261029-v1::open-isl131072-e1024-osl1024",
-      "name": "E2E-SimOpus-Mi355x-baseline",
+      "name": "E2E-SimOpus-Mi355x-baseline / E 1K",
       "group": "E2E-SimOpus-Mi355x",
       "model": "DeepSeek-V4.1-Flash",
       "hwKey": "mi355x_sglang",
@@ -317,7 +317,7 @@
     },
     {
       "id": "e2e-simopus-mi355x-baseline::fixed180-20261029-v1::open-isl131072-e1024-osl2048",
-      "name": "E2E-SimOpus-Mi355x-baseline",
+      "name": "E2E-SimOpus-Mi355x-baseline / E 1K",
       "group": "E2E-SimOpus-Mi355x",
       "model": "DeepSeek-V4.1-Flash",
       "hwKey": "mi355x_sglang",
@@ -596,7 +596,7 @@
     },
     {
       "id": "e2e-simopus-mi355x-baseline::fixed180-20261029-v1::open-isl131072-e131072-osl1024",
-      "name": "E2E-SimOpus-Mi355x-baseline",
+      "name": "E2E-SimOpus-Mi355x-baseline / Cold",
       "group": "E2E-SimOpus-Mi355x",
       "model": "DeepSeek-V4.1-Flash",
       "hwKey": "mi355x_sglang",
@@ -874,7 +874,7 @@
     },
     {
       "id": "e2e-simopus-mi355x-baseline::fixed180-20261029-v1::open-isl131072-e131072-osl2048",
-      "name": "E2E-SimOpus-Mi355x-baseline",
+      "name": "E2E-SimOpus-Mi355x-baseline / Cold",
       "group": "E2E-SimOpus-Mi355x",
       "model": "DeepSeek-V4.1-Flash",
       "hwKey": "mi355x_sglang",
@@ -1152,7 +1152,7 @@
     },
     {
       "id": "e2e-simopus-mi355x-baseline::fixed180-20261029-v1::open-isl131072-e2048-osl1024",
-      "name": "E2E-SimOpus-Mi355x-baseline",
+      "name": "E2E-SimOpus-Mi355x-baseline / E 2K",
       "group": "E2E-SimOpus-Mi355x",
       "model": "DeepSeek-V4.1-Flash",
       "hwKey": "mi355x_sglang",
@@ -1431,7 +1431,7 @@
     },
     {
       "id": "e2e-simopus-mi355x-baseline::fixed180-20261029-v1::open-isl131072-e2048-osl2048",
-      "name": "E2E-SimOpus-Mi355x-baseline",
+      "name": "E2E-SimOpus-Mi355x-baseline / E 2K",
       "group": "E2E-SimOpus-Mi355x",
       "model": "DeepSeek-V4.1-Flash",
       "hwKey": "mi355x_sglang",
@@ -1710,7 +1710,7 @@
     },
     {
       "id": "e2e-simopus-mi355x-baseline::fixed180-20261029-v1::open-isl131072-e512-osl1024",
-      "name": "E2E-SimOpus-Mi355x-baseline",
+      "name": "E2E-SimOpus-Mi355x-baseline / E 512",
       "group": "E2E-SimOpus-Mi355x",
       "model": "DeepSeek-V4.1-Flash",
       "hwKey": "mi355x_sglang",
@@ -1989,7 +1989,7 @@
     },
     {
       "id": "e2e-simopus-mi355x-baseline::fixed180-20261029-v1::open-isl131072-e512-osl2048",
-      "name": "E2E-SimOpus-Mi355x-baseline",
+      "name": "E2E-SimOpus-Mi355x-baseline / E 512",
       "group": "E2E-SimOpus-Mi355x",
       "model": "DeepSeek-V4.1-Flash",
       "hwKey": "mi355x_sglang",
@@ -2268,7 +2268,7 @@
     },
     {
       "id": "e2e-simopus-mi355x-baseline::fixed180-20261029-v1::open-isl262144-e1024-osl1024",
-      "name": "E2E-SimOpus-Mi355x-baseline",
+      "name": "E2E-SimOpus-Mi355x-baseline / E 1K",
       "group": "E2E-SimOpus-Mi355x",
       "model": "DeepSeek-V4.1-Flash",
       "hwKey": "mi355x_sglang",
@@ -2547,7 +2547,7 @@
     },
     {
       "id": "e2e-simopus-mi355x-baseline::fixed180-20261029-v1::open-isl262144-e1024-osl2048",
-      "name": "E2E-SimOpus-Mi355x-baseline",
+      "name": "E2E-SimOpus-Mi355x-baseline / E 1K",
       "group": "E2E-SimOpus-Mi355x",
       "model": "DeepSeek-V4.1-Flash",
       "hwKey": "mi355x_sglang",
@@ -2826,7 +2826,7 @@
     },
     {
       "id": "e2e-simopus-mi355x-baseline::fixed180-20261029-v1::open-isl262144-e2048-osl1024",
-      "name": "E2E-SimOpus-Mi355x-baseline",
+      "name": "E2E-SimOpus-Mi355x-baseline / E 2K",
       "group": "E2E-SimOpus-Mi355x",
       "model": "DeepSeek-V4.1-Flash",
       "hwKey": "mi355x_sglang",
@@ -3105,7 +3105,7 @@
     },
     {
       "id": "e2e-simopus-mi355x-baseline::fixed180-20261029-v1::open-isl262144-e2048-osl2048",
-      "name": "E2E-SimOpus-Mi355x-baseline",
+      "name": "E2E-SimOpus-Mi355x-baseline / E 2K",
       "group": "E2E-SimOpus-Mi355x",
       "model": "DeepSeek-V4.1-Flash",
       "hwKey": "mi355x_sglang",
@@ -3384,7 +3384,7 @@
     },
     {
       "id": "e2e-simopus-mi355x-baseline::fixed180-20261029-v1::open-isl262144-e262144-osl1024",
-      "name": "E2E-SimOpus-Mi355x-baseline",
+      "name": "E2E-SimOpus-Mi355x-baseline / Cold",
       "group": "E2E-SimOpus-Mi355x",
       "model": "DeepSeek-V4.1-Flash",
       "hwKey": "mi355x_sglang",
@@ -3662,7 +3662,7 @@
     },
     {
       "id": "e2e-simopus-mi355x-baseline::fixed180-20261029-v1::open-isl262144-e262144-osl2048",
-      "name": "E2E-SimOpus-Mi355x-baseline",
+      "name": "E2E-SimOpus-Mi355x-baseline / Cold",
       "group": "E2E-SimOpus-Mi355x",
       "model": "DeepSeek-V4.1-Flash",
       "hwKey": "mi355x_sglang",
@@ -3940,7 +3940,7 @@
     },
     {
       "id": "e2e-simopus-mi355x-baseline::fixed180-20261029-v1::open-isl262144-e4096-osl1024",
-      "name": "E2E-SimOpus-Mi355x-baseline",
+      "name": "E2E-SimOpus-Mi355x-baseline / E 4K",
       "group": "E2E-SimOpus-Mi355x",
       "model": "DeepSeek-V4.1-Flash",
       "hwKey": "mi355x_sglang",
@@ -4219,7 +4219,7 @@
     },
     {
       "id": "e2e-simopus-mi355x-baseline::fixed180-20261029-v1::open-isl262144-e4096-osl2048",
-      "name": "E2E-SimOpus-Mi355x-baseline",
+      "name": "E2E-SimOpus-Mi355x-baseline / E 4K",
       "group": "E2E-SimOpus-Mi355x",
       "model": "DeepSeek-V4.1-Flash",
       "hwKey": "mi355x_sglang",
@@ -4498,7 +4498,7 @@
     },
     {
       "id": "e2e-simopus-mi355x-baseline::fixed180-20261029-v1::open-isl262144-e512-osl1024",
-      "name": "E2E-SimOpus-Mi355x-baseline",
+      "name": "E2E-SimOpus-Mi355x-baseline / E 512",
       "group": "E2E-SimOpus-Mi355x",
       "model": "DeepSeek-V4.1-Flash",
       "hwKey": "mi355x_sglang",
@@ -4777,7 +4777,7 @@
     },
     {
       "id": "e2e-simopus-mi355x-baseline::fixed180-20261029-v1::open-isl262144-e512-osl2048",
-      "name": "E2E-SimOpus-Mi355x-baseline",
+      "name": "E2E-SimOpus-Mi355x-baseline / E 512",
       "group": "E2E-SimOpus-Mi355x",
       "model": "DeepSeek-V4.1-Flash",
       "hwKey": "mi355x_sglang",

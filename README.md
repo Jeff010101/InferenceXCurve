@@ -27,7 +27,8 @@ Under **Fixed Sequence Length**, the `Fixed-RealRun-Mi355x` group holds the meas
 `Fixed-RealRun-Mi355x-20261030` run: 18 workloads (128K and 256K context, OSL 1K/2K,
 cold or cached prefix + E) with nine TP2/TP4 configurations each. Choose the context
 and OSL, then an `Extend` value.
-The same 18 views now include `E2E-SimOpus-Mi355x-baseline` in group
+The same 18 views now include `E2E-SimOpus-Mi355x-baseline / Cold` or
+`/ E 512`, `/ E 1K`, `/ E 2K`, `/ E 4K` in group
 `E2E-SimOpus-Mi355x`: 162 independent offline simulation points from
 `fixed180-20261029-v1`. Select **All MTP** to compare the measured MTP lines with
 the simulation's explicitly unknown MTP classification. Use **Mean Interactivity**
@@ -42,6 +43,8 @@ Source: [repository JSON](src/data/fixed180SimOpusMi355xBaseline.json);
 On the first reload after this update, nonempty saved workspaces receive missing
 fixed simulation and reference lines once. Existing same-ID edits are preserved;
 empty workspaces stay empty and subsequent deletions are not undone.
+An additional one-time update gives existing fixed baseline lines their workload
+suffixes; user-customized names and the AgentX baseline name are preserved.
 The generic Plot Tool starts empty;
 no API sync configurations are enabled automatically. The old `?reference=...`
 link redirects to the ordinary InferenceX workspace.

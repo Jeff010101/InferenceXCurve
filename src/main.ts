@@ -257,6 +257,7 @@ interface PersistedAppData {
   version: 1;
   savedAt: string;
   fixed180BaselineAdded?: boolean;
+  fixed180LabelsAdded?: boolean;
   currentSeries: InferenceCurveSeries[];
   seriesDrafts: SeriesDraft[];
   state: PersistedAppState;
@@ -660,6 +661,14 @@ function createInitialDataState(): InitialDataState {
 
   // Add the requested comparison and any missing references once, without replacing saved edits.
   // An intentionally empty workspace stays empty, and later deletions stay deleted.
+  if (!persisted.fixed180LabelsAdded) {
+    const names = new Map(fixedLengthComparisonSeries.map((line) => [line.id, line.name]));
+    for (const line of [...restoredSeries, ...restoredDrafts]) {
+      if (line.name === 'E2E-SimOpus-Mi355x-baseline' && names.has(line.id)) {
+        line.name = names.get(line.id)!;
+      }
+    }
+  }
   const existingIds = new Set([...restoredSeries, ...restoredDrafts].map((line) => line.id));
   const additions = persisted.fixed180BaselineAdded || restoredSeries.length === 0
     ? []
@@ -697,6 +706,7 @@ function loadPersistedAppData(): PersistedAppData | null {
       version: 1,
       savedAt: readPersistedText(data, 'savedAt'),
       fixed180BaselineAdded: data.fixed180BaselineAdded === true,
+      fixed180LabelsAdded: data.fixed180LabelsAdded === true,
       currentSeries: Array.isArray(data.currentSeries) ? readNativeSeries(data.currentSeries) : [],
       seriesDrafts: restorePersistedSeriesDrafts(data.seriesDrafts),
       state: restorePersistedState(data.state),
@@ -1029,6 +1039,7 @@ function saveLocalDataNow(): void {
       version: 1,
       savedAt: new Date().toISOString(),
       fixed180BaselineAdded: true,
+      fixed180LabelsAdded: true,
       currentSeries: getSeriesForPersistence(),
       seriesDrafts,
       state: serializeAppState(),

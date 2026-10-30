@@ -137,6 +137,33 @@ try {
   assert.equal(empty.currentSeries.length, 0, 'An intentionally cleared workspace stays empty');
   assert.equal(empty.seriesDrafts.length, 1);
   assert.equal(empty.seriesDrafts[0].points.length, 1);
+  const baseName = 'E2E-SimOpus-Mi355x-baseline';
+  const suffixes = new Set();
+  for (const line of simulation) {
+    const { isl, e } = scenario.parseIslOslLengths(line.islOsl);
+    const suffix = e === isl ? 'Cold' : `E ${e < 1024 ? e : `${e / 1024}K`}`;
+    assert.equal(line.name, `${baseName} / ${suffix}`);
+    suffixes.add(suffix);
+  }
+  assert.deepEqual([...suffixes].sort(), ['Cold', 'E 1K', 'E 2K', 'E 4K', 'E 512']);
+  const oldLabels = structuredClone(simulation).map(line => ({ ...line, name: baseName }));
+  oldLabels[0].name = 'My custom simulation';
+  const agentxBaseline = data.exampleSeries.find(line => line.islOsl === 'Agentic Traces' && line.name === baseName);
+  assert.ok(agentxBaseline, 'AgentX baseline keeps its separate identity and unsuffixed name');
+  const oldLines = [...oldLabels, agentxBaseline];
+  const labelFixture = { fixed180BaselineAdded: true, currentSeries: oldLines, seriesDrafts: transforms.seriesToDrafts(oldLines), state: {}, inferenceXSync: {} };
+  const relabeled = initial(labelFixture);
+  for (const collection of [relabeled.currentSeries, relabeled.seriesDrafts]) {
+    assert.equal(collection.find(line => line.id === oldLabels[0].id).name, 'My custom simulation');
+    assert.equal(collection.find(line => line.id === agentxBaseline.id).name, baseName);
+    for (const expected of simulation.slice(1)) {
+      assert.equal(collection.find(line => line.id === expected.id).name, expected.name);
+    }
+  }
+  const alreadyRelabeled = initial({ ...labelFixture, fixed180LabelsAdded: true });
+  assert.equal(alreadyRelabeled.currentSeries.find(line => line.id === oldLabels[1].id).name, baseName,
+    'Label migration runs only once, preserving subsequent user renames');
+
   // Fresh repository/migrated lines may carry precision only on the series.
   // Put simulations first to reproduce first-entry ordering before a draft reload.
   const ordered = [...simulation, ...data.exampleSeries.filter(s => !simulation.some(sim => sim.id === s.id))];
