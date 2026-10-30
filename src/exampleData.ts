@@ -2,6 +2,7 @@ import type { InferenceCurveSeries } from './inferenceCurveChart';
 import agentxReference from './data/inferencexAgentx39596624542.json';
 import agentxBaseline from './data/agentxSimOpusMi355xBaseline.json';
 import agentx1200 from './data/agentxSimOpusMi355x20261027_1200s.json';
+import agentxCompat1200 from './data/agentxSimOpusMi355x20261029_1200s.json';
 
 // Repository-maintained data enters the normal editable workspace. Saved browser
 // edits take precedence; Reset All restores this dataset without a special URL.
@@ -118,6 +119,43 @@ export const exampleSeries: InferenceCurveSeries[] = [{
     concurrency: point.concurrency,
     strategy: `TP${point.tp} ADP${point.adp}`,
     label: `TP${point.tp} ADP${point.adp} C${point.concurrency}; 1200s; run ${point.point_id}; source SHA256 ${point.source_sha256}`,
+    note: point.note
+  }))
+}, {
+  id: agentxCompat1200.id,
+  name: agentxCompat1200.name,
+  group: agentxCompat1200.group,
+  hwKey: 'mi355x_sglang',
+  model: agentxCompat1200.model,
+  islOsl: agentxCompat1200.scenario,
+  precision: 'fp4',
+  color: '#22c55e',
+  marker: 'diamond',
+  lineStyle: 'solid',
+  title: agentxCompat1200.title,
+  note: agentxCompat1200.note,
+  points: agentxCompat1200.points.map((point) => ({
+    precision: 'fp4',
+    meanInteractivity: point.mean_interactivity,
+    totalThroughput: point.total_throughput,
+    interactivity: point.p90_interactivity,
+    interactivityPercentiles: { p90: point.p90_interactivity },
+    throughput: point.tput_per_gpu,
+    tp: point.tp,
+    prefill_tp: point.tp,
+    decode_tp: point.tp,
+    prefill_ep: 1,
+    decode_ep: 1,
+    dp_attention: false,
+    prefill_dp_attention: false,
+    decode_dp_attention: false,
+    num_prefill_gpu: point.gpu_count,
+    num_decode_gpu: point.gpu_count,
+    disagg: false,
+    spec_decoding: 'mtp',
+    concurrency: point.concurrency,
+    strategy: `TP${point.tp} ADP${point.adp}`,
+    label: point.label,
     note: point.note
   }))
 }];

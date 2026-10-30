@@ -18,6 +18,11 @@ the first ten 3600s simulation configurations (nine full results and one limited
 ADP2/C64 result). The same group also contains
 `E2E-SimOpus-Mi355x-20261027-1200s`, currently four of ten configurations
 (TP2 C1/C4 and TP4 C1/C2), with missing configurations left absent.
+The latest addition, `E2E-SimOpus-Mi355x-20261029-1200s`, contains all nine
+selected ADP1 configurations from the completed offline compatibility run.
+The requested curve name is retained; its source batch is `agentx-compat1200-20261030`.
+Existing browser workspaces can add it using the
+[editor CSV](public/data/e2e-simopus-mi355x-20261029-1200s.editor.csv).
 The generic Plot Tool starts empty;
 no API sync configurations are enabled automatically. The old `?reference=...`
 link redirects to the ordinary InferenceX workspace.

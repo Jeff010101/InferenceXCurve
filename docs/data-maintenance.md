@@ -2,7 +2,7 @@
 
 The hosted app is <https://jeffxing.com/InferenceXCurve/>. The InferenceX workspace
 includes the repository-maintained AgentX reference, first simulation baseline
-and partial 2026-10-27 1200s simulation curve. API sync starts disabled.
+and the 2026-10-27 and 20261029-named 1200s simulation curves. API sync starts disabled.
 
 ## Repository-maintained AgentX reference
 
@@ -72,6 +72,32 @@ Existing browser data is preserved on deployment. To add only this curve, import
 the [baseline editor CSV](../public/data/e2e-simopus-mi355x-baseline.editor.csv),
 clear the preview's Line ID Suffix, and choose Add Selected. Reset All restores
 all repository curves but also resets browser edits and settings.
+
+## Nine-configuration 20261029-named 1200s simulation
+
+Group **E2E-SimOpus-Mi355x** includes **E2E-SimOpus-Mi355x-20261029-1200s**,
+stable ID `e2e-simopus-mi355x-20261029-1200s`. It contains the nine completed
+`new_compat` results from source batch `agentx-compat1200-20261030`: TP2/ADP1
+C1/C4/C8/C16/C32 and TP4/ADP1 C1/C2/C8/C16. The name's date is user-specified;
+the source batch/date remain explicit in the [data and provenance](../src/data/agentxSimOpusMi355x20261029_1200s.json).
+
+Every selected point completed an independent 1200s offline CPU simulation,
+with 6043 successful profiling requests in total and zero errors/cancellations.
+C05 selects successful attempt r2; its failed HTTP-abort attempt r1 is excluded.
+ADP2/C64 is outside this run's nine-config scope. The frozen 360-row PerfDB and
+working-tree SDK snapshot are identified by hashes. Accuracy acceptance is
+pending; the 3600s InferenceX reference has a different horizon and request mix.
+No final configuration points are interpolated and no X/Y scaling is applied.
+
+The established mean, total and P90 projection is preserved exactly. Per-GPU
+throughput divides the all-GPU total once by the physical GPU count. TTFT and
+end-to-end latency are absent from this projection and remain unavailable.
+
+New browser workspaces load this curve by default. To add it to an existing
+workspace without resetting edits, import the
+[editor CSV](../public/data/e2e-simopus-mi355x-20261029-1200s.editor.csv), clear
+the preview's Line ID Suffix, and choose Add Selected. Previous curves retain
+their identities and values.
 
 ## Partial 2026-10-27 1200s simulation
 

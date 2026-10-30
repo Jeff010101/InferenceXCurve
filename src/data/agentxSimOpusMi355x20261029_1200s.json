@@ -1,0 +1,487 @@
+{
+  "id": "e2e-simopus-mi355x-20261029-1200s",
+  "name": "E2E-SimOpus-Mi355x-20261029-1200s",
+  "group": "E2E-SimOpus-Mi355x",
+  "model": "DeepSeek-V4.1-Flash",
+  "scenario": "Agentic Traces",
+  "title": "DeepSeek-V4.1-Flash | MI355X | AgentX offline simulation | 1200s | 9 configs",
+  "note": "Nine independently completed 1200s offline CPU simulations; 6043 successful profiling requests, zero errors/cancellations. Uses the new_compat results from batch agentx-compat1200-20261030 and the frozen 360-row PerfDB. The 20261029 curve name is user-specified. C05 uses successful r2; failed r1 is excluded. TP2/ADP2/C64 is outside this nine-config run. Accuracy acceptance pending; the InferenceX reference uses 3600s and a different request mix. Source hashes and completion evidence: src/data/agentxSimOpusMi355x20261029_1200s.json.",
+  "sourceDate": "2026-10-30",
+  "labelDate": "2026-10-29",
+  "measurement_s": 1200,
+  "executionKind": "sglang_simulator",
+  "mode": "offline",
+  "clock": "coordinated_virtual",
+  "accuracyAccepted": false,
+  "availableConfigurations": 9,
+  "expectedConfigurations": 9,
+  "referenceConfigurations": 10,
+  "outsideRunScope": [
+    "tp2-adp2-c64"
+  ],
+  "missingConfigurations": [],
+  "metricDefinitions": {
+    "meanInteractivity": "1 / round(mean full-response ITL seconds, 5), output tok/s/user; same dashboard reducer as reference",
+    "totalThroughput": "round(successful profiling input + output tokens / observed request envelope seconds, 5), tok/s across all physical GPUs",
+    "throughputPerGpu": "totalThroughput / physical GPU count",
+    "p90Interactivity": "1 / round(P90 full-response ITL seconds, 5); independent of mean",
+    "omittedMetrics": "TTFT and end-to-end latency are not present in this retained projection; left unavailable"
+  },
+  "provenance": {
+    "sourceBatch": "agentx-compat1200-20261030",
+    "selection": "series == new_compat; C05-1200-r2; excludes ground_truth, previous_coarse and failed C05-1200-r1",
+    "projectionArtifact": "comparison/agentx-comparison-points.json",
+    "projectionSha256": "74f51e07b6f075a9887e56bf429937253cf1c77a1fd4eb290bfeb4de1395bb61",
+    "verificationArtifact": "comparison/final-verification.json",
+    "verificationSha256": "5eb44a49a5c8015a0fa495aebc205f6b6f20e14344d32e9e26a872a5ab955b56",
+    "runtimeManifestSha256": "ac579d34518957f7b21057c9ece20ef145b1846fdc2ead35e65d7793efb231d9",
+    "sdkBaseCommit": "280ace2c2a2ae99e096c9cb4b6cb223eb1850f4d",
+    "sdkWorkingTreeSnapshot": true,
+    "perfdbRows": 360,
+    "perfdbTableSha256": "3127b9b61085f76948f42e8b47d5ff5f4959c4f1986205854a953c13f6cca649",
+    "limitations": "No accuracy acceptance or causal accuracy-improvement claim. Reference horizon and request populations differ. No interpolation of final configuration points."
+  },
+  "points": [
+    {
+      "config_id": "C01",
+      "tp": 2,
+      "adp": 1,
+      "concurrency": 1,
+      "gpu_count": 2,
+      "measurement_s": 1200,
+      "mean_full_response_itl_s_raw": 0.0018855513687732282,
+      "mean_full_response_itl_s_dashboard": 0.00189,
+      "mean_interactivity_raw": 530.3488499762365,
+      "mean_interactivity": 529.1005291005291,
+      "p90_full_response_itl_s_raw": 0.0022468307860825662,
+      "p90_interactivity": 444.44444444444446,
+      "input_tokens": 28226317,
+      "output_tokens": 217112,
+      "total_throughput": 23716.25097,
+      "output_throughput": 181.0289,
+      "throughput_duration_s": 1199.322314248,
+      "successful_requests": 163,
+      "itl_samples": 162,
+      "error_records": 0,
+      "cancelled_profiling_records": 0,
+      "successful_child_requests": 43,
+      "source_sha256": "1e6e400e144e05a59246dc592801780541a40def1e4ae52cb134c0af26c46266",
+      "source_bytes": 336129,
+      "point_id": "C01-1200-r1",
+      "source_artifact": "compact-results/C01-1200-r1/agentx-artifacts/profile_export.jsonl",
+      "label": "C01 TP2 C1",
+      "tput_per_gpu": 11858.125485,
+      "completed_measurement": true,
+      "completed_workflow": true,
+      "accuracy_accepted": false,
+      "normal_grace_deadline": false,
+      "evidence": {
+        "outcome": {
+          "artifact": "compact-results/C01-1200-r1/outcome.json",
+          "sha256": "c9cae1c775244bdcc7f64e3e8910076517ef558334efc5559f54f4c00f411bab"
+        },
+        "input_binding": {
+          "artifact": "compact-results/C01-1200-r1/input-binding.json",
+          "sha256": "9659571d3d66e11599608f5fe38e1983942c48dae91776cf4cf4542ccf6e1bd9"
+        },
+        "virtual_phase_receipt": {
+          "artifact": "compact-results/C01-1200-r1/agentx-artifacts/phase_windows.json",
+          "sha256": "fbba631ab2dc93c8a2332f4e1294091e931c9f952d798cbdd1c54892d207a829"
+        }
+      },
+      "note": "C01 TP2 C1; ADP1; 2 physical GPUs; completed 1200s offline simulation; run C01-1200-r1; profile SHA256 1e6e400e144e05a59246dc592801780541a40def1e4ae52cb134c0af26c46266. Accuracy acceptance pending."
+    },
+    {
+      "config_id": "C02",
+      "tp": 2,
+      "adp": 1,
+      "concurrency": 4,
+      "gpu_count": 2,
+      "measurement_s": 1200,
+      "mean_full_response_itl_s_raw": 0.0009648273074470695,
+      "mean_full_response_itl_s_dashboard": 0.00096,
+      "mean_interactivity_raw": 1036.4549098905559,
+      "mean_interactivity": 1041.6666666666667,
+      "p90_full_response_itl_s_raw": 0.0019179638414457483,
+      "p90_interactivity": 520.8333333333334,
+      "input_tokens": 48613291,
+      "output_tokens": 364198,
+      "total_throughput": 40784.63367,
+      "output_throughput": 303.27569,
+      "throughput_duration_s": 1200.880934753,
+      "successful_requests": 296,
+      "itl_samples": 296,
+      "error_records": 0,
+      "cancelled_profiling_records": 0,
+      "successful_child_requests": 178,
+      "source_sha256": "6d97f1d937bd4470b0d3ce7330bd587409a2cdad1bc6d909e826651bfb330796",
+      "source_bytes": 658590,
+      "point_id": "C02-1200-r1",
+      "source_artifact": "compact-results/C02-1200-r1/agentx-artifacts/profile_export.jsonl",
+      "label": "C02 TP2 C4",
+      "tput_per_gpu": 20392.316835,
+      "completed_measurement": true,
+      "completed_workflow": true,
+      "accuracy_accepted": false,
+      "normal_grace_deadline": false,
+      "evidence": {
+        "outcome": {
+          "artifact": "compact-results/C02-1200-r1/outcome.json",
+          "sha256": "56fe9c2b6c0d8ea85bb015ab7c5758aeb88b7ab4afa43627fe9542e66c3a8867"
+        },
+        "input_binding": {
+          "artifact": "compact-results/C02-1200-r1/input-binding.json",
+          "sha256": "b27d62e042ac568765121dc2bedfd952286ce515f292b51bcdff7c606e292152"
+        },
+        "virtual_phase_receipt": {
+          "artifact": "compact-results/C02-1200-r1/agentx-artifacts/phase_windows.json",
+          "sha256": "ff4e06d637fc6733606a86bc244fe72b6b996f0f3c46dc458d8b142ca2d270e3"
+        }
+      },
+      "note": "C02 TP2 C4; ADP1; 2 physical GPUs; completed 1200s offline simulation; run C02-1200-r1; profile SHA256 6d97f1d937bd4470b0d3ce7330bd587409a2cdad1bc6d909e826651bfb330796. Accuracy acceptance pending."
+    },
+    {
+      "config_id": "C03",
+      "tp": 2,
+      "adp": 1,
+      "concurrency": 8,
+      "gpu_count": 2,
+      "measurement_s": 1200,
+      "mean_full_response_itl_s_raw": 0.0007288563065246598,
+      "mean_full_response_itl_s_dashboard": 0.00073,
+      "mean_interactivity_raw": 1372.012550413689,
+      "mean_interactivity": 1369.8630136986303,
+      "p90_full_response_itl_s_raw": 0.0010819110285714285,
+      "p90_interactivity": 925.9259259259259,
+      "input_tokens": 78056572,
+      "output_tokens": 611866,
+      "total_throughput": 65286.54004,
+      "output_throughput": 507.78451,
+      "throughput_duration_s": 1204.971774478,
+      "successful_requests": 695,
+      "itl_samples": 695,
+      "error_records": 0,
+      "cancelled_profiling_records": 0,
+      "successful_child_requests": 506,
+      "source_sha256": "e21242c8dc8988dc94c8da8999aeb6c79d05d02fef8feb83d59dbc0df2a29b8b",
+      "source_bytes": 1527246,
+      "point_id": "C03-1200-r1",
+      "source_artifact": "compact-results/C03-1200-r1/agentx-artifacts/profile_export.jsonl",
+      "label": "C03 TP2 C8",
+      "tput_per_gpu": 32643.27002,
+      "completed_measurement": true,
+      "completed_workflow": true,
+      "accuracy_accepted": false,
+      "normal_grace_deadline": true,
+      "evidence": {
+        "outcome": {
+          "artifact": "compact-results/C03-1200-r1/outcome.json",
+          "sha256": "0a34816dbd5533623269c0a419a9d56125913a0d88f768423f955ae909e09958"
+        },
+        "input_binding": {
+          "artifact": "compact-results/C03-1200-r1/input-binding.json",
+          "sha256": "967ffbc1a61a125b8733fe072f730c64ce68f6b087676170625678b7380cfd13"
+        },
+        "virtual_phase_receipt": {
+          "artifact": "compact-results/C03-1200-r1/agentx-artifacts/phase_windows.json",
+          "sha256": "4425406eb290873d44a6f1b25ffa7d06f7d8319e4fa6785c654ab66e778c502a"
+        }
+      },
+      "note": "C03 TP2 C8; ADP1; 2 physical GPUs; completed 1200s offline simulation; run C03-1200-r1; profile SHA256 e21242c8dc8988dc94c8da8999aeb6c79d05d02fef8feb83d59dbc0df2a29b8b. Accuracy acceptance pending."
+    },
+    {
+      "config_id": "C04",
+      "tp": 2,
+      "adp": 1,
+      "concurrency": 16,
+      "gpu_count": 2,
+      "measurement_s": 1200,
+      "mean_full_response_itl_s_raw": 0.0011991649250737918,
+      "mean_full_response_itl_s_dashboard": 0.0012,
+      "mean_interactivity_raw": 833.9136503166685,
+      "mean_interactivity": 833.3333333333334,
+      "p90_full_response_itl_s_raw": 0.0023050534182940683,
+      "p90_interactivity": 432.9004329004329,
+      "input_tokens": 104001655,
+      "output_tokens": 883973,
+      "total_throughput": 87404.53337,
+      "output_throughput": 736.64285,
+      "throughput_duration_s": 1200.002150382,
+      "successful_requests": 832,
+      "itl_samples": 830,
+      "error_records": 0,
+      "cancelled_profiling_records": 0,
+      "successful_child_requests": 481,
+      "source_sha256": "083da8128bb706496bc882267516a67727f1aea5214dd6487f1b99d00601fb07",
+      "source_bytes": 1927528,
+      "point_id": "C04-1200-r1",
+      "source_artifact": "compact-results/C04-1200-r1/agentx-artifacts/profile_export.jsonl",
+      "label": "C04 TP2 C16",
+      "tput_per_gpu": 43702.266685,
+      "completed_measurement": true,
+      "completed_workflow": true,
+      "accuracy_accepted": false,
+      "normal_grace_deadline": false,
+      "evidence": {
+        "outcome": {
+          "artifact": "compact-results/C04-1200-r1/outcome.json",
+          "sha256": "8fed5771c1c1399cd6a54bd1a4401dd29d5c809d38d709c4bf86aebe331a9072"
+        },
+        "input_binding": {
+          "artifact": "compact-results/C04-1200-r1/input-binding.json",
+          "sha256": "1e262a000bd56b2b9b7e538ffa45683b292cffc409792891de48af2ba836b0ad"
+        },
+        "virtual_phase_receipt": {
+          "artifact": "compact-results/C04-1200-r1/agentx-artifacts/phase_windows.json",
+          "sha256": "283dc0191a525c474885f334ee35ada4cf9033cb15659b658bdf7039c3a10a2a"
+        }
+      },
+      "note": "C04 TP2 C16; ADP1; 2 physical GPUs; completed 1200s offline simulation; run C04-1200-r1; profile SHA256 083da8128bb706496bc882267516a67727f1aea5214dd6487f1b99d00601fb07. Accuracy acceptance pending."
+    },
+    {
+      "config_id": "C05",
+      "tp": 2,
+      "adp": 1,
+      "concurrency": 32,
+      "gpu_count": 2,
+      "measurement_s": 1200,
+      "mean_full_response_itl_s_raw": 0.0034824003806407386,
+      "mean_full_response_itl_s_dashboard": 0.00348,
+      "mean_interactivity_raw": 287.15825025725695,
+      "mean_interactivity": 287.35632183908046,
+      "p90_full_response_itl_s_raw": 0.005673212119816874,
+      "p90_interactivity": 176.3668430335097,
+      "input_tokens": 280013049,
+      "output_tokens": 2041025,
+      "total_throughput": 234802.50559,
+      "output_throughput": 1699.09896,
+      "throughput_duration_s": 1201.23962601,
+      "successful_requests": 2113,
+      "itl_samples": 2112,
+      "error_records": 0,
+      "cancelled_profiling_records": 0,
+      "successful_child_requests": 1065,
+      "source_sha256": "5f9aaf4ed0189ba4a24c86817b6f362b67709a99f948fcd6e32ddd96c4968d18",
+      "source_bytes": 4741691,
+      "point_id": "C05-1200-r2",
+      "source_artifact": "compact-results/C05-1200-r2/agentx-artifacts/profile_export.jsonl",
+      "label": "C05 TP2 C32",
+      "tput_per_gpu": 117401.252795,
+      "completed_measurement": true,
+      "completed_workflow": true,
+      "accuracy_accepted": false,
+      "normal_grace_deadline": false,
+      "evidence": {
+        "outcome": {
+          "artifact": "compact-results/C05-1200-r2/outcome.json",
+          "sha256": "aa2713d0af16106f3ff57c7e322f7ae71ef4905384046ad4e73991c36cbbda9e"
+        },
+        "input_binding": {
+          "artifact": "compact-results/C05-1200-r2/input-binding.json",
+          "sha256": "6a946695bf8a3f4cc3f4508e5157d09e008dba7d8f90a7c277b041fdc9abe9b4"
+        },
+        "virtual_phase_receipt": {
+          "artifact": "compact-results/C05-1200-r2/agentx-artifacts/phase_windows.json",
+          "sha256": "b5ebd681c0f749254f09fafebe17e2f8b1cf6d00fd25f28a617fa50f6ec1ca25"
+        }
+      },
+      "note": "C05 TP2 C32; ADP1; 2 physical GPUs; completed 1200s offline simulation; run C05-1200-r2; profile SHA256 5f9aaf4ed0189ba4a24c86817b6f362b67709a99f948fcd6e32ddd96c4968d18. Accuracy acceptance pending. Successful attempt r2 selected; failed HTTP-abort attempt r1 excluded."
+    },
+    {
+      "config_id": "C07",
+      "tp": 4,
+      "adp": 1,
+      "concurrency": 1,
+      "gpu_count": 4,
+      "measurement_s": 1200,
+      "mean_full_response_itl_s_raw": 0.0017944028743841363,
+      "mean_full_response_itl_s_dashboard": 0.00179,
+      "mean_interactivity_raw": 557.2884519276162,
+      "mean_interactivity": 558.659217877095,
+      "p90_full_response_itl_s_raw": 0.0020872950649558943,
+      "p90_interactivity": 478.4688995215311,
+      "input_tokens": 28519492,
+      "output_tokens": 217768,
+      "total_throughput": 24086.04776,
+      "output_throughput": 182.52159,
+      "throughput_duration_s": 1193.108154601,
+      "successful_requests": 164,
+      "itl_samples": 163,
+      "error_records": 0,
+      "cancelled_profiling_records": 0,
+      "successful_child_requests": 43,
+      "source_sha256": "e4b15f3cc690b692524f5b5a28dd99aa65bd9d90994cbc95d38f221a6b89a3b7",
+      "source_bytes": 338196,
+      "point_id": "C07-1200-r1",
+      "source_artifact": "compact-results/C07-1200-r1/agentx-artifacts/profile_export.jsonl",
+      "label": "C07 TP4 C1",
+      "tput_per_gpu": 6021.51194,
+      "completed_measurement": true,
+      "completed_workflow": true,
+      "accuracy_accepted": false,
+      "normal_grace_deadline": false,
+      "evidence": {
+        "outcome": {
+          "artifact": "compact-results/C07-1200-r1/outcome.json",
+          "sha256": "cee1902e84cb98f2ba23091be8d9a75d5d21cce9fd430311e2b7127914af009a"
+        },
+        "input_binding": {
+          "artifact": "compact-results/C07-1200-r1/input-binding.json",
+          "sha256": "e5bede132acb541b3818b04dd7ea67350f0176ae1730828c057f1b8711f5a187"
+        },
+        "virtual_phase_receipt": {
+          "artifact": "compact-results/C07-1200-r1/agentx-artifacts/phase_windows.json",
+          "sha256": "10ea39255aa32e8471e162d1926367ad39093ebd9c27eb41f4b216e0f528be7d"
+        }
+      },
+      "note": "C07 TP4 C1; ADP1; 4 physical GPUs; completed 1200s offline simulation; run C07-1200-r1; profile SHA256 e4b15f3cc690b692524f5b5a28dd99aa65bd9d90994cbc95d38f221a6b89a3b7. Accuracy acceptance pending."
+    },
+    {
+      "config_id": "C08",
+      "tp": 4,
+      "adp": 1,
+      "concurrency": 2,
+      "gpu_count": 4,
+      "measurement_s": 1200,
+      "mean_full_response_itl_s_raw": 0.00033318639284769206,
+      "mean_full_response_itl_s_dashboard": 0.00033,
+      "mean_interactivity_raw": 3001.3230475985415,
+      "mean_interactivity": 3030.3030303030305,
+      "p90_full_response_itl_s_raw": 0.0003193272936471363,
+      "p90_interactivity": 3124.9999999999995,
+      "input_tokens": 39820536,
+      "output_tokens": 343218,
+      "total_throughput": 33664.33746,
+      "output_throughput": 287.67746,
+      "throughput_duration_s": 1193.0653337,
+      "successful_requests": 185,
+      "itl_samples": 185,
+      "error_records": 0,
+      "cancelled_profiling_records": 0,
+      "successful_child_requests": 43,
+      "source_sha256": "6944386c6a44372415c205384c51b8db18f4e4692730389af4e40f22e6f18710",
+      "source_bytes": 396210,
+      "point_id": "C08-1200-r1",
+      "source_artifact": "compact-results/C08-1200-r1/agentx-artifacts/profile_export.jsonl",
+      "label": "C08 TP4 C2",
+      "tput_per_gpu": 8416.084365,
+      "completed_measurement": true,
+      "completed_workflow": true,
+      "accuracy_accepted": false,
+      "normal_grace_deadline": false,
+      "evidence": {
+        "outcome": {
+          "artifact": "compact-results/C08-1200-r1/outcome.json",
+          "sha256": "b170c34279d68f4a6269feedc11d372e80b9170aa638d8547ffb4523bd8ecdce"
+        },
+        "input_binding": {
+          "artifact": "compact-results/C08-1200-r1/input-binding.json",
+          "sha256": "dac461c0d339b4c80726a5a6e5e9b87e7515a6d3bce0c001c6d517f204d1c445"
+        },
+        "virtual_phase_receipt": {
+          "artifact": "compact-results/C08-1200-r1/agentx-artifacts/phase_windows.json",
+          "sha256": "a065d63c365c05c8229a7ca4d6f1cc6a402907e8409f0c94da1361d22bc31f4c"
+        }
+      },
+      "note": "C08 TP4 C2; ADP1; 4 physical GPUs; completed 1200s offline simulation; run C08-1200-r1; profile SHA256 6944386c6a44372415c205384c51b8db18f4e4692730389af4e40f22e6f18710. Accuracy acceptance pending."
+    },
+    {
+      "config_id": "C09",
+      "tp": 4,
+      "adp": 1,
+      "concurrency": 8,
+      "gpu_count": 4,
+      "measurement_s": 1200,
+      "mean_full_response_itl_s_raw": 0.0003431123707060113,
+      "mean_full_response_itl_s_dashboard": 0.00034,
+      "mean_interactivity_raw": 2914.4970726130687,
+      "mean_interactivity": 2941.176470588235,
+      "p90_full_response_itl_s_raw": 0.0004637318984438347,
+      "p90_interactivity": 2173.913043478261,
+      "input_tokens": 79228273,
+      "output_tokens": 619455,
+      "total_throughput": 66893.23777,
+      "output_throughput": 518.95466,
+      "throughput_duration_s": 1193.659189813,
+      "successful_requests": 698,
+      "itl_samples": 698,
+      "error_records": 0,
+      "cancelled_profiling_records": 0,
+      "successful_child_requests": 506,
+      "source_sha256": "c829e7d03ce0f7596a41b5717a6cb8862f8349dd580d88e2cb5a9a83836f9620",
+      "source_bytes": 1533007,
+      "point_id": "C09-1200-r1",
+      "source_artifact": "compact-results/C09-1200-r1/agentx-artifacts/profile_export.jsonl",
+      "label": "C09 TP4 C8",
+      "tput_per_gpu": 16723.3094425,
+      "completed_measurement": true,
+      "completed_workflow": true,
+      "accuracy_accepted": false,
+      "normal_grace_deadline": true,
+      "evidence": {
+        "outcome": {
+          "artifact": "compact-results/C09-1200-r1/outcome.json",
+          "sha256": "418e51ac4675133a42e1aba2428cca1576dd4846bfc5732f9bea7bed2bfa3325"
+        },
+        "input_binding": {
+          "artifact": "compact-results/C09-1200-r1/input-binding.json",
+          "sha256": "8c527a6bd60d72512389b52396f9b38d95cbb0c1b0b99d1c5617281ed6d8f933"
+        },
+        "virtual_phase_receipt": {
+          "artifact": "compact-results/C09-1200-r1/agentx-artifacts/phase_windows.json",
+          "sha256": "d1bdcb8f60d2b5b2e58fe711bf8db7183d95e707c578110db1f1c506d59ec86d"
+        }
+      },
+      "note": "C09 TP4 C8; ADP1; 4 physical GPUs; completed 1200s offline simulation; run C09-1200-r1; profile SHA256 c829e7d03ce0f7596a41b5717a6cb8862f8349dd580d88e2cb5a9a83836f9620. Accuracy acceptance pending."
+    },
+    {
+      "config_id": "C10",
+      "tp": 4,
+      "adp": 1,
+      "concurrency": 16,
+      "gpu_count": 4,
+      "measurement_s": 1200,
+      "mean_full_response_itl_s_raw": 0.0003977215577384125,
+      "mean_full_response_itl_s_dashboard": 0.0004,
+      "mean_interactivity_raw": 2514.3218428650407,
+      "mean_interactivity": 2500.0,
+      "p90_full_response_itl_s_raw": 0.0005826021310874885,
+      "p90_interactivity": 1724.1379310344828,
+      "input_tokens": 113395367,
+      "output_tokens": 946333,
+      "total_throughput": 95334.05964,
+      "output_throughput": 789.01894,
+      "throughput_duration_s": 1199.379323951,
+      "successful_requests": 897,
+      "itl_samples": 895,
+      "error_records": 0,
+      "cancelled_profiling_records": 0,
+      "successful_child_requests": 501,
+      "source_sha256": "213c383de5eebdab7a985005a87f7b9ad0e8f0ce31ab28dbcdbe9d38ae3c0e6d",
+      "source_bytes": 2054902,
+      "point_id": "C10-1200-r1",
+      "source_artifact": "compact-results/C10-1200-r1/agentx-artifacts/profile_export.jsonl",
+      "label": "C10 TP4 C16",
+      "tput_per_gpu": 23833.51491,
+      "completed_measurement": true,
+      "completed_workflow": true,
+      "accuracy_accepted": false,
+      "normal_grace_deadline": false,
+      "evidence": {
+        "outcome": {
+          "artifact": "compact-results/C10-1200-r1/outcome.json",
+          "sha256": "73d820faa41be4401b481c03a37fbe99947eb50c4eeb27c9572a048050daaab6"
+        },
+        "input_binding": {
+          "artifact": "compact-results/C10-1200-r1/input-binding.json",
+          "sha256": "f9a8193c4bc947b6519049bb58eb3a5499d2071015ec0a7f1cd69331c2dffa9c"
+        },
+        "virtual_phase_receipt": {
+          "artifact": "compact-results/C10-1200-r1/agentx-artifacts/phase_windows.json",
+          "sha256": "797f029932814a692b2d02fa63f0d79fb1987a141370d4920f020ad66a42dc0a"
+        }
+      },
+      "note": "C10 TP4 C16; ADP1; 4 physical GPUs; completed 1200s offline simulation; run C10-1200-r1; profile SHA256 213c383de5eebdab7a985005a87f7b9ad0e8f0ce31ab28dbcdbe9d38ae3c0e6d. Accuracy acceptance pending."
+    }
+  ]
+}
