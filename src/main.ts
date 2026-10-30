@@ -3084,7 +3084,7 @@ function renderExtendFilterOptions(values: string[]): string {
     `<option value="${ALL_VALUE}" ${state.extendFilter === ALL_VALUE ? 'selected' : ''}>All Extend</option>`,
     ...values.map(
       (value) =>
-        `<option value="${escapeAttribute(value)}" ${state.extendFilter === value ? 'selected' : ''}>${escapeHtml(formatExtendLabel(value, state.islOslFilter))}</option>`
+        `<option value="${escapeAttribute(value)}" ${state.extendFilter === value ? 'selected' : ''}>${escapeHtml(formatExtendLabel(value))}</option>`
     )
   ].join('');
 }
@@ -6433,7 +6433,7 @@ function getChartSubtitle(): string {
     state.scenarioFilter === AGENTIC_SCENARIO ? '' : formatIslOslLabel(state.islOslFilter),
     state.scenarioFilter === AGENTIC_SCENARIO || state.extendFilter === ALL_VALUE
       ? ''
-      : formatExtendLabel(state.extendFilter, state.islOslFilter),
+      : formatExtendLabel(state.extendFilter),
     state.scenarioFilter === AGENTIC_SCENARIO
       ? ''
       : state.mtpFilter === ALL_VALUE ? 'All MTP' : formatMtpFilterLabel(state.mtpFilter),

@@ -62,8 +62,8 @@ try {
   assert.deepEqual(new Set(realRun.map(getSequenceContextKey)), new Set([legacy]));
   assert.deepEqual(realRun.map(getSequenceExtendKey), [COLD_EXTEND, '512', '1024', '2048']);
   assert.deepEqual(sortExtendKeys(['2048', COLD_EXTEND, '512', '', '512']), ['', COLD_EXTEND, '512', '2048']);
-  assert.equal(formatExtendLabel(COLD_EXTEND, legacy), 'Cold (128K uncached)');
-  assert.equal(formatExtendLabel('1024', legacy), 'E 1K (ISL 129K)');
+  assert.equal(formatExtendLabel(COLD_EXTEND), 'Cold');
+  assert.equal(formatExtendLabel('1024'), 'E 1K');
   assert.equal(getSequenceContextKey(extended), 'ISL 129024 / OSL 1024',
     'A total-ISL workload groups under its own cached prefix, not a nominal length');
   assert.equal(getSequenceExtendKey(legacy), '');

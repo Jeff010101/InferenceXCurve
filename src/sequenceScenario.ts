@@ -89,14 +89,10 @@ export function sortExtendKeys(values: string[]): string[] {
   return Array.from(new Set(values)).sort((a, b) => rank(a) - rank(b));
 }
 
-export function formatExtendLabel(key: string, contextKey: string): string {
+export function formatExtendLabel(key: string): string {
   if (key === '') return 'Not specified';
-  const context = parseIslOslLengths(contextKey);
-  if (key === COLD_EXTEND) return context ? `Cold (${formatTokenLength(context.isl)} uncached)` : 'Cold';
-  const e = Number(key);
-  return context
-    ? `E ${formatTokenLength(e)} (ISL ${formatTokenLength(context.isl + e)})`
-    : `E ${formatTokenLength(e)}`;
+  if (key === COLD_EXTEND) return 'Cold';
+  return `E ${formatTokenLength(Number(key))}`;
 }
 
 export function normalizeMergeIslOsl(value: string): string {
