@@ -124,6 +124,41 @@ partial configuration coverage and shorter horizon.
 Import the [1200s editor CSV](../public/data/e2e-simopus-mi355x-20261027-1200s.editor.csv)
 with an empty Line ID Suffix to append only this curve to an existing workspace.
 
+## Fixed-length real run 2026-10-30
+
+Group **Fixed-RealRun-Mi355x** holds the measured run **Fixed-RealRun-Mi355x-20261030**
+under scenario **Fixed Sequence Length**: DeepSeek-V4.1-Flash FP4 on MI355X, SGLang
+0.5.22 with MTP (DSPARK, real acceptance). There is one curve per workload, with stable ID
+`fixed-realrun-mi355x-20261030-isl<ISL>-osl<OSL>-e<E>`. Each curve has nine
+configurations: TP2/ADP1 C1, C4, C8, C16 and C32, and TP4/ADP1 C1, C2, C8 and C16.
+
+| Context | Extend | ISL | OSL |
+| --- | --- | --- | --- |
+| 128K | cold (E = ISL), 512, 1K, 2K | 131072, or 131072 + E | 1K, 2K |
+| 256K | cold (E = ISL), 512, 1K, 2K, 4K | 262144, or 262144 + E | 1K, 2K |
+
+Cached workloads share one random 128K or 256K prefix and add E new tokens per
+request, so ISL = context + E. Cold workloads turn the radix cache off and prefill
+the whole ISL. The simulator's fixed grid instead holds ISL at 131072/262144 and caches
+ISL - E. Its cached workloads therefore appear under their own context, not with this
+run. X is 1 / mean TPOT; Y is input plus output tokens/s across all allocated GPUs,
+and input includes the cached prefix. TTFT and End-to-end are request means.
+
+[Data and provenance](../src/data/fixedRealrunMi355x20261030.json) keep, for every point:
+
+- the case ID and exact geometry;
+- request and warm-up counts;
+- mean, median and P99 TTFT;
+- mean and median TPOT;
+- mean acceptance length;
+- the warm-up method;
+- the source InferenceMINI run and commit.
+
+Ten points have a JIT compile stall inside the measurement window in both available runs.
+They are marked `compile_stall` and named in each curve note. Import the
+[editor CSV](../public/data/fixed-realrun-mi355x-20261030.editor.csv) with an empty
+Line ID Suffix to append these curves to an existing workspace.
+
 ## Choose the workspace and metric contract
 
 | Workspace | Use | Y coordinate | Data contract |
@@ -211,8 +246,8 @@ heuristics for unrecognized simulator fields.
   repository curves and settings. Plot Tool Reset All returns to an empty plot.
 - Published result data is versioned in the repository. The ten-point
   InferenceX-AgentX reference and the first ten-configuration simulation baseline
-  above and the four-point 2026-10-27 1200s simulation curve are included;
-  fixed-length results are not.
+  above, the four-point 2026-10-27 and nine-configuration 20261029-named 1200s
+  simulation curves, and the 2026-10-30 fixed-length real run are included.
 
 ## External data access
 
