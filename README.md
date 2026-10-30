@@ -27,6 +27,21 @@ Under **Fixed Sequence Length**, the `Fixed-RealRun-Mi355x` group holds the meas
 `Fixed-RealRun-Mi355x-20261030` run: 18 workloads (128K and 256K context, OSL 1K/2K,
 cold or cached prefix + E) with nine TP2/TP4 configurations each. Choose the context
 and OSL, then an `Extend` value.
+The same 18 views now include `E2E-SimOpus-Mi355x-baseline` in group
+`E2E-SimOpus-Mi355x`: 162 independent offline simulation points from
+`fixed180-20261029-v1`. Select **All MTP** to compare the measured MTP lines with
+the simulation's explicitly unknown MTP classification. Use **Mean Interactivity**
+and **Total Throughput (All GPUs)**; `Optimal Only` can be disabled to show all nine points.
+Four cold cases have identical lengths. The 14 cached cases use an explicit
+nominal comparison context: simulation ISL=C, prefix=C-E; realrun ISL=C+E,
+prefix=C. Actual lengths stay in each Scenario and line note; no metric is rescaled.
+The simulation uses temperature 1 and TEST costs with SOL fallback; the realrun
+uses temperature 0. The overlay is a comparison, not matched-condition accuracy acceptance.
+Source: [repository JSON](src/data/fixed180SimOpusMi355xBaseline.json);
+[importable JSON](public/data/fixed180-simopus-mi355x-baseline.json).
+On the first reload after this update, nonempty saved workspaces receive missing
+fixed simulation and reference lines once. Existing same-ID edits are preserved;
+empty workspaces stay empty and subsequent deletions are not undone.
 The generic Plot Tool starts empty;
 no API sync configurations are enabled automatically. The old `?reference=...`
 link redirects to the ordinary InferenceX workspace.
@@ -61,6 +76,8 @@ npm run preview
 
 Run the focused model compatibility and TCO regression checks with
 `npm run check:model-tco`.
+Run `node scripts/check-fixed180-comparison.mjs` for fixed-case pairing,
+metric/geometry preservation, import/export, and saved-workspace migration checks.
 
 ## Data Model
 

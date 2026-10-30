@@ -3,13 +3,15 @@ import { getTheme, THEME_CHANGE_EVENT, type Theme } from './theme';
 
 import { strFromU8, unzipSync } from 'fflate';
 
-import { exampleSeries } from './exampleData';
+import { exampleSeries, fixedLengthComparisonSeries } from './exampleData';
 import {
   formatExtendLabel,
   formatIslOslLabel,
+  getComparisonContextKey,
   getSequenceContextKey,
   getSequenceExtendKey,
   normalizeMergeIslOsl,
+  parseIslOslLengths,
   sortExtendKeys,
   sortIslOslValues
 } from './sequenceScenario';
@@ -132,6 +134,7 @@ interface SeriesDraft {
   name: string;
   model: string;
   islOsl: string;
+  comparisonContext?: string;
   precision: string;
   mtp: string;
   marker: string;
@@ -253,6 +256,7 @@ interface InferenceXSyncState {
 interface PersistedAppData {
   version: 1;
   savedAt: string;
+  fixed180BaselineAdded?: boolean;
   currentSeries: InferenceCurveSeries[];
   seriesDrafts: SeriesDraft[];
   state: PersistedAppState;
@@ -654,10 +658,29 @@ function createInitialDataState(): InitialDataState {
     restoredSeries = persisted.currentSeries;
   }
 
+  // Add the requested comparison and any missing references once, without replacing saved edits.
+  // An intentionally empty workspace stays empty, and later deletions stay deleted.
+  const existingIds = new Set([...restoredSeries, ...restoredDrafts].map((line) => line.id));
+  const additions = persisted.fixed180BaselineAdded || restoredSeries.length === 0
+    ? []
+    : structuredClone(fixedLengthComparisonSeries.filter((line) => !existingIds.has(line.id)));
+  restoredSeries = [...restoredSeries, ...additions];
+  if (additions.length > 0) restoredDrafts.push(...draftsFromSeriesForRestore(additions));
+  const restoredState = restoreAppState(createInitialState(restoredSeries), persisted.state, restoredSeries);
+  if (additions.length > 0) {
+    additions.forEach((line) => {
+      restoredState.activeSeriesIds.add(line.id);
+      restoredState.activeSeriesIdsByView.forEach((ids) => ids.add(line.id));
+    });
+    restoredState.chartMetric = 'meanInteractivity';
+    restoredState.chartYMetric = 'totalThroughput';
+    restoredState.mtpFilter = ALL_VALUE;
+  }
+
   return {
     currentSeries: restoredSeries,
     seriesDrafts: restoredDrafts.length ? restoredDrafts : [makeRestoredEmptySeriesDraft(0)],
-    state: restoreAppState(createInitialState(restoredSeries), persisted.state, restoredSeries),
+    state: restoredState,
     inferenceXSync: createInferenceXSyncState(persisted.inferenceXSync),
     loadedFromStorage: true
   };
@@ -673,6 +696,7 @@ function loadPersistedAppData(): PersistedAppData | null {
     return {
       version: 1,
       savedAt: readPersistedText(data, 'savedAt'),
+      fixed180BaselineAdded: data.fixed180BaselineAdded === true,
       currentSeries: Array.isArray(data.currentSeries) ? readNativeSeries(data.currentSeries) : [],
       seriesDrafts: restorePersistedSeriesDrafts(data.seriesDrafts),
       state: restorePersistedState(data.state),
@@ -772,6 +796,7 @@ function restorePersistedSeriesDrafts(value: unknown): SeriesDraft[] {
       model: getInferenceXDisplayModel(readPersistedText(draft, 'model', DEFAULT_MODEL)),
       hwKey: readPersistedText(draft, 'hwKey') || undefined,
       islOsl: readPersistedText(draft, 'islOsl', DEFAULT_ISL_OSL),
+      comparisonContext: readPersistedText(draft, 'comparisonContext').trim() || undefined,
       precision: readPersistedText(draft, 'precision', DEFAULT_PRECISION),
       mtp: normalizeMtpValue(readPersistedText(draft, 'mtp', NON_MTP_VALUE)),
       marker: normalizePointShapeValue(readPersistedText(draft, 'marker')),
@@ -1003,6 +1028,7 @@ function saveLocalDataNow(): void {
     const payload: PersistedAppData = {
       version: 1,
       savedAt: new Date().toISOString(),
+      fixed180BaselineAdded: true,
       currentSeries: getSeriesForPersistence(),
       seriesDrafts,
       state: serializeAppState(),
@@ -1490,6 +1516,7 @@ renderFilterControls();
 renderInferenceXSyncPanel();
 renderSeriesEditor();
 renderAll();
+saveLocalDataNow();
 document.querySelector('#dismiss-status')?.addEventListener('click', clearStatus);
 
 document.querySelector('#render-data')?.addEventListener('click', renderDraftData);
@@ -2918,7 +2945,7 @@ function renderFilterControls(): void {
     getModelScenarioFilteredSeries().some((line) => getSeriesSequenceContext(line) !== getSeriesIslOsl(line));
   islOslFilterLabelEl.textContent = hasExtendScenarios ? 'Context / OSL' : 'ISL / OSL';
   islOslFilterLabelEl.title = hasExtendScenarios
-    ? 'For workloads with Extend, context is the cached prefix and ISL = context + E; cold workloads prefill the whole context.'
+    ? 'Context is normally the cached prefix. Explicit nominal comparison groups may include different actual ISLs; see the chart and line notes. Cold workloads prefill the whole context.'
     : '';
   extendFilterControlEl.hidden = extendValues.length === 0 || extendValues.every((value) => value === '');
   extendFilterEl.innerHTML = renderExtendFilterOptions(extendValues);
@@ -4906,7 +4933,7 @@ function getFilteredDraftEntries(): { draft: SeriesDraft; index: number }[] {
         state.modelFilter === ALL_VALUE || getDraftModel(draft) === state.modelFilter;
       const islOslMatches =
         state.islOslFilter === ALL_VALUE ||
-        sequenceMatchesFilters(getDraftIslOsl(draft), state.islOslFilter, state.extendFilter);
+        sequenceMatchesFilters(getDraftIslOsl(draft), state.islOslFilter, state.extendFilter, draft.comparisonContext);
       const precisionMatches =
         state.selectedPrecisions.size === 0 || state.selectedPrecisions.has(getDraftPrecision(draft));
       const mtpMatches =
@@ -5042,6 +5069,7 @@ function draftsToPreviewSeries(drafts: SeriesDraft[]): InferenceCurveSeries[] {
       hwKey: draft.hwKey,
       model: draft.model.trim() || getDefaultDraftModel(),
       islOsl: draft.islOsl.trim() || getDefaultDraftIslOsl(),
+      comparisonContext: draft.comparisonContext?.trim() || undefined,
       precision: draft.precision.trim() || getDefaultDraftPrecision(),
       mtp: isAgenticTraceSequence(draft.islOsl) ? undefined : getDraftMtpFilter(draft),
       marker: normalizePointShapeValue(draft.marker),
@@ -5078,6 +5106,7 @@ function seriesToDrafts(series: InferenceCurveSeries[]): SeriesDraft[] {
     hwKey: line.hwKey,
     model: getSeriesModel(line),
     islOsl: getSeriesIslOsl(line),
+    comparisonContext: line.comparisonContext,
     precision: getSeriesPrecision(line),
     mtp: isAgenticTraceSequence(getSeriesIslOsl(line)) && !line.mtp ? '' : getSeriesMtpFilter(line),
     marker: normalizePointShapeValue(String(line.marker ?? '')),
@@ -5362,6 +5391,7 @@ function draftsToSeriesInternal(drafts: SeriesDraft[]): InferenceCurveSeries[] {
       hwKey: draft.hwKey,
       model,
       islOsl,
+      comparisonContext: draft.comparisonContext?.trim() || undefined,
       precision,
       mtp: isAgentic ? undefined : getDraftMtpFilter(draft),
       marker: normalizePointShapeValue(draft.marker),
@@ -6187,12 +6217,12 @@ function filterSeriesByModelScenarioAndSequence(
 ): InferenceCurveSeries[] {
   return filterSeriesByScenario(filterSeriesByModel(series, modelFilter), scenarioFilter).filter(
     (line) => scenarioFilter === AGENTIC_SCENARIO ||
-      sequenceMatchesFilters(getSeriesIslOsl(line), islOslFilter, extendFilter)
+      sequenceMatchesFilters(getSeriesIslOsl(line), islOslFilter, extendFilter, line.comparisonContext)
   );
 }
 
-function sequenceMatchesFilters(value: string, islOslFilter: string, extendFilter: string): boolean {
-  return getSequenceContextKey(value) === islOslFilter &&
+function sequenceMatchesFilters(value: string, islOslFilter: string, extendFilter: string, comparisonContext?: string): boolean {
+  return getComparisonContextKey(value, comparisonContext) === islOslFilter &&
     (extendFilter === ALL_VALUE || getSequenceExtendKey(value) === extendFilter);
 }
 
@@ -6291,7 +6321,7 @@ function getSeriesIslOsl(series: InferenceCurveSeries): string {
 }
 
 function getSeriesSequenceContext(series: InferenceCurveSeries): string {
-  return getSequenceContextKey(getSeriesIslOsl(series));
+  return getComparisonContextKey(getSeriesIslOsl(series), series.comparisonContext);
 }
 
 function getSeriesPrecision(series: InferenceCurveSeries): string {
@@ -6395,8 +6425,23 @@ function getChartSubtitle(): string {
       : formatExtendLabel(state.extendFilter, state.islOslFilter),
     state.scenarioFilter === AGENTIC_SCENARIO
       ? ''
-      : state.mtpFilter === ALL_VALUE ? 'All MTP' : formatMtpFilterLabel(state.mtpFilter)
+      : state.mtpFilter === ALL_VALUE ? 'All MTP' : formatMtpFilterLabel(state.mtpFilter),
+    getComparisonGeometryNote()
   ].filter(Boolean).join(' • ');
+}
+
+function getComparisonGeometryNote(): string {
+  const overlays = getFilteredSeriesForChart().filter((line) =>
+    state.activeSeriesIds.has(line.id) && line.comparisonContext &&
+    getSeriesSequenceContext(line) !== getSequenceContextKey(getSeriesIslOsl(line))
+  );
+  if (overlays.length === 0) return '';
+  const actual = parseIslOslLengths(getSeriesIslOsl(overlays[0]!));
+  const context = parseIslOslLengths(overlays[0]!.comparisonContext!);
+  if (overlays.length === 1 && actual?.e !== undefined && context) {
+    return `Nominal overlay: simulation ISL ${actual.isl.toLocaleString('en-US')}; reference ISL ${(context.isl + actual.e).toLocaleString('en-US')}. Raw metrics, no rescaling.`;
+  }
+  return 'Nominal overlay: actual input lengths differ; see line notes. Raw metrics, no rescaling.';
 }
 
 function formatModelLabel(model: string): string {
@@ -7614,6 +7659,7 @@ function readNativeSeries(value: unknown): InferenceCurveSeries[] {
     hwKey: asOptionalString(line.hwKey),
     model: asOptionalString(line.model),
     islOsl: asOptionalString(line.islOsl),
+    comparisonContext: asOptionalString(line.comparisonContext)?.trim() || undefined,
     precision: asOptionalString(line.precision),
     mtp: asOptionalString(line.mtp),
     marker: normalizePointShapeValue(asOptionalString(line.marker) ?? asOptionalString(line.shape) ?? ''),
@@ -8057,6 +8103,7 @@ function seriesFromEditorRecords(records: Record<string, unknown>[]): InferenceC
         model: getInferenceXDisplayModel(readMetricString(record, ['model']) || getDefaultDraftModel()),
         hwKey: readMetricString(record, ['hwKey', 'hw_key', 'hw key', 'hardware']) || undefined,
         islOsl: readEditorSequence(record) || getDefaultDraftIslOsl(),
+        comparisonContext: readMetricString(record, ['Comparison Context', 'comparisonContext', 'comparison_context']).trim() || undefined,
         precision: readMetricString(record, ['precision']) || getDefaultDraftPrecision(),
         mtp: rawMtp ? normalizeMtpValue(rawMtp) : inferMtpFilterFromTokens(`${id} ${name} ${title}`),
         marker: normalizePointShapeValue(
@@ -9021,6 +9068,7 @@ function buildChartCsvRows(mode: CsvExportMode): string[][] {
       'Group',
       'Model',
       'Scenario',
+      'Comparison Context',
       'Precision',
       'MTP',
       'HW Key',
@@ -9097,6 +9145,7 @@ function buildChartCsvRows(mode: CsvExportMode): string[][] {
         line.group ?? '',
         getSeriesModel(line),
         getSeriesIslOsl(line),
+        line.comparisonContext ?? '',
         getSeriesPrecision(line),
         isAgenticTraceSequence(getSeriesIslOsl(line)) ? '' : getSeriesMtpFilter(line),
         String(line.hwKey ?? ''),

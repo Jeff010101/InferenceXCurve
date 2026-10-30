@@ -66,6 +66,18 @@ export function getSequenceContextKey(value: string): string {
   return `ISL ${context} / OSL ${lengths.osl}`;
 }
 
+// An explicitly declared comparison context changes only chart grouping.
+// The measured/simulated ISL and the merge identity remain untouched.
+export function getComparisonContextKey(value: string, comparisonContext?: string): string {
+  const actual = parseIslOslLengths(value);
+  const comparison = comparisonContext ? parseIslOslLengths(comparisonContext) : null;
+  if (actual?.e !== undefined && comparison && comparison.e === undefined &&
+      comparison.isl > 0 && comparison.osl === actual.osl) {
+    return `ISL ${comparison.isl} / OSL ${comparison.osl}`;
+  }
+  return getSequenceContextKey(value);
+}
+
 export function getSequenceExtendKey(value: string): string {
   const lengths = parseIslOslLengths(value);
   if (lengths?.e === undefined) return '';

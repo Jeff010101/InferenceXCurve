@@ -34,7 +34,7 @@ or JSON Lines. ZIP entries follow the same format-specific rules.
 Use this header order for generated CSV:
 
 ```csv
-Line ID,Line Name,Title,Line Note,Group,Model,Scenario,Precision,MTP,HW Key,Color Mode,Resolved Color,Line Type,Line Marker,Layer,Included in Chart,Active Line,Point Index,Roofline Point,Point Marker,Interactivity (tok/s/user),Mean Interactivity (tok/s/user),Throughput/GPU (tok/s/gpu),Total Throughput (tok/s),TTFT (s),End-to-end (s),P50 Interactivity (tok/s/user),P75 Interactivity (tok/s/user),P90 Interactivity (tok/s/user),P95 Interactivity (tok/s/user),P99 Interactivity (tok/s/user),P50 TTFT (s),P75 TTFT (s),P90 TTFT (s),P95 TTFT (s),P99 TTFT (s),P50 End-to-end (s),P75 End-to-end (s),P90 End-to-end (s),P95 End-to-end (s),P99 End-to-end (s),P75 E2E Normalized Interactivity (tok/s/user),P90 E2E Normalized Interactivity (tok/s/user),Prefill GPUs,Decode GPUs,Total GPUs,Prefill TP,Prefill EP,Prefill DCP,Prefill DPA,Prefill Workers,Decode TP,Decode EP,Decode DCP,Decode DPA,Decode Workers,DPA,Disagg,Multi-node,KV Offload,Chip Cache Hit Rate,External Cache Hit Rate,CPU Cache Hit Rate,Theoretical Cache Hit Rate,Concurrency,Strategy,Note,Speculative Decoding
+Line ID,Line Name,Title,Line Note,Group,Model,Scenario,Comparison Context,Precision,MTP,HW Key,Color Mode,Resolved Color,Line Type,Line Marker,Layer,Included in Chart,Active Line,Point Index,Roofline Point,Point Marker,Interactivity (tok/s/user),Mean Interactivity (tok/s/user),Throughput/GPU (tok/s/gpu),Total Throughput (tok/s),TTFT (s),End-to-end (s),P50 Interactivity (tok/s/user),P75 Interactivity (tok/s/user),P90 Interactivity (tok/s/user),P95 Interactivity (tok/s/user),P99 Interactivity (tok/s/user),P50 TTFT (s),P75 TTFT (s),P90 TTFT (s),P95 TTFT (s),P99 TTFT (s),P50 End-to-end (s),P75 End-to-end (s),P90 End-to-end (s),P95 End-to-end (s),P99 End-to-end (s),P75 E2E Normalized Interactivity (tok/s/user),P90 E2E Normalized Interactivity (tok/s/user),Prefill GPUs,Decode GPUs,Total GPUs,Prefill TP,Prefill EP,Prefill DCP,Prefill DPA,Prefill Workers,Decode TP,Decode EP,Decode DCP,Decode DPA,Decode Workers,DPA,Disagg,Multi-node,KV Offload,Chip Cache Hit Rate,External Cache Hit Rate,CPU Cache Hit Rate,Theoretical Cache Hit Rate,Concurrency,Strategy,Note,Speculative Decoding
 ```
 
 The importer uses the editor parser when at least one row has a non-empty
@@ -66,6 +66,14 @@ The original two-field ISL/OSL form remains supported. Unrecognized scenario
 suffixes are preserved instead of being stripped for display or merging.
 Use editor CSV with explicit `Line ID` for these workloads; the raw benchmark
 heuristic importer does not guarantee E preservation.
+
+Optional `Comparison Context` (native JSON `comparisonContext`) explicitly groups
+a curve under a comparison view, for example `ISL 131072 / OSL 1024`. It changes
+only the chart's context grouping; `Scenario` retains the actual total ISL, OSL
+and E, and all point metrics remain unchanged. Use it only for an intentional
+comparison of nearby geometries, describe the actual length difference in the
+line note, and repeat the same value on every row of a line. When omitted,
+context grouping continues to use the actual cached prefix or cold ISL.
 
 Each point row with data must also include at least one numeric X-axis metric:
 

@@ -50,6 +50,8 @@ export interface InferenceCurveSeries {
   hwKey?: string;
   model?: string;
   islOsl?: string;
+  /** Optional chart comparison grouping; islOsl always retains actual geometry. */
+  comparisonContext?: string;
   precision?: string;
   mtp?: string;
   marker?: string;
