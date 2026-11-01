@@ -10,6 +10,8 @@ The maintained source is
 [`fixed162SimOpusMi355x20261031.json`](../src/data/fixed162SimOpusMi355x20261031.json).
 The byte-identical [native JSON import](../public/data/e2e-simopus-mi355x-20261031.json)
 is an exported view of that source, with a public checksum manifest alongside it.
+Both use UTF-8 with LF newlines so the checksum is identical on Windows, in Git
+and in the deployed download.
 It can be imported through the normal Import File panel.
 
 ## Scope and metrics

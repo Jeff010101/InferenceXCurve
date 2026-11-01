@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import { createHash } from 'node:crypto';
 import ts from 'typescript';
 import { createServer } from 'vite';
 
@@ -216,6 +217,10 @@ try {
   const publicBytes = fs.readFileSync('public/data/e2e-simopus-mi355x-20261031.json');
   assert.deepEqual(publicBytes, fs.readFileSync('src/data/fixed162SimOpusMi355x20261031.json'));
   const snapshot = JSON.parse(publicBytes);
+  const publicationManifest = JSON.parse(fs.readFileSync('public/data/e2e-simopus-mi355x-20261031.manifest.json'));
+  assert.equal(publicBytes.length, publicationManifest.bytes);
+  assert.equal(createHash('sha256').update(publicBytes).digest('hex'), publicationManifest.sha256);
+  assert.ok(!publicBytes.includes(Buffer.from('\r\n')), 'Public snapshot bytes use canonical LF newlines');
   assert.equal(snapshot.visibility, 'public');
   assert.equal(snapshot.provenance.formalRequests, 15840);
   assert.equal(snapshot.accuracyAccepted, false);
