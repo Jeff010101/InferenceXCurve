@@ -5,10 +5,10 @@ import agentx1200 from './data/agentxSimOpusMi355x20261027_1200s.json';
 import agentxCompat1200 from './data/agentxSimOpusMi355x20261029_1200s.json';
 import fixedRealrun from './data/fixedRealrunMi355x20261030.json';
 import fixed180Baseline from './data/fixed180SimOpusMi355xBaseline.json';
-import fixed16220261031 from './data/fixed162SimOpusMi355x20261031.json';
+import fixed16220261101 from './data/fixed162SimOpusMi355x20261101.json';
 
 export const fixed180BaselineSeries = fixed180Baseline.series as InferenceCurveSeries[];
-export const fixed16220261031Series = fixed16220261031.series as InferenceCurveSeries[];
+export const fixed16220261101Series = fixed16220261101.series as InferenceCurveSeries[];
 
 type FixedRealrunPoint = (typeof fixedRealrun.points)[number];
 
@@ -104,7 +104,7 @@ function fixedRealrunSeries(): InferenceCurveSeries[] {
 
 // Repository-maintained data enters the normal editable workspace. Saved browser
 // edits take precedence; Reset All restores this dataset without a special URL.
-export const fixedLengthComparisonSeries = [...fixedRealrunSeries(), ...fixed180BaselineSeries, ...fixed16220261031Series];
+export const fixedLengthComparisonSeries = [...fixedRealrunSeries(), ...fixed180BaselineSeries, ...fixed16220261101Series];
 
 export const exampleSeries: InferenceCurveSeries[] = [{
   id: 'inferencex-agentx-mi355x-fp4-run39596624542',

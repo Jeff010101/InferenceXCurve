@@ -21,7 +21,7 @@ try {
   const sync = await server.ssrLoadModule('/src/inferenceXSync.ts');
   const data = await server.ssrLoadModule('/src/exampleData.ts');
   const simulation = data.fixed180BaselineSeries;
-  const newSimulation = data.fixed16220261031Series;
+  const newSimulation = data.fixed16220261101Series;
   const all = data.fixedLengthComparisonSeries;
   const common = {
     ...scenario, ...chart, ...sync, ...data,
@@ -156,6 +156,24 @@ try {
     fixed16220261031Added: true, currentSeries: [editedNew],
     seriesDrafts: transforms.seriesToDrafts([editedNew]) });
   assert.equal(deletedAfterUpgrade.currentSeries.length, 1, 'Deleted snapshot lines stay deleted');
+  const datedLines = structuredClone(newSimulation).map(line => ({
+    ...line, name: line.name.replace('-20261101 /', '-20261031 /')
+  }));
+  datedLines[0].name = 'My edited simulation name';
+  datedLines[1].points[0].meanInteractivity = 987.654;
+  const dateFixture = { ...saved, fixed180BaselineAdded: true, fixed16220261031Added: true,
+    currentSeries: datedLines, seriesDrafts: transforms.seriesToDrafts(datedLines) };
+  const correctedDates = initial(dateFixture);
+  for (const collection of [correctedDates.currentSeries, correctedDates.seriesDrafts]) {
+    assert.equal(collection.length, 18, 'Correcting the date never duplicates an existing version');
+    assert.equal(collection[0].name, datedLines[0].name, 'Custom names are preserved');
+    assert.equal(collection[1].name, newSimulation[1].name);
+  }
+  assert.equal(correctedDates.currentSeries[1].points[0].meanInteractivity, 987.654);
+  assert.deepEqual(correctedDates.currentSeries.map(line => line.id), datedLines.map(line => line.id));
+  const alreadyCorrected = initial({ ...dateFixture, fixed16220261101LabelsAdded: true });
+  assert.equal(alreadyCorrected.currentSeries[1].name, datedLines[1].name,
+    'The date migration runs once, preserving subsequent intentional renames');
   const empty = initial({ currentSeries: [], seriesDrafts: [], state: {}, inferenceXSync: {} });
   assert.equal(empty.currentSeries.length, 0, 'An intentionally cleared workspace stays empty');
   assert.equal(empty.seriesDrafts.length, 1);
@@ -214,10 +232,10 @@ try {
   assert.equal(prepared.flatMap(s => s.points).length, 135);
   assert.ok(prepared.flatMap(s => s.points).every(p => p.precision === 'fp4'));
 
-  const publicBytes = fs.readFileSync('public/data/e2e-simopus-mi355x-20261031.json');
-  assert.deepEqual(publicBytes, fs.readFileSync('src/data/fixed162SimOpusMi355x20261031.json'));
+  const publicBytes = fs.readFileSync('public/data/e2e-simopus-mi355x-20261101.json');
+  assert.deepEqual(publicBytes, fs.readFileSync('src/data/fixed162SimOpusMi355x20261101.json'));
   const snapshot = JSON.parse(publicBytes);
-  const publicationManifest = JSON.parse(fs.readFileSync('public/data/e2e-simopus-mi355x-20261031.manifest.json'));
+  const publicationManifest = JSON.parse(fs.readFileSync('public/data/e2e-simopus-mi355x-20261101.manifest.json'));
   assert.equal(publicBytes.length, publicationManifest.bytes);
   assert.equal(createHash('sha256').update(publicBytes).digest('hex'), publicationManifest.sha256);
   assert.ok(!publicBytes.includes(Buffer.from('\r\n')), 'Public snapshot bytes use canonical LF newlines');
@@ -227,7 +245,8 @@ try {
   assert.equal(newSimulation.flatMap(s => s.points).length, 162);
   const newSuffixes = new Set();
   for (const line of newSimulation) {
-    assert.ok(line.name.startsWith('E2E-SimOpus-Mi355x-20261031 / '));
+    assert.ok(line.name.startsWith('E2E-SimOpus-Mi355x-20261101 / '));
+    assert.ok(line.id.startsWith('e2e-simopus-mi355x-20261031::'), 'Stable legacy IDs survive a display-date correction');
     newSuffixes.add(line.name.split(' / ')[1]);
     assert.equal(line.group, 'E2E-SimOpus-Mi355x');
     assert.equal(line.mtp, 'MTP');

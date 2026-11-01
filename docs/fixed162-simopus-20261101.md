@@ -1,14 +1,14 @@
-# Fixed-length simulation snapshot: 20261031
+# Fixed-length simulation snapshot: 20261101
 
 The `E2E-SimOpus-Mi355x` group includes 18 new curves named
-`E2E-SimOpus-Mi355x-20261031 / Cold`, `/ E512`, `/ E1K`, `/ E2K`, or `/ E4K`.
+`E2E-SimOpus-Mi355x-20261101 / Cold`, `/ E512`, `/ E1K`, `/ E2K`, or `/ E4K`.
 Each curve retains nine configurations and its actual total ISL, OSL and E.
-The 20261031 label is user specified; the current-main reproduction completed
+The 20261101 display date replaces the earlier 20261031 label; the current-main reproduction completed
 on 2026-11-01. Existing measured and historical simulation curves remain separate.
 
 The maintained source is
-[`fixed162SimOpusMi355x20261031.json`](../src/data/fixed162SimOpusMi355x20261031.json).
-The byte-identical [native JSON import](../public/data/e2e-simopus-mi355x-20261031.json)
+[`fixed162SimOpusMi355x20261101.json`](../src/data/fixed162SimOpusMi355x20261101.json).
+The byte-identical [native JSON import](../public/data/e2e-simopus-mi355x-20261101.json)
 is an exported view of that source, with a public checksum manifest alongside it.
 Both use UTF-8 with LF newlines so the checksum is identical on Windows, in Git
 and in the deployed download.
@@ -56,6 +56,9 @@ The new version is added once to nonempty saved workspaces by stable curve ID,
 without replacing edited lines. Empty workspaces remain empty. After migration,
 deleted curves stay deleted and subsequent user edits are preserved. Fresh
 workspaces and Reset All include the new version alongside the historical data.
+The corrected 20261101 display date keeps the original curve IDs and measurements.
+Existing default 20261031 names are renamed once; custom names, edited metrics,
+deleted curves and chart settings remain intact.
 
 ## Validation
 

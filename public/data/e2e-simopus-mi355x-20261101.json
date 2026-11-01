@@ -1,8 +1,8 @@
 {
-  "sourceVersion": "fixed162-main1257-20261031-v1",
+  "sourceVersion": "fixed162-main1257-20261101-v1",
   "visibility": "public",
-  "sourceDate": "2026-10-31",
-  "name": "E2E-SimOpus-Mi355x-20261031",
+  "sourceDate": "2026-11-01",
+  "name": "E2E-SimOpus-Mi355x-20261101",
   "group": "E2E-SimOpus-Mi355x",
   "model": "DeepSeek-V4.1-Flash",
   "executionMode": "offline CPU-only E2E simulation",
@@ -49,7 +49,7 @@
   },
   "provenance": {
     "publicationScope": "Owner-authorized selected performance/configuration metadata; private PerfDB payloads, raw ledgers, machine paths and infrastructure excluded.",
-    "simulationDateLabel": "20261031, user specified; current-main reproduction completed 2026-11-01.",
+    "simulationDateLabel": "20261101, corrected display date; current-main reproduction completed 2026-11-01.",
     "originalAggregateSha256": "6f5d87e65286a530377da90fae4ff2a25b896088c030a440fa0d40ff39816c06",
     "accuracyAuditSha256": "ecdfa68629634a454a1d262814239c4bd8a3f62b1be880989ccded7c4d16b9b9",
     "scenes": 18,
@@ -60,12 +60,19 @@
     "allOwnCPUResourcesClosed": true,
     "SGLangBudgetPatch": "82 points honor the original finite physical coordinator wait budget; virtual costs/protocol unchanged. 80 completed points retain the original source.",
     "SGLangBudgetPatchRemotelyPublished": false,
-    "limitations": "Four cold workloads match reference lengths. Fourteen cached workloads are nominal comparisons only: simulation ISL is total, reference context is prefix. Original real-run compile-stall flags and historical curves remain separate. Golden acceptance and sampling differ; no matched-recipe accuracy or blind holdout pass is claimed."
+    "limitations": "Four cold workloads match reference lengths. Fourteen cached workloads are nominal comparisons only: simulation ISL is total, reference context is prefix. Original real-run compile-stall flags and historical curves remain separate. Golden acceptance and sampling differ; no matched-recipe accuracy or blind holdout pass is claimed.",
+    "renamedFrom": {
+      "sourceVersion": "fixed162-main1257-20261031-v1",
+      "name": "E2E-SimOpus-Mi355x-20261031",
+      "publicDataSha256": "e6f79765ac597aa82d8c9be12cb8d17319859c2ad599f2f1a335edd7d7308a2b",
+      "curveIdsPreserved": true,
+      "measurementsUnchanged": true
+    }
   },
   "series": [
     {
       "id": "e2e-simopus-mi355x-20261031::fixed162-main1257-20261031-v1::s01",
-      "name": "E2E-SimOpus-Mi355x-20261031 / Cold",
+      "name": "E2E-SimOpus-Mi355x-20261101 / Cold",
       "group": "E2E-SimOpus-Mi355x",
       "model": "DeepSeek-V4.1-Flash",
       "hwKey": "mi355x_sglang",
@@ -76,7 +83,7 @@
       "marker": "circle",
       "lineStyle": "solid",
       "title": "DeepSeek-V4.1-Flash | MI355X | ISL 131072 / OSL 1024 / E 131072 | main1257 fixed-length simulation",
-      "note": "fixed162-main1257-20261031-v1; S01; 9 independently completed configurations, 2C independent warm-up and 10C formal requests. Actual simulation ISL 131072, prefix 0, E 131072, OSL 1024. Cold reference lengths match. Source-coordinator virtual clock; preparation/warm-up and frontend CPU overhead excluded. Simulation temperature 1/top_k 1 and golden351 progress differ from the temperature-0 real run. Logical KV capacity is nonbinding and is not measured physical capacity. 1257 qualified costs plus unchanged Charles TEST costs and declared analytic fallback. Accuracy acceptance and new independent holdout validation remain pending.",
+      "note": "fixed162-main1257-20261101-v1; S01; 9 independently completed configurations, 2C independent warm-up and 10C formal requests. Actual simulation ISL 131072, prefix 0, E 131072, OSL 1024. Cold reference lengths match. Source-coordinator virtual clock; preparation/warm-up and frontend CPU overhead excluded. Simulation temperature 1/top_k 1 and golden351 progress differ from the temperature-0 real run. Logical KV capacity is nonbinding and is not measured physical capacity. 1257 qualified costs plus unchanged Charles TEST costs and declared analytic fallback. Accuracy acceptance and new independent holdout validation remain pending.",
       "points": [
         {
           "precision": "fp4",
@@ -433,7 +440,7 @@
     },
     {
       "id": "e2e-simopus-mi355x-20261031::fixed162-main1257-20261031-v1::s02",
-      "name": "E2E-SimOpus-Mi355x-20261031 / E2K",
+      "name": "E2E-SimOpus-Mi355x-20261101 / E2K",
       "group": "E2E-SimOpus-Mi355x",
       "model": "DeepSeek-V4.1-Flash",
       "hwKey": "mi355x_sglang",
@@ -444,7 +451,7 @@
       "marker": "circle",
       "lineStyle": "solid",
       "title": "DeepSeek-V4.1-Flash | MI355X | ISL 131072 / OSL 1024 / E 2048 | main1257 fixed-length simulation",
-      "note": "fixed162-main1257-20261031-v1; S02; 9 independently completed configurations, 2C independent warm-up and 10C formal requests. Actual simulation ISL 131072, prefix 129024, E 2048, OSL 1024. Nominal comparison only: reference prefix 131072, total ISL 133120; no metric or geometry rescaling. Source-coordinator virtual clock; preparation/warm-up and frontend CPU overhead excluded. Simulation temperature 1/top_k 1 and golden351 progress differ from the temperature-0 real run. Logical KV capacity is nonbinding and is not measured physical capacity. 1257 qualified costs plus unchanged Charles TEST costs and declared analytic fallback. Accuracy acceptance and new independent holdout validation remain pending.",
+      "note": "fixed162-main1257-20261101-v1; S02; 9 independently completed configurations, 2C independent warm-up and 10C formal requests. Actual simulation ISL 131072, prefix 129024, E 2048, OSL 1024. Nominal comparison only: reference prefix 131072, total ISL 133120; no metric or geometry rescaling. Source-coordinator virtual clock; preparation/warm-up and frontend CPU overhead excluded. Simulation temperature 1/top_k 1 and golden351 progress differ from the temperature-0 real run. Logical KV capacity is nonbinding and is not measured physical capacity. 1257 qualified costs plus unchanged Charles TEST costs and declared analytic fallback. Accuracy acceptance and new independent holdout validation remain pending.",
       "points": [
         {
           "precision": "fp4",
@@ -802,7 +809,7 @@
     },
     {
       "id": "e2e-simopus-mi355x-20261031::fixed162-main1257-20261031-v1::s03",
-      "name": "E2E-SimOpus-Mi355x-20261031 / E1K",
+      "name": "E2E-SimOpus-Mi355x-20261101 / E1K",
       "group": "E2E-SimOpus-Mi355x",
       "model": "DeepSeek-V4.1-Flash",
       "hwKey": "mi355x_sglang",
@@ -813,7 +820,7 @@
       "marker": "circle",
       "lineStyle": "solid",
       "title": "DeepSeek-V4.1-Flash | MI355X | ISL 131072 / OSL 1024 / E 1024 | main1257 fixed-length simulation",
-      "note": "fixed162-main1257-20261031-v1; S03; 9 independently completed configurations, 2C independent warm-up and 10C formal requests. Actual simulation ISL 131072, prefix 130048, E 1024, OSL 1024. Nominal comparison only: reference prefix 131072, total ISL 132096; no metric or geometry rescaling. Source-coordinator virtual clock; preparation/warm-up and frontend CPU overhead excluded. Simulation temperature 1/top_k 1 and golden351 progress differ from the temperature-0 real run. Logical KV capacity is nonbinding and is not measured physical capacity. 1257 qualified costs plus unchanged Charles TEST costs and declared analytic fallback. Accuracy acceptance and new independent holdout validation remain pending.",
+      "note": "fixed162-main1257-20261101-v1; S03; 9 independently completed configurations, 2C independent warm-up and 10C formal requests. Actual simulation ISL 131072, prefix 130048, E 1024, OSL 1024. Nominal comparison only: reference prefix 131072, total ISL 132096; no metric or geometry rescaling. Source-coordinator virtual clock; preparation/warm-up and frontend CPU overhead excluded. Simulation temperature 1/top_k 1 and golden351 progress differ from the temperature-0 real run. Logical KV capacity is nonbinding and is not measured physical capacity. 1257 qualified costs plus unchanged Charles TEST costs and declared analytic fallback. Accuracy acceptance and new independent holdout validation remain pending.",
       "points": [
         {
           "precision": "fp4",
@@ -1171,7 +1178,7 @@
     },
     {
       "id": "e2e-simopus-mi355x-20261031::fixed162-main1257-20261031-v1::s04",
-      "name": "E2E-SimOpus-Mi355x-20261031 / E512",
+      "name": "E2E-SimOpus-Mi355x-20261101 / E512",
       "group": "E2E-SimOpus-Mi355x",
       "model": "DeepSeek-V4.1-Flash",
       "hwKey": "mi355x_sglang",
@@ -1182,7 +1189,7 @@
       "marker": "circle",
       "lineStyle": "solid",
       "title": "DeepSeek-V4.1-Flash | MI355X | ISL 131072 / OSL 1024 / E 512 | main1257 fixed-length simulation",
-      "note": "fixed162-main1257-20261031-v1; S04; 9 independently completed configurations, 2C independent warm-up and 10C formal requests. Actual simulation ISL 131072, prefix 130560, E 512, OSL 1024. Nominal comparison only: reference prefix 131072, total ISL 131584; no metric or geometry rescaling. Source-coordinator virtual clock; preparation/warm-up and frontend CPU overhead excluded. Simulation temperature 1/top_k 1 and golden351 progress differ from the temperature-0 real run. Logical KV capacity is nonbinding and is not measured physical capacity. 1257 qualified costs plus unchanged Charles TEST costs and declared analytic fallback. Accuracy acceptance and new independent holdout validation remain pending.",
+      "note": "fixed162-main1257-20261101-v1; S04; 9 independently completed configurations, 2C independent warm-up and 10C formal requests. Actual simulation ISL 131072, prefix 130560, E 512, OSL 1024. Nominal comparison only: reference prefix 131072, total ISL 131584; no metric or geometry rescaling. Source-coordinator virtual clock; preparation/warm-up and frontend CPU overhead excluded. Simulation temperature 1/top_k 1 and golden351 progress differ from the temperature-0 real run. Logical KV capacity is nonbinding and is not measured physical capacity. 1257 qualified costs plus unchanged Charles TEST costs and declared analytic fallback. Accuracy acceptance and new independent holdout validation remain pending.",
       "points": [
         {
           "precision": "fp4",
@@ -1540,7 +1547,7 @@
     },
     {
       "id": "e2e-simopus-mi355x-20261031::fixed162-main1257-20261031-v1::s05",
-      "name": "E2E-SimOpus-Mi355x-20261031 / Cold",
+      "name": "E2E-SimOpus-Mi355x-20261101 / Cold",
       "group": "E2E-SimOpus-Mi355x",
       "model": "DeepSeek-V4.1-Flash",
       "hwKey": "mi355x_sglang",
@@ -1551,7 +1558,7 @@
       "marker": "circle",
       "lineStyle": "solid",
       "title": "DeepSeek-V4.1-Flash | MI355X | ISL 131072 / OSL 2048 / E 131072 | main1257 fixed-length simulation",
-      "note": "fixed162-main1257-20261031-v1; S05; 9 independently completed configurations, 2C independent warm-up and 10C formal requests. Actual simulation ISL 131072, prefix 0, E 131072, OSL 2048. Cold reference lengths match. Source-coordinator virtual clock; preparation/warm-up and frontend CPU overhead excluded. Simulation temperature 1/top_k 1 and golden351 progress differ from the temperature-0 real run. Logical KV capacity is nonbinding and is not measured physical capacity. 1257 qualified costs plus unchanged Charles TEST costs and declared analytic fallback. Accuracy acceptance and new independent holdout validation remain pending.",
+      "note": "fixed162-main1257-20261101-v1; S05; 9 independently completed configurations, 2C independent warm-up and 10C formal requests. Actual simulation ISL 131072, prefix 0, E 131072, OSL 2048. Cold reference lengths match. Source-coordinator virtual clock; preparation/warm-up and frontend CPU overhead excluded. Simulation temperature 1/top_k 1 and golden351 progress differ from the temperature-0 real run. Logical KV capacity is nonbinding and is not measured physical capacity. 1257 qualified costs plus unchanged Charles TEST costs and declared analytic fallback. Accuracy acceptance and new independent holdout validation remain pending.",
       "points": [
         {
           "precision": "fp4",
@@ -1908,7 +1915,7 @@
     },
     {
       "id": "e2e-simopus-mi355x-20261031::fixed162-main1257-20261031-v1::s06",
-      "name": "E2E-SimOpus-Mi355x-20261031 / E2K",
+      "name": "E2E-SimOpus-Mi355x-20261101 / E2K",
       "group": "E2E-SimOpus-Mi355x",
       "model": "DeepSeek-V4.1-Flash",
       "hwKey": "mi355x_sglang",
@@ -1919,7 +1926,7 @@
       "marker": "circle",
       "lineStyle": "solid",
       "title": "DeepSeek-V4.1-Flash | MI355X | ISL 131072 / OSL 2048 / E 2048 | main1257 fixed-length simulation",
-      "note": "fixed162-main1257-20261031-v1; S06; 9 independently completed configurations, 2C independent warm-up and 10C formal requests. Actual simulation ISL 131072, prefix 129024, E 2048, OSL 2048. Nominal comparison only: reference prefix 131072, total ISL 133120; no metric or geometry rescaling. Source-coordinator virtual clock; preparation/warm-up and frontend CPU overhead excluded. Simulation temperature 1/top_k 1 and golden351 progress differ from the temperature-0 real run. Logical KV capacity is nonbinding and is not measured physical capacity. 1257 qualified costs plus unchanged Charles TEST costs and declared analytic fallback. Accuracy acceptance and new independent holdout validation remain pending.",
+      "note": "fixed162-main1257-20261101-v1; S06; 9 independently completed configurations, 2C independent warm-up and 10C formal requests. Actual simulation ISL 131072, prefix 129024, E 2048, OSL 2048. Nominal comparison only: reference prefix 131072, total ISL 133120; no metric or geometry rescaling. Source-coordinator virtual clock; preparation/warm-up and frontend CPU overhead excluded. Simulation temperature 1/top_k 1 and golden351 progress differ from the temperature-0 real run. Logical KV capacity is nonbinding and is not measured physical capacity. 1257 qualified costs plus unchanged Charles TEST costs and declared analytic fallback. Accuracy acceptance and new independent holdout validation remain pending.",
       "points": [
         {
           "precision": "fp4",
@@ -2277,7 +2284,7 @@
     },
     {
       "id": "e2e-simopus-mi355x-20261031::fixed162-main1257-20261031-v1::s07",
-      "name": "E2E-SimOpus-Mi355x-20261031 / E1K",
+      "name": "E2E-SimOpus-Mi355x-20261101 / E1K",
       "group": "E2E-SimOpus-Mi355x",
       "model": "DeepSeek-V4.1-Flash",
       "hwKey": "mi355x_sglang",
@@ -2288,7 +2295,7 @@
       "marker": "circle",
       "lineStyle": "solid",
       "title": "DeepSeek-V4.1-Flash | MI355X | ISL 131072 / OSL 2048 / E 1024 | main1257 fixed-length simulation",
-      "note": "fixed162-main1257-20261031-v1; S07; 9 independently completed configurations, 2C independent warm-up and 10C formal requests. Actual simulation ISL 131072, prefix 130048, E 1024, OSL 2048. Nominal comparison only: reference prefix 131072, total ISL 132096; no metric or geometry rescaling. Source-coordinator virtual clock; preparation/warm-up and frontend CPU overhead excluded. Simulation temperature 1/top_k 1 and golden351 progress differ from the temperature-0 real run. Logical KV capacity is nonbinding and is not measured physical capacity. 1257 qualified costs plus unchanged Charles TEST costs and declared analytic fallback. Accuracy acceptance and new independent holdout validation remain pending.",
+      "note": "fixed162-main1257-20261101-v1; S07; 9 independently completed configurations, 2C independent warm-up and 10C formal requests. Actual simulation ISL 131072, prefix 130048, E 1024, OSL 2048. Nominal comparison only: reference prefix 131072, total ISL 132096; no metric or geometry rescaling. Source-coordinator virtual clock; preparation/warm-up and frontend CPU overhead excluded. Simulation temperature 1/top_k 1 and golden351 progress differ from the temperature-0 real run. Logical KV capacity is nonbinding and is not measured physical capacity. 1257 qualified costs plus unchanged Charles TEST costs and declared analytic fallback. Accuracy acceptance and new independent holdout validation remain pending.",
       "points": [
         {
           "precision": "fp4",
@@ -2646,7 +2653,7 @@
     },
     {
       "id": "e2e-simopus-mi355x-20261031::fixed162-main1257-20261031-v1::s08",
-      "name": "E2E-SimOpus-Mi355x-20261031 / E512",
+      "name": "E2E-SimOpus-Mi355x-20261101 / E512",
       "group": "E2E-SimOpus-Mi355x",
       "model": "DeepSeek-V4.1-Flash",
       "hwKey": "mi355x_sglang",
@@ -2657,7 +2664,7 @@
       "marker": "circle",
       "lineStyle": "solid",
       "title": "DeepSeek-V4.1-Flash | MI355X | ISL 131072 / OSL 2048 / E 512 | main1257 fixed-length simulation",
-      "note": "fixed162-main1257-20261031-v1; S08; 9 independently completed configurations, 2C independent warm-up and 10C formal requests. Actual simulation ISL 131072, prefix 130560, E 512, OSL 2048. Nominal comparison only: reference prefix 131072, total ISL 131584; no metric or geometry rescaling. Source-coordinator virtual clock; preparation/warm-up and frontend CPU overhead excluded. Simulation temperature 1/top_k 1 and golden351 progress differ from the temperature-0 real run. Logical KV capacity is nonbinding and is not measured physical capacity. 1257 qualified costs plus unchanged Charles TEST costs and declared analytic fallback. Accuracy acceptance and new independent holdout validation remain pending.",
+      "note": "fixed162-main1257-20261101-v1; S08; 9 independently completed configurations, 2C independent warm-up and 10C formal requests. Actual simulation ISL 131072, prefix 130560, E 512, OSL 2048. Nominal comparison only: reference prefix 131072, total ISL 131584; no metric or geometry rescaling. Source-coordinator virtual clock; preparation/warm-up and frontend CPU overhead excluded. Simulation temperature 1/top_k 1 and golden351 progress differ from the temperature-0 real run. Logical KV capacity is nonbinding and is not measured physical capacity. 1257 qualified costs plus unchanged Charles TEST costs and declared analytic fallback. Accuracy acceptance and new independent holdout validation remain pending.",
       "points": [
         {
           "precision": "fp4",
@@ -3015,7 +3022,7 @@
     },
     {
       "id": "e2e-simopus-mi355x-20261031::fixed162-main1257-20261031-v1::s09",
-      "name": "E2E-SimOpus-Mi355x-20261031 / Cold",
+      "name": "E2E-SimOpus-Mi355x-20261101 / Cold",
       "group": "E2E-SimOpus-Mi355x",
       "model": "DeepSeek-V4.1-Flash",
       "hwKey": "mi355x_sglang",
@@ -3026,7 +3033,7 @@
       "marker": "circle",
       "lineStyle": "solid",
       "title": "DeepSeek-V4.1-Flash | MI355X | ISL 262144 / OSL 1024 / E 262144 | main1257 fixed-length simulation",
-      "note": "fixed162-main1257-20261031-v1; S09; 9 independently completed configurations, 2C independent warm-up and 10C formal requests. Actual simulation ISL 262144, prefix 0, E 262144, OSL 1024. Cold reference lengths match. Source-coordinator virtual clock; preparation/warm-up and frontend CPU overhead excluded. Simulation temperature 1/top_k 1 and golden351 progress differ from the temperature-0 real run. Logical KV capacity is nonbinding and is not measured physical capacity. 1257 qualified costs plus unchanged Charles TEST costs and declared analytic fallback. Accuracy acceptance and new independent holdout validation remain pending.",
+      "note": "fixed162-main1257-20261101-v1; S09; 9 independently completed configurations, 2C independent warm-up and 10C formal requests. Actual simulation ISL 262144, prefix 0, E 262144, OSL 1024. Cold reference lengths match. Source-coordinator virtual clock; preparation/warm-up and frontend CPU overhead excluded. Simulation temperature 1/top_k 1 and golden351 progress differ from the temperature-0 real run. Logical KV capacity is nonbinding and is not measured physical capacity. 1257 qualified costs plus unchanged Charles TEST costs and declared analytic fallback. Accuracy acceptance and new independent holdout validation remain pending.",
       "points": [
         {
           "precision": "fp4",
@@ -3383,7 +3390,7 @@
     },
     {
       "id": "e2e-simopus-mi355x-20261031::fixed162-main1257-20261031-v1::s10",
-      "name": "E2E-SimOpus-Mi355x-20261031 / E4K",
+      "name": "E2E-SimOpus-Mi355x-20261101 / E4K",
       "group": "E2E-SimOpus-Mi355x",
       "model": "DeepSeek-V4.1-Flash",
       "hwKey": "mi355x_sglang",
@@ -3394,7 +3401,7 @@
       "marker": "circle",
       "lineStyle": "solid",
       "title": "DeepSeek-V4.1-Flash | MI355X | ISL 262144 / OSL 1024 / E 4096 | main1257 fixed-length simulation",
-      "note": "fixed162-main1257-20261031-v1; S10; 9 independently completed configurations, 2C independent warm-up and 10C formal requests. Actual simulation ISL 262144, prefix 258048, E 4096, OSL 1024. Nominal comparison only: reference prefix 262144, total ISL 266240; no metric or geometry rescaling. Source-coordinator virtual clock; preparation/warm-up and frontend CPU overhead excluded. Simulation temperature 1/top_k 1 and golden351 progress differ from the temperature-0 real run. Logical KV capacity is nonbinding and is not measured physical capacity. 1257 qualified costs plus unchanged Charles TEST costs and declared analytic fallback. Accuracy acceptance and new independent holdout validation remain pending.",
+      "note": "fixed162-main1257-20261101-v1; S10; 9 independently completed configurations, 2C independent warm-up and 10C formal requests. Actual simulation ISL 262144, prefix 258048, E 4096, OSL 1024. Nominal comparison only: reference prefix 262144, total ISL 266240; no metric or geometry rescaling. Source-coordinator virtual clock; preparation/warm-up and frontend CPU overhead excluded. Simulation temperature 1/top_k 1 and golden351 progress differ from the temperature-0 real run. Logical KV capacity is nonbinding and is not measured physical capacity. 1257 qualified costs plus unchanged Charles TEST costs and declared analytic fallback. Accuracy acceptance and new independent holdout validation remain pending.",
       "points": [
         {
           "precision": "fp4",
@@ -3752,7 +3759,7 @@
     },
     {
       "id": "e2e-simopus-mi355x-20261031::fixed162-main1257-20261031-v1::s11",
-      "name": "E2E-SimOpus-Mi355x-20261031 / E2K",
+      "name": "E2E-SimOpus-Mi355x-20261101 / E2K",
       "group": "E2E-SimOpus-Mi355x",
       "model": "DeepSeek-V4.1-Flash",
       "hwKey": "mi355x_sglang",
@@ -3763,7 +3770,7 @@
       "marker": "circle",
       "lineStyle": "solid",
       "title": "DeepSeek-V4.1-Flash | MI355X | ISL 262144 / OSL 1024 / E 2048 | main1257 fixed-length simulation",
-      "note": "fixed162-main1257-20261031-v1; S11; 9 independently completed configurations, 2C independent warm-up and 10C formal requests. Actual simulation ISL 262144, prefix 260096, E 2048, OSL 1024. Nominal comparison only: reference prefix 262144, total ISL 264192; no metric or geometry rescaling. Source-coordinator virtual clock; preparation/warm-up and frontend CPU overhead excluded. Simulation temperature 1/top_k 1 and golden351 progress differ from the temperature-0 real run. Logical KV capacity is nonbinding and is not measured physical capacity. 1257 qualified costs plus unchanged Charles TEST costs and declared analytic fallback. Accuracy acceptance and new independent holdout validation remain pending.",
+      "note": "fixed162-main1257-20261101-v1; S11; 9 independently completed configurations, 2C independent warm-up and 10C formal requests. Actual simulation ISL 262144, prefix 260096, E 2048, OSL 1024. Nominal comparison only: reference prefix 262144, total ISL 264192; no metric or geometry rescaling. Source-coordinator virtual clock; preparation/warm-up and frontend CPU overhead excluded. Simulation temperature 1/top_k 1 and golden351 progress differ from the temperature-0 real run. Logical KV capacity is nonbinding and is not measured physical capacity. 1257 qualified costs plus unchanged Charles TEST costs and declared analytic fallback. Accuracy acceptance and new independent holdout validation remain pending.",
       "points": [
         {
           "precision": "fp4",
@@ -4121,7 +4128,7 @@
     },
     {
       "id": "e2e-simopus-mi355x-20261031::fixed162-main1257-20261031-v1::s12",
-      "name": "E2E-SimOpus-Mi355x-20261031 / E1K",
+      "name": "E2E-SimOpus-Mi355x-20261101 / E1K",
       "group": "E2E-SimOpus-Mi355x",
       "model": "DeepSeek-V4.1-Flash",
       "hwKey": "mi355x_sglang",
@@ -4132,7 +4139,7 @@
       "marker": "circle",
       "lineStyle": "solid",
       "title": "DeepSeek-V4.1-Flash | MI355X | ISL 262144 / OSL 1024 / E 1024 | main1257 fixed-length simulation",
-      "note": "fixed162-main1257-20261031-v1; S12; 9 independently completed configurations, 2C independent warm-up and 10C formal requests. Actual simulation ISL 262144, prefix 261120, E 1024, OSL 1024. Nominal comparison only: reference prefix 262144, total ISL 263168; no metric or geometry rescaling. Source-coordinator virtual clock; preparation/warm-up and frontend CPU overhead excluded. Simulation temperature 1/top_k 1 and golden351 progress differ from the temperature-0 real run. Logical KV capacity is nonbinding and is not measured physical capacity. 1257 qualified costs plus unchanged Charles TEST costs and declared analytic fallback. Accuracy acceptance and new independent holdout validation remain pending.",
+      "note": "fixed162-main1257-20261101-v1; S12; 9 independently completed configurations, 2C independent warm-up and 10C formal requests. Actual simulation ISL 262144, prefix 261120, E 1024, OSL 1024. Nominal comparison only: reference prefix 262144, total ISL 263168; no metric or geometry rescaling. Source-coordinator virtual clock; preparation/warm-up and frontend CPU overhead excluded. Simulation temperature 1/top_k 1 and golden351 progress differ from the temperature-0 real run. Logical KV capacity is nonbinding and is not measured physical capacity. 1257 qualified costs plus unchanged Charles TEST costs and declared analytic fallback. Accuracy acceptance and new independent holdout validation remain pending.",
       "points": [
         {
           "precision": "fp4",
@@ -4490,7 +4497,7 @@
     },
     {
       "id": "e2e-simopus-mi355x-20261031::fixed162-main1257-20261031-v1::s13",
-      "name": "E2E-SimOpus-Mi355x-20261031 / E512",
+      "name": "E2E-SimOpus-Mi355x-20261101 / E512",
       "group": "E2E-SimOpus-Mi355x",
       "model": "DeepSeek-V4.1-Flash",
       "hwKey": "mi355x_sglang",
@@ -4501,7 +4508,7 @@
       "marker": "circle",
       "lineStyle": "solid",
       "title": "DeepSeek-V4.1-Flash | MI355X | ISL 262144 / OSL 1024 / E 512 | main1257 fixed-length simulation",
-      "note": "fixed162-main1257-20261031-v1; S13; 9 independently completed configurations, 2C independent warm-up and 10C formal requests. Actual simulation ISL 262144, prefix 261632, E 512, OSL 1024. Nominal comparison only: reference prefix 262144, total ISL 262656; no metric or geometry rescaling. Source-coordinator virtual clock; preparation/warm-up and frontend CPU overhead excluded. Simulation temperature 1/top_k 1 and golden351 progress differ from the temperature-0 real run. Logical KV capacity is nonbinding and is not measured physical capacity. 1257 qualified costs plus unchanged Charles TEST costs and declared analytic fallback. Accuracy acceptance and new independent holdout validation remain pending.",
+      "note": "fixed162-main1257-20261101-v1; S13; 9 independently completed configurations, 2C independent warm-up and 10C formal requests. Actual simulation ISL 262144, prefix 261632, E 512, OSL 1024. Nominal comparison only: reference prefix 262144, total ISL 262656; no metric or geometry rescaling. Source-coordinator virtual clock; preparation/warm-up and frontend CPU overhead excluded. Simulation temperature 1/top_k 1 and golden351 progress differ from the temperature-0 real run. Logical KV capacity is nonbinding and is not measured physical capacity. 1257 qualified costs plus unchanged Charles TEST costs and declared analytic fallback. Accuracy acceptance and new independent holdout validation remain pending.",
       "points": [
         {
           "precision": "fp4",
@@ -4859,7 +4866,7 @@
     },
     {
       "id": "e2e-simopus-mi355x-20261031::fixed162-main1257-20261031-v1::s14",
-      "name": "E2E-SimOpus-Mi355x-20261031 / Cold",
+      "name": "E2E-SimOpus-Mi355x-20261101 / Cold",
       "group": "E2E-SimOpus-Mi355x",
       "model": "DeepSeek-V4.1-Flash",
       "hwKey": "mi355x_sglang",
@@ -4870,7 +4877,7 @@
       "marker": "circle",
       "lineStyle": "solid",
       "title": "DeepSeek-V4.1-Flash | MI355X | ISL 262144 / OSL 2048 / E 262144 | main1257 fixed-length simulation",
-      "note": "fixed162-main1257-20261031-v1; S14; 9 independently completed configurations, 2C independent warm-up and 10C formal requests. Actual simulation ISL 262144, prefix 0, E 262144, OSL 2048. Cold reference lengths match. Source-coordinator virtual clock; preparation/warm-up and frontend CPU overhead excluded. Simulation temperature 1/top_k 1 and golden351 progress differ from the temperature-0 real run. Logical KV capacity is nonbinding and is not measured physical capacity. 1257 qualified costs plus unchanged Charles TEST costs and declared analytic fallback. Accuracy acceptance and new independent holdout validation remain pending.",
+      "note": "fixed162-main1257-20261101-v1; S14; 9 independently completed configurations, 2C independent warm-up and 10C formal requests. Actual simulation ISL 262144, prefix 0, E 262144, OSL 2048. Cold reference lengths match. Source-coordinator virtual clock; preparation/warm-up and frontend CPU overhead excluded. Simulation temperature 1/top_k 1 and golden351 progress differ from the temperature-0 real run. Logical KV capacity is nonbinding and is not measured physical capacity. 1257 qualified costs plus unchanged Charles TEST costs and declared analytic fallback. Accuracy acceptance and new independent holdout validation remain pending.",
       "points": [
         {
           "precision": "fp4",
@@ -5227,7 +5234,7 @@
     },
     {
       "id": "e2e-simopus-mi355x-20261031::fixed162-main1257-20261031-v1::s15",
-      "name": "E2E-SimOpus-Mi355x-20261031 / E4K",
+      "name": "E2E-SimOpus-Mi355x-20261101 / E4K",
       "group": "E2E-SimOpus-Mi355x",
       "model": "DeepSeek-V4.1-Flash",
       "hwKey": "mi355x_sglang",
@@ -5238,7 +5245,7 @@
       "marker": "circle",
       "lineStyle": "solid",
       "title": "DeepSeek-V4.1-Flash | MI355X | ISL 262144 / OSL 2048 / E 4096 | main1257 fixed-length simulation",
-      "note": "fixed162-main1257-20261031-v1; S15; 9 independently completed configurations, 2C independent warm-up and 10C formal requests. Actual simulation ISL 262144, prefix 258048, E 4096, OSL 2048. Nominal comparison only: reference prefix 262144, total ISL 266240; no metric or geometry rescaling. Source-coordinator virtual clock; preparation/warm-up and frontend CPU overhead excluded. Simulation temperature 1/top_k 1 and golden351 progress differ from the temperature-0 real run. Logical KV capacity is nonbinding and is not measured physical capacity. 1257 qualified costs plus unchanged Charles TEST costs and declared analytic fallback. Accuracy acceptance and new independent holdout validation remain pending.",
+      "note": "fixed162-main1257-20261101-v1; S15; 9 independently completed configurations, 2C independent warm-up and 10C formal requests. Actual simulation ISL 262144, prefix 258048, E 4096, OSL 2048. Nominal comparison only: reference prefix 262144, total ISL 266240; no metric or geometry rescaling. Source-coordinator virtual clock; preparation/warm-up and frontend CPU overhead excluded. Simulation temperature 1/top_k 1 and golden351 progress differ from the temperature-0 real run. Logical KV capacity is nonbinding and is not measured physical capacity. 1257 qualified costs plus unchanged Charles TEST costs and declared analytic fallback. Accuracy acceptance and new independent holdout validation remain pending.",
       "points": [
         {
           "precision": "fp4",
@@ -5596,7 +5603,7 @@
     },
     {
       "id": "e2e-simopus-mi355x-20261031::fixed162-main1257-20261031-v1::s16",
-      "name": "E2E-SimOpus-Mi355x-20261031 / E2K",
+      "name": "E2E-SimOpus-Mi355x-20261101 / E2K",
       "group": "E2E-SimOpus-Mi355x",
       "model": "DeepSeek-V4.1-Flash",
       "hwKey": "mi355x_sglang",
@@ -5607,7 +5614,7 @@
       "marker": "circle",
       "lineStyle": "solid",
       "title": "DeepSeek-V4.1-Flash | MI355X | ISL 262144 / OSL 2048 / E 2048 | main1257 fixed-length simulation",
-      "note": "fixed162-main1257-20261031-v1; S16; 9 independently completed configurations, 2C independent warm-up and 10C formal requests. Actual simulation ISL 262144, prefix 260096, E 2048, OSL 2048. Nominal comparison only: reference prefix 262144, total ISL 264192; no metric or geometry rescaling. Source-coordinator virtual clock; preparation/warm-up and frontend CPU overhead excluded. Simulation temperature 1/top_k 1 and golden351 progress differ from the temperature-0 real run. Logical KV capacity is nonbinding and is not measured physical capacity. 1257 qualified costs plus unchanged Charles TEST costs and declared analytic fallback. Accuracy acceptance and new independent holdout validation remain pending.",
+      "note": "fixed162-main1257-20261101-v1; S16; 9 independently completed configurations, 2C independent warm-up and 10C formal requests. Actual simulation ISL 262144, prefix 260096, E 2048, OSL 2048. Nominal comparison only: reference prefix 262144, total ISL 264192; no metric or geometry rescaling. Source-coordinator virtual clock; preparation/warm-up and frontend CPU overhead excluded. Simulation temperature 1/top_k 1 and golden351 progress differ from the temperature-0 real run. Logical KV capacity is nonbinding and is not measured physical capacity. 1257 qualified costs plus unchanged Charles TEST costs and declared analytic fallback. Accuracy acceptance and new independent holdout validation remain pending.",
       "points": [
         {
           "precision": "fp4",
@@ -5965,7 +5972,7 @@
     },
     {
       "id": "e2e-simopus-mi355x-20261031::fixed162-main1257-20261031-v1::s17",
-      "name": "E2E-SimOpus-Mi355x-20261031 / E1K",
+      "name": "E2E-SimOpus-Mi355x-20261101 / E1K",
       "group": "E2E-SimOpus-Mi355x",
       "model": "DeepSeek-V4.1-Flash",
       "hwKey": "mi355x_sglang",
@@ -5976,7 +5983,7 @@
       "marker": "circle",
       "lineStyle": "solid",
       "title": "DeepSeek-V4.1-Flash | MI355X | ISL 262144 / OSL 2048 / E 1024 | main1257 fixed-length simulation",
-      "note": "fixed162-main1257-20261031-v1; S17; 9 independently completed configurations, 2C independent warm-up and 10C formal requests. Actual simulation ISL 262144, prefix 261120, E 1024, OSL 2048. Nominal comparison only: reference prefix 262144, total ISL 263168; no metric or geometry rescaling. Source-coordinator virtual clock; preparation/warm-up and frontend CPU overhead excluded. Simulation temperature 1/top_k 1 and golden351 progress differ from the temperature-0 real run. Logical KV capacity is nonbinding and is not measured physical capacity. 1257 qualified costs plus unchanged Charles TEST costs and declared analytic fallback. Accuracy acceptance and new independent holdout validation remain pending.",
+      "note": "fixed162-main1257-20261101-v1; S17; 9 independently completed configurations, 2C independent warm-up and 10C formal requests. Actual simulation ISL 262144, prefix 261120, E 1024, OSL 2048. Nominal comparison only: reference prefix 262144, total ISL 263168; no metric or geometry rescaling. Source-coordinator virtual clock; preparation/warm-up and frontend CPU overhead excluded. Simulation temperature 1/top_k 1 and golden351 progress differ from the temperature-0 real run. Logical KV capacity is nonbinding and is not measured physical capacity. 1257 qualified costs plus unchanged Charles TEST costs and declared analytic fallback. Accuracy acceptance and new independent holdout validation remain pending.",
       "points": [
         {
           "precision": "fp4",
@@ -6334,7 +6341,7 @@
     },
     {
       "id": "e2e-simopus-mi355x-20261031::fixed162-main1257-20261031-v1::s18",
-      "name": "E2E-SimOpus-Mi355x-20261031 / E512",
+      "name": "E2E-SimOpus-Mi355x-20261101 / E512",
       "group": "E2E-SimOpus-Mi355x",
       "model": "DeepSeek-V4.1-Flash",
       "hwKey": "mi355x_sglang",
@@ -6345,7 +6352,7 @@
       "marker": "circle",
       "lineStyle": "solid",
       "title": "DeepSeek-V4.1-Flash | MI355X | ISL 262144 / OSL 2048 / E 512 | main1257 fixed-length simulation",
-      "note": "fixed162-main1257-20261031-v1; S18; 9 independently completed configurations, 2C independent warm-up and 10C formal requests. Actual simulation ISL 262144, prefix 261632, E 512, OSL 2048. Nominal comparison only: reference prefix 262144, total ISL 262656; no metric or geometry rescaling. Source-coordinator virtual clock; preparation/warm-up and frontend CPU overhead excluded. Simulation temperature 1/top_k 1 and golden351 progress differ from the temperature-0 real run. Logical KV capacity is nonbinding and is not measured physical capacity. 1257 qualified costs plus unchanged Charles TEST costs and declared analytic fallback. Accuracy acceptance and new independent holdout validation remain pending.",
+      "note": "fixed162-main1257-20261101-v1; S18; 9 independently completed configurations, 2C independent warm-up and 10C formal requests. Actual simulation ISL 262144, prefix 261632, E 512, OSL 2048. Nominal comparison only: reference prefix 262144, total ISL 262656; no metric or geometry rescaling. Source-coordinator virtual clock; preparation/warm-up and frontend CPU overhead excluded. Simulation temperature 1/top_k 1 and golden351 progress differ from the temperature-0 real run. Logical KV capacity is nonbinding and is not measured physical capacity. 1257 qualified costs plus unchanged Charles TEST costs and declared analytic fallback. Accuracy acceptance and new independent holdout validation remain pending.",
       "points": [
         {
           "precision": "fp4",
