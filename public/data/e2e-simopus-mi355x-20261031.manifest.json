@@ -3,12 +3,13 @@
   "sourceVersion": "fixed162-main1257-20261031-v1",
   "source": "src/data/fixed162SimOpusMi355x20261031.json",
   "export": "data/e2e-simopus-mi355x-20261031.json",
-  "sha256": "f2ba5e8b97b7428bf3057adfb28ef4a788c7044443661cf6088ab748f93bbe4a",
-  "bytes": 298978,
+  "sha256": "e6f79765ac597aa82d8c9be12cb8d17319859c2ad599f2f1a335edd7d7308a2b",
+  "bytes": 292273,
   "curves": 18,
   "points": 162,
   "formalRequests": 15840,
   "approval": "Owner requested publication of these selected simulation metrics in the existing website.",
   "privateDataIncluded": false,
-  "metricTransformation": "No rescaling, rounding or refitting; native JSON uses original formal metrics."
+  "metricTransformation": "No rescaling, rounding or refitting; native JSON uses original formal metrics.",
+  "encoding": "UTF-8 with LF newlines"
 }
