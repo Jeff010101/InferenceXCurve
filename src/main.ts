@@ -3,7 +3,7 @@ import { getTheme, THEME_CHANGE_EVENT, type Theme } from './theme';
 
 import { strFromU8, unzipSync } from 'fflate';
 
-import { exampleSeries, fixedLengthComparisonSeries } from './exampleData';
+import { exampleSeries, fixedLengthComparisonSeries, fixed16220261031Series } from './exampleData';
 import {
   formatExtendLabel,
   formatIslOslLabel,
@@ -258,6 +258,7 @@ interface PersistedAppData {
   savedAt: string;
   fixed180BaselineAdded?: boolean;
   fixed180LabelsAdded?: boolean;
+  fixed16220261031Added?: boolean;
   currentSeries: InferenceCurveSeries[];
   seriesDrafts: SeriesDraft[];
   state: PersistedAppState;
@@ -670,9 +671,14 @@ function createInitialDataState(): InitialDataState {
     }
   }
   const existingIds = new Set([...restoredSeries, ...restoredDrafts].map((line) => line.id));
-  const additions = persisted.fixed180BaselineAdded || restoredSeries.length === 0
-    ? []
-    : structuredClone(fixedLengthComparisonSeries.filter((line) => !existingIds.has(line.id)));
+  const repositoryAdditions = [
+    ...(!persisted.fixed180BaselineAdded ? fixedLengthComparisonSeries : []),
+    ...(!persisted.fixed16220261031Added ? fixed16220261031Series : [])
+  ];
+  const additions = restoredSeries.length === 0 ? [] : structuredClone(
+    [...new Map(repositoryAdditions.map((line) => [line.id, line])).values()]
+      .filter((line) => !existingIds.has(line.id))
+  );
   restoredSeries = [...restoredSeries, ...additions];
   if (additions.length > 0) restoredDrafts.push(...draftsFromSeriesForRestore(additions));
   const restoredState = restoreAppState(createInitialState(restoredSeries), persisted.state, restoredSeries);
@@ -681,9 +687,11 @@ function createInitialDataState(): InitialDataState {
       restoredState.activeSeriesIds.add(line.id);
       restoredState.activeSeriesIdsByView.forEach((ids) => ids.add(line.id));
     });
-    restoredState.chartMetric = 'meanInteractivity';
-    restoredState.chartYMetric = 'totalThroughput';
-    restoredState.mtpFilter = ALL_VALUE;
+    if (!persisted.fixed180BaselineAdded) {
+      restoredState.chartMetric = 'meanInteractivity';
+      restoredState.chartYMetric = 'totalThroughput';
+      restoredState.mtpFilter = ALL_VALUE;
+    }
   }
 
   return {
@@ -707,6 +715,7 @@ function loadPersistedAppData(): PersistedAppData | null {
       savedAt: readPersistedText(data, 'savedAt'),
       fixed180BaselineAdded: data.fixed180BaselineAdded === true,
       fixed180LabelsAdded: data.fixed180LabelsAdded === true,
+      fixed16220261031Added: data.fixed16220261031Added === true,
       currentSeries: Array.isArray(data.currentSeries) ? readNativeSeries(data.currentSeries) : [],
       seriesDrafts: restorePersistedSeriesDrafts(data.seriesDrafts),
       state: restorePersistedState(data.state),
@@ -1040,6 +1049,7 @@ function saveLocalDataNow(): void {
       savedAt: new Date().toISOString(),
       fixed180BaselineAdded: true,
       fixed180LabelsAdded: true,
+      fixed16220261031Added: true,
       currentSeries: getSeriesForPersistence(),
       seriesDrafts,
       state: serializeAppState(),
