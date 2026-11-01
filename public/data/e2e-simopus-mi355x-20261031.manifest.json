@@ -1,0 +1,14 @@
+{
+  "visibility": "public",
+  "sourceVersion": "fixed162-main1257-20261031-v1",
+  "source": "src/data/fixed162SimOpusMi355x20261031.json",
+  "export": "data/e2e-simopus-mi355x-20261031.json",
+  "sha256": "f2ba5e8b97b7428bf3057adfb28ef4a788c7044443661cf6088ab748f93bbe4a",
+  "bytes": 298978,
+  "curves": 18,
+  "points": 162,
+  "formalRequests": 15840,
+  "approval": "Owner requested publication of these selected simulation metrics in the existing website.",
+  "privateDataIncluded": false,
+  "metricTransformation": "No rescaling, rounding or refitting; native JSON uses original formal metrics."
+}

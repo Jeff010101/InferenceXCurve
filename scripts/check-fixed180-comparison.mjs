@@ -20,6 +20,7 @@ try {
   const sync = await server.ssrLoadModule('/src/inferenceXSync.ts');
   const data = await server.ssrLoadModule('/src/exampleData.ts');
   const simulation = data.fixed180BaselineSeries;
+  const newSimulation = data.fixed16220261031Series;
   const all = data.fixedLengthComparisonSeries;
   const common = {
     ...scenario, ...chart, ...sync, ...data,
@@ -50,7 +51,8 @@ try {
   }
 
   assert.equal(simulation.length, 18);
-  assert.equal(all.length, 36);
+  assert.equal(newSimulation.length, 18);
+  assert.equal(all.length, 54);
   assert.equal(simulation.flatMap(s => s.points).length, 162);
   const groups = new Map();
   for (const line of all) {
@@ -61,7 +63,7 @@ try {
   }
   assert.equal(groups.size, 18);
   for (const lines of groups.values()) {
-    assert.equal(lines.length, 2);
+    assert.equal(lines.length, 3);
     assert.equal(new Set(lines.map(s => s.group)).size, 2);
     assert.deepEqual(lines[0].points.map(p => `${p.prefill_tp}/${p.concurrency}`).sort(), lines[1].points.map(p => `${p.prefill_tp}/${p.concurrency}`).sort());
   }
@@ -79,13 +81,13 @@ try {
   const restored = transforms.restorePersistedSeriesDrafts(JSON.parse(JSON.stringify(drafts)));
   const rebuilt = transforms.draftsToSeriesAllowEmpty(restored);
   const imported = transforms.readNativeSeries({ series: rebuilt });
-  function compareMetrics(lines) {
-    assert.equal(lines.length, originals.length);
+  function compareMetrics(lines, expected = originals) {
+    assert.equal(lines.length, expected.length);
     lines.forEach((line, i) => {
-      const source = originals[i];
+      const source = expected[i];
       assert.equal(line.islOsl, source.islOsl);
       assert.equal(line.comparisonContext, source.comparisonContext);
-      assert.equal(line.mtp, 'Unknown');
+      assert.equal(line.mtp.toLowerCase(), source.mtp.toLowerCase(), 'CSV preserves the MTP category');
       assert.equal(line.points.length, source.points.length);
       line.points.forEach((point, j) => {
         for (const metric of ['meanInteractivity', 'totalThroughput', 'throughput', 'ttft', 'endToEnd']) {
@@ -124,15 +126,35 @@ try {
     }).createInitialDataState();
   }
   const migrated = initial(saved);
-  assert.equal(migrated.currentSeries.length, 37);
-  assert.equal(migrated.seriesDrafts.length, 37);
+  assert.equal(migrated.currentSeries.length, 55);
+  assert.equal(migrated.seriesDrafts.length, 55);
   assert.equal(migrated.currentSeries.find(s => s.id === edited.id).name, edited.name);
   assert.equal(migrated.currentSeries.find(s => s.id === edited.id).points[0].meanInteractivity, 123.456);
   assert.equal(migrated.state.chartMetric, 'meanInteractivity');
   assert.equal(migrated.state.chartYMetric, 'totalThroughput');
-  const repeated = initial({ ...saved, fixed180BaselineAdded: true });
+  const repeated = initial({ ...saved, fixed180BaselineAdded: true, fixed16220261031Added: true });
   assert.equal(repeated.currentSeries.length, 2);
   assert.equal(repeated.seriesDrafts.length, 2, 'No empty draft is appended on reload');
+  const upgraded = initial({ ...saved, fixed180BaselineAdded: true });
+  assert.equal(upgraded.currentSeries.length, 20, 'Existing browsers receive just the new 18 curves');
+  assert.equal(upgraded.currentSeries.find(s => s.id === edited.id).name, edited.name);
+  const savedAxes = initial({ ...saved, fixed180BaselineAdded: true,
+    state: { ...saved.state, chartMetric: 'ttft', chartYMetric: 'throughput', mtpFilter: 'MTP' } });
+  assert.equal(savedAxes.state.chartMetric, 'ttft', 'Adding the new version preserves existing axes');
+  assert.equal(savedAxes.state.chartYMetric, 'throughput');
+  assert.equal(savedAxes.state.mtpFilter, 'MTP');
+  const editedNew = structuredClone(newSimulation[0]);
+  editedNew.name = 'User edited new snapshot';
+  editedNew.points[0].meanInteractivity = 321.123;
+  const upgradedWithEdit = initial({ ...saved, fixed180BaselineAdded: true,
+    currentSeries: [editedNew], seriesDrafts: transforms.seriesToDrafts([editedNew]) });
+  assert.equal(upgradedWithEdit.currentSeries.length, 18, 'Existing new IDs are not duplicated');
+  assert.equal(upgradedWithEdit.currentSeries[0].name, editedNew.name);
+  assert.equal(upgradedWithEdit.currentSeries[0].points[0].meanInteractivity, 321.123);
+  const deletedAfterUpgrade = initial({ ...saved, fixed180BaselineAdded: true,
+    fixed16220261031Added: true, currentSeries: [editedNew],
+    seriesDrafts: transforms.seriesToDrafts([editedNew]) });
+  assert.equal(deletedAfterUpgrade.currentSeries.length, 1, 'Deleted snapshot lines stay deleted');
   const empty = initial({ currentSeries: [], seriesDrafts: [], state: {}, inferenceXSync: {} });
   assert.equal(empty.currentSeries.length, 0, 'An intentionally cleared workspace stays empty');
   assert.equal(empty.seriesDrafts.length, 1);
@@ -184,14 +206,60 @@ try {
   switching.restoreActiveSeriesForCurrentView();
   assert.deepEqual([...fresh.selectedPrecisions], ['fp4']);
   const shown = switching.getFilteredSeriesForChart();
-  assert.equal(shown.length, 10, 'First Agentic to Fixed switch shows five real/simulation case pairs');
-  assert.equal(fresh.activeSeriesIds.size, 10);
-  assert.equal(chart.getInferenceCurveColorSourceSeries(shown, fresh.activeSeriesIds, ['fp4'], 'meanInteractivity').length, 10);
+  assert.equal(shown.length, 15, 'First Agentic to Fixed switch shows five real/historical/new case groups');
+  assert.equal(fresh.activeSeriesIds.size, 15);
+  assert.equal(chart.getInferenceCurveColorSourceSeries(shown, fresh.activeSeriesIds, ['fp4'], 'meanInteractivity').length, 15);
   const prepared = chart.prepareInferenceCurveSeries(shown, false, 'dark', shown, 'meanInteractivity', false, undefined, 'maximize', 'p90', 'totalThroughput');
-  assert.equal(prepared.flatMap(s => s.points).length, 90);
+  assert.equal(prepared.flatMap(s => s.points).length, 135);
   assert.ok(prepared.flatMap(s => s.points).every(p => p.precision === 'fp4'));
 
-  console.log('Fixed180 comparison passed: 18 paired cases, 162 unchanged metrics, context guards, JSON/draft/CSV roundtrip, additive migration, and first Agentic-to-Fixed switch precision.');
+  const publicBytes = fs.readFileSync('public/data/e2e-simopus-mi355x-20261031.json');
+  assert.deepEqual(publicBytes, fs.readFileSync('src/data/fixed162SimOpusMi355x20261031.json'));
+  const snapshot = JSON.parse(publicBytes);
+  assert.equal(snapshot.visibility, 'public');
+  assert.equal(snapshot.provenance.formalRequests, 15840);
+  assert.equal(snapshot.accuracyAccepted, false);
+  assert.equal(newSimulation.flatMap(s => s.points).length, 162);
+  const newSuffixes = new Set();
+  for (const line of newSimulation) {
+    assert.ok(line.name.startsWith('E2E-SimOpus-Mi355x-20261031 / '));
+    newSuffixes.add(line.name.split(' / ')[1]);
+    assert.equal(line.group, 'E2E-SimOpus-Mi355x');
+    assert.equal(line.mtp, 'MTP');
+    for (const point of line.points) {
+      assert.equal(point.failed_requests, 0);
+      assert.equal(point.completed_requests, point.concurrency * 10);
+      assert.equal(point.totalThroughput / point.num_prefill_gpu, point.throughput);
+      assert.ok(Math.abs(point.meanInteractivity * point.mean_tpot_seconds - 1) < 1e-14);
+      assert.equal(point.interactivityPercentiles, undefined, 'No mean is relabeled as a percentile');
+    }
+  }
+  assert.deepEqual([...newSuffixes].sort(), ['Cold', 'E1K', 'E2K', 'E4K', 'E512']);
+  const rebuiltNew = transforms.readNativeSeries({ series: transforms.draftsToSeriesAllowEmpty(
+    transforms.restorePersistedSeriesDrafts(JSON.parse(JSON.stringify(transforms.seriesToDrafts(newSimulation))))
+  ) });
+  rebuiltNew.forEach((line, i) => {
+    assert.equal(line.islOsl, newSimulation[i].islOsl);
+    assert.equal(line.comparisonContext, newSimulation[i].comparisonContext);
+    line.points.forEach((point, j) => {
+      for (const metric of ['meanInteractivity', 'totalThroughput', 'throughput', 'ttft', 'endToEnd']) {
+        assert.equal(point[metric], newSimulation[i].points[j][metric]);
+      }
+    });
+  });
+  const newCsvApi = api(['buildChartCsvRows', 'seriesFromEditorRecords'], {
+    state: { ...state, activeSeriesIds: new Set(newSimulation.map(s => s.id)) },
+    getSeriesForPersistence: () => newSimulation,
+    getChartColorSourceSeries: () => newSimulation,
+    shouldEnforceEndToEndPareto: () => false,
+    getTcoHourlyCosts: () => undefined
+  });
+  const newCsvRows = newCsvApi.buildChartCsvRows('all');
+  assert.equal(newCsvRows.length, 163);
+  compareMetrics(newCsvApi.seriesFromEditorRecords(newCsvRows.slice(1).map(row =>
+    Object.fromEntries(newCsvRows[0].map((header, i) => [header, row[i]]))
+  )), newSimulation);
+  console.log('Fixed comparison passed: 18 real/historical/new groups, 162 new points, unchanged metrics, context guards, JSON/draft/CSV roundtrip, additive migration, and first Agentic-to-Fixed switch.');
 } finally {
   await server.close();
 }
