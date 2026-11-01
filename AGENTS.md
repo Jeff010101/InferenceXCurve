@@ -123,14 +123,17 @@ The InferenceX API does **not** send an `Access-Control-Allow-Origin` header (th
 
 ## Agent Notes: Adding Benchmark Data
 
-`fixed162SimOpusMi355x20261031.json` adds a separate 18-workload, nine-configuration
-version named `E2E-SimOpus-Mi355x-20261031 / Cold` or `/ E512`, `/ E1K`, `/ E2K`,
+`fixed162SimOpusMi355x20261101.json` adds a separate 18-workload, nine-configuration
+version named `E2E-SimOpus-Mi355x-20261101 / Cold` or `/ E512`, `/ E1K`, `/ E2K`,
 `/ E4K` in the existing simulation group. Preserve its actual total ISL, explicit
 nominal comparisonContext, source-clock means, source hashes and pending accuracy
 status. Its public JSON is a byte-identical exported view, not a second maintained
-dataset. Do not replace historical curves. See `docs/fixed162-simopus-20261031.md`.
+dataset. Do not replace historical curves. See `docs/fixed162-simopus-20261101.md`.
 The one-time `fixed16220261031Added` migration adds only missing IDs to nonempty
 saved workspaces; preserve edits, intentional empty workspaces and later deletions.
+Keep this legacy storage key and the original curve IDs stable when correcting
+the display date. `fixed16220261101LabelsAdded` renames only the old default labels
+once; do not replace metrics or override custom names.
 
 The user requested ordinary editable repository data, not a dedicated snapshot view. `src/exampleData.ts` maps the ten-point AgentX reference and first ten-configuration simulation baseline into the normal InferenceX workspace; existing browser edits take precedence. Keep `E2E-SimOpus-Mi355x-baseline` in group `E2E-SimOpus-Mi355x`, preserving its limited ADP2/C64 evidence and per-point provenance. Never replace it with later 1200s results under the same ID. Do not restore unrelated upstream examples. Keep all DeepSeek V4.1 Flash curves under model `DeepSeek-V4.1-Flash`, with distinct curve IDs/names/groups and correct workload scenarios. Imported Agentic data must retain source percentiles, speculative method and provenance.
 

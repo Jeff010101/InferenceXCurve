@@ -3,7 +3,7 @@ import { getTheme, THEME_CHANGE_EVENT, type Theme } from './theme';
 
 import { strFromU8, unzipSync } from 'fflate';
 
-import { exampleSeries, fixedLengthComparisonSeries, fixed16220261031Series } from './exampleData';
+import { exampleSeries, fixedLengthComparisonSeries, fixed16220261101Series } from './exampleData';
 import {
   formatExtendLabel,
   formatIslOslLabel,
@@ -259,6 +259,7 @@ interface PersistedAppData {
   fixed180BaselineAdded?: boolean;
   fixed180LabelsAdded?: boolean;
   fixed16220261031Added?: boolean;
+  fixed16220261101LabelsAdded?: boolean;
   currentSeries: InferenceCurveSeries[];
   seriesDrafts: SeriesDraft[];
   state: PersistedAppState;
@@ -670,10 +671,19 @@ function createInitialDataState(): InitialDataState {
       }
     }
   }
+  if (!persisted.fixed16220261101LabelsAdded) {
+    const correctedNames = new Map(fixed16220261101Series.map((line) => [line.id, line.name]));
+    for (const line of [...restoredSeries, ...restoredDrafts]) {
+      const correctedName = correctedNames.get(line.id);
+      if (correctedName && line.name === correctedName.replace('-20261101 /', '-20261031 /')) {
+        line.name = correctedName;
+      }
+    }
+  }
   const existingIds = new Set([...restoredSeries, ...restoredDrafts].map((line) => line.id));
   const repositoryAdditions = [
     ...(!persisted.fixed180BaselineAdded ? fixedLengthComparisonSeries : []),
-    ...(!persisted.fixed16220261031Added ? fixed16220261031Series : [])
+    ...(!persisted.fixed16220261031Added ? fixed16220261101Series : [])
   ];
   const additions = restoredSeries.length === 0 ? [] : structuredClone(
     [...new Map(repositoryAdditions.map((line) => [line.id, line])).values()]
@@ -716,6 +726,7 @@ function loadPersistedAppData(): PersistedAppData | null {
       fixed180BaselineAdded: data.fixed180BaselineAdded === true,
       fixed180LabelsAdded: data.fixed180LabelsAdded === true,
       fixed16220261031Added: data.fixed16220261031Added === true,
+      fixed16220261101LabelsAdded: data.fixed16220261101LabelsAdded === true,
       currentSeries: Array.isArray(data.currentSeries) ? readNativeSeries(data.currentSeries) : [],
       seriesDrafts: restorePersistedSeriesDrafts(data.seriesDrafts),
       state: restorePersistedState(data.state),
@@ -1050,6 +1061,7 @@ function saveLocalDataNow(): void {
       fixed180BaselineAdded: true,
       fixed180LabelsAdded: true,
       fixed16220261031Added: true,
+      fixed16220261101LabelsAdded: true,
       currentSeries: getSeriesForPersistence(),
       seriesDrafts,
       state: serializeAppState(),
