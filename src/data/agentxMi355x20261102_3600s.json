@@ -1,0 +1,1745 @@
+{
+  "schemaVersion": 1,
+  "snapshotDate": "2026-11-02",
+  "requestedHorizonSeconds": 3600,
+  "selectedConfigurations": [
+    "C01",
+    "C02",
+    "C03",
+    "C04",
+    "C05",
+    "C07",
+    "C08",
+    "C09",
+    "C10"
+  ],
+  "excludedConfigurations": [
+    "tp2-adp2-c64"
+  ],
+  "metricDefinitions": {
+    "meanInteractivity": "1 / mean full-response ITL seconds rounded to5 decimal places; not P90 or mean of individual request rates",
+    "totalThroughput": "formal input+output tokens / original observed benchmark duration, total per replica",
+    "throughputPerGPU": "totalThroughput / physical TP GPU count",
+    "legacyAgenticLatencyFields": "Unprefixed ttft/endToEnd retain the app's P90 semantics; mean values remain in evidence.",
+    "mape": "100 * arithmetic mean(abs(simulation/reference -1)) over the fixed nine matched configurations; no nearest-frontier matching or pooled-token weighting"
+  },
+  "provenance": {
+    "sourceChartDataSha256": "949981f51ec09cb762cb46619249be7eee7eff483ad144042c3bebad11ede6bc",
+    "originalAIPerfResultPairsVerified": 18,
+    "publicReferenceResultPairsVerified": 9,
+    "publicReferenceRun": "39596624542",
+    "publicReferenceDate": "2026-10-22",
+    "noNewMeasurements": true,
+    "noNewCostAdmission": true,
+    "accuracyAccepted": false,
+    "versionFreeze": false
+  },
+  "series": [
+    {
+      "id": "agentx-local-mi355x-20261102-3600s",
+      "name": "AgentX-Local-Mi355X",
+      "group": "Local-real-run",
+      "hwKey": "mi355x_sglang",
+      "model": "DeepSeek-V4.1-Flash",
+      "islOsl": "Agentic Traces",
+      "precision": "fp4",
+      "color": "#60a5fa",
+      "marker": "circle",
+      "lineStyle": "solid",
+      "title": "DeepSeek-V4.1-Flash | MI355X / SGLang | AgentX native | 3600s | nine ADP1 configs",
+      "note": "2026-11-02 nine-config result snapshot; ADP1, DPA off, Monokernel off. Mean interactivity is reciprocal rounded mean full-response ITL; total throughput includes input+output tokens over original observed duration. All nine original AIPerf populations and token sums verified, no formal errors/cancellations/skips. C05/C10 select predeclared clean r1444 repeats, preserving earlier one-error diagnostics. C08 original post-completion outer cleanup failure remains preserved and independently scoped. ADP2/C64 excluded. No performance scaling, fitting, interpolated final points or version freeze. Source and MAPE: data/agentx-mi355x-20261102-3600s.json.",
+      "points": [
+        {
+          "configId": "C01",
+          "precision": "fp4",
+          "meanInteractivity": 423.728813559322,
+          "totalThroughput": 24174.33462291459,
+          "throughput": 12087.167311457295,
+          "interactivity": 404.8582995951417,
+          "interactivityPercentiles": {
+            "p50": 427.3504273504273,
+            "p75": 421.94092827004215,
+            "p90": 404.8582995951417,
+            "p95": 374.5318352059925,
+            "p99": 364.9635036496351
+          },
+          "ttft": 1.5494165953999999,
+          "ttftPercentiles": {
+            "p50": 0.640404522,
+            "p75": 1.122525419,
+            "p90": 1.5494165953999999,
+            "p95": 2.025497991999997,
+            "p99": 3.047221983229996
+          },
+          "endToEnd": 13.063990441599998,
+          "endToEndPercentiles": {
+            "p50": 2.9876299415,
+            "p75": 7.13182075825,
+            "p90": 13.063990441599998,
+            "p95": 16.27550694495,
+            "p99": 31.50240498877999
+          },
+          "tp": 2,
+          "prefill_tp": 2,
+          "decode_tp": 2,
+          "prefill_ep": 1,
+          "decode_ep": 1,
+          "dp_attention": false,
+          "prefill_dp_attention": false,
+          "decode_dp_attention": false,
+          "num_prefill_gpu": 2,
+          "num_decode_gpu": 2,
+          "disagg": false,
+          "spec_decoding": "mtp",
+          "concurrency": 1,
+          "strategy": "TP2 ADP1",
+          "label": "C01 TP2 ADP1 C1",
+          "note": "C01; 3600s AgentX native real run; Monokernel off; DPA off; LPM; pool 2; chunk16384; P/D interval192; SWA tails128; 294 successful profiling requests; AIPerf SHA256 9c749e6b0232b5f9f4302e950241585eb77555f765539b3bcabb3e3957bba353. Original producer rate and observed-duration total retained separately; accuracy not accepted.",
+          "evidence": {
+            "originalAIPerfAggregateSha256": "9c749e6b0232b5f9f4302e950241585eb77555f765539b3bcabb3e3957bba353",
+            "originalAIPerfJsonlSha256": "84e20d7e1ac0360d9b6636032e7acb440b853de305e9053631cd207e44a3505f",
+            "formalRequests": 294,
+            "fullResponseITLCount": 293,
+            "formalErrors": 0,
+            "formalCancelled": 0,
+            "formalContextSkips": 0,
+            "observedDurationSeconds": 3604.128608256,
+            "inputTokens": 86554289,
+            "outputTokens": 573122,
+            "meanFullResponseITLSecondsRaw": 0.0023620340252531345,
+            "meanFullResponseITLSecondsRounded5": 0.00236,
+            "originalReportedTotalTokenThroughput": 24174.28858606023,
+            "meanTTFTSeconds": 0.8511965146666667,
+            "meanEndToEndSeconds": 5.399666322846938,
+            "referenceResultId": "446041",
+            "configParameters": {
+              "TP": 2,
+              "ADP": 1,
+              "concurrency": 1,
+              "request_pool_limit": 2,
+              "chunked_prefill_size": 16384,
+              "prefill_decode_interval": 192,
+              "mem_fraction_static": 0.7,
+              "swa_prefix_tails": 128,
+              "DPA": false,
+              "monokernel_backend": null,
+              "schedule_policy": "lpm"
+            },
+            "accuracyAccepted": false
+          }
+        },
+        {
+          "configId": "C02",
+          "precision": "fp4",
+          "meanInteractivity": 396.8253968253968,
+          "totalThroughput": 33882.1928632234,
+          "throughput": 16941.0964316117,
+          "interactivity": 344.82758620689657,
+          "interactivityPercentiles": {
+            "p50": 423.728813559322,
+            "p75": 371.74721189591077,
+            "p90": 344.82758620689657,
+            "p95": 318.47133757961785,
+            "p99": 264.55026455026456
+          },
+          "ttft": 1.6798856536999998,
+          "ttftPercentiles": {
+            "p50": 0.454581929,
+            "p75": 1.07422835375,
+            "p90": 1.6798856536999998,
+            "p95": 2.3361629312499974,
+            "p99": 4.636819832639999
+          },
+          "endToEnd": 10.714021511599999,
+          "endToEndPercentiles": {
+            "p50": 1.8453228074999999,
+            "p75": 4.96626363375,
+            "p90": 10.714021511599999,
+            "p95": 14.496728449749996,
+            "p99": 24.18423498514997
+          },
+          "tp": 2,
+          "prefill_tp": 2,
+          "decode_tp": 2,
+          "prefill_ep": 1,
+          "decode_ep": 1,
+          "dp_attention": false,
+          "prefill_dp_attention": false,
+          "decode_dp_attention": false,
+          "num_prefill_gpu": 2,
+          "num_decode_gpu": 2,
+          "disagg": false,
+          "spec_decoding": "mtp",
+          "concurrency": 4,
+          "strategy": "TP2 ADP1",
+          "label": "C02 TP2 ADP1 C4",
+          "note": "C02; 3600s AgentX native real run; Monokernel off; DPA off; LPM; pool 8; chunk16384; P/D interval192; SWA tails256; 662 successful profiling requests; AIPerf SHA256 0d6dd65fd87dba3dc50623ceacd7d941472bdf6bd11ce2a49342b74886479051. Original producer rate and observed-duration total retained separately; accuracy not accepted.",
+          "evidence": {
+            "originalAIPerfAggregateSha256": "0d6dd65fd87dba3dc50623ceacd7d941472bdf6bd11ce2a49342b74886479051",
+            "originalAIPerfJsonlSha256": "7d09f1dffc2535dd607a8bcfcd5524757a3b9d8778458e6292a82428f8245d29",
+            "formalRequests": 662,
+            "fullResponseITLCount": 660,
+            "formalErrors": 0,
+            "formalCancelled": 0,
+            "formalContextSkips": 0,
+            "observedDurationSeconds": 3600.311127808,
+            "inputTokens": 121117277,
+            "outputTokens": 869159,
+            "meanFullResponseITLSecondsRaw": 0.002524261607522836,
+            "meanFullResponseITLSecondsRounded5": 0.00252,
+            "originalReportedTotalTokenThroughput": 33882.13316621934,
+            "meanTTFTSeconds": 0.8114934268459214,
+            "meanEndToEndSeconds": 4.10099321542145,
+            "referenceResultId": "446045",
+            "configParameters": {
+              "TP": 2,
+              "ADP": 1,
+              "concurrency": 4,
+              "request_pool_limit": 8,
+              "chunked_prefill_size": 16384,
+              "prefill_decode_interval": 192,
+              "mem_fraction_static": 0.7,
+              "swa_prefix_tails": 256,
+              "DPA": false,
+              "monokernel_backend": null,
+              "schedule_policy": "lpm"
+            },
+            "accuracyAccepted": false
+          }
+        },
+        {
+          "configId": "C03",
+          "precision": "fp4",
+          "meanInteractivity": 362.3188405797102,
+          "totalThroughput": 60138.171501602126,
+          "throughput": 30069.085750801063,
+          "interactivity": 303.951367781155,
+          "interactivityPercentiles": {
+            "p50": 367.6470588235294,
+            "p75": 327.86885245901635,
+            "p90": 303.951367781155,
+            "p95": 290.69767441860466,
+            "p99": 247.5247524752475
+          },
+          "ttft": 2.1704754779999997,
+          "ttftPercentiles": {
+            "p50": 0.677640405,
+            "p75": 1.4312429434999998,
+            "p90": 2.1704754779999997,
+            "p95": 3.090071891699999,
+            "p99": 7.292668584219999
+          },
+          "endToEnd": 9.659515498800001,
+          "endToEndPercentiles": {
+            "p50": 2.429849285,
+            "p75": 4.716589419999999,
+            "p90": 9.659515498800001,
+            "p95": 15.018268084899994,
+            "p99": 28.146441440660023
+          },
+          "tp": 2,
+          "prefill_tp": 2,
+          "decode_tp": 2,
+          "prefill_ep": 1,
+          "decode_ep": 1,
+          "dp_attention": false,
+          "prefill_dp_attention": false,
+          "decode_dp_attention": false,
+          "num_prefill_gpu": 2,
+          "num_decode_gpu": 2,
+          "disagg": false,
+          "spec_decoding": "mtp",
+          "concurrency": 8,
+          "strategy": "TP2 ADP1",
+          "label": "C03 TP2 ADP1 C8",
+          "note": "C03; 3600s AgentX native real run; Monokernel off; DPA off; LPM; pool 16; chunk16384; P/D interval192; SWA tails512; 1379 successful profiling requests; AIPerf SHA256 1eb30af6f1ddf729a8ac2907ec50ac24b4808f807783818083b8edc86707217d. Original producer rate and observed-duration total retained separately; accuracy not accepted.",
+          "evidence": {
+            "originalAIPerfAggregateSha256": "1eb30af6f1ddf729a8ac2907ec50ac24b4808f807783818083b8edc86707217d",
+            "originalAIPerfJsonlSha256": "285aaba51a067a79ee38638ea72f67b05d9dc88c51549e6b89e43a11fd2f81e3",
+            "formalRequests": 1379,
+            "fullResponseITLCount": 1377,
+            "formalErrors": 0,
+            "formalCancelled": 0,
+            "formalContextSkips": 0,
+            "observedDurationSeconds": 3591.3998149120002,
+            "inputTokens": 214422501,
+            "outputTokens": 1557717,
+            "meanFullResponseITLSecondsRaw": 0.0027635253228129376,
+            "meanFullResponseITLSecondsRounded5": 0.00276,
+            "originalReportedTotalTokenThroughput": 59994.483475662506,
+            "meanTTFTSeconds": 1.0787074728245105,
+            "meanEndToEndSeconds": 4.232933518435822,
+            "referenceResultId": "446047",
+            "configParameters": {
+              "TP": 2,
+              "ADP": 1,
+              "concurrency": 8,
+              "request_pool_limit": 16,
+              "chunked_prefill_size": 16384,
+              "prefill_decode_interval": 192,
+              "mem_fraction_static": 0.7,
+              "swa_prefix_tails": 512,
+              "DPA": false,
+              "monokernel_backend": null,
+              "schedule_policy": "lpm"
+            },
+            "accuracyAccepted": false
+          }
+        },
+        {
+          "configId": "C04",
+          "precision": "fp4",
+          "meanInteractivity": 299.4011976047904,
+          "totalThroughput": 111107.27639609098,
+          "throughput": 55553.63819804549,
+          "interactivity": 239.23444976076556,
+          "interactivityPercentiles": {
+            "p50": 307.6923076923077,
+            "p75": 269.54177897574124,
+            "p90": 239.23444976076556,
+            "p95": 225.22522522522522,
+            "p99": 201.2072434607646
+          },
+          "ttft": 2.362578117800004,
+          "ttftPercentiles": {
+            "p50": 0.774397936,
+            "p75": 1.3132925679999998,
+            "p90": 2.362578117800004,
+            "p95": 3.8521339508999994,
+            "p99": 10.12888144501997
+          },
+          "endToEnd": 10.162701760800003,
+          "endToEndPercentiles": {
+            "p50": 2.2924177230000002,
+            "p75": 4.6029932365,
+            "p90": 10.162701760800003,
+            "p95": 15.372217754499998,
+            "p99": 36.88189678127945
+          },
+          "tp": 2,
+          "prefill_tp": 2,
+          "decode_tp": 2,
+          "prefill_ep": 1,
+          "decode_ep": 1,
+          "dp_attention": false,
+          "prefill_dp_attention": false,
+          "decode_dp_attention": false,
+          "num_prefill_gpu": 2,
+          "num_decode_gpu": 2,
+          "disagg": false,
+          "spec_decoding": "mtp",
+          "concurrency": 16,
+          "strategy": "TP2 ADP1",
+          "label": "C04 TP2 ADP1 C16",
+          "note": "C04; 3600s AgentX native real run; Monokernel off; DPA off; FCFS; pool 32; chunk16384; P/D interval96; SWA tails1024; 2579 successful profiling requests; AIPerf SHA256 644bc27c93449fd543e89da15b3812ad059b14299cef1e89ba59777774fc2832. Original producer rate and observed-duration total retained separately; accuracy not accepted.",
+          "evidence": {
+            "originalAIPerfAggregateSha256": "644bc27c93449fd543e89da15b3812ad059b14299cef1e89ba59777774fc2832",
+            "originalAIPerfJsonlSha256": "efff77cfd4d691e004bbd181b4c4797ba3635a7659ef66a2defa6baf68632bf7",
+            "formalRequests": 2579,
+            "fullResponseITLCount": 2576,
+            "formalErrors": 0,
+            "formalCancelled": 0,
+            "formalContextSkips": 0,
+            "observedDurationSeconds": 3601.1845396480003,
+            "inputTokens": 397602452,
+            "outputTokens": 2515354,
+            "meanFullResponseITLSecondsRaw": 0.0033386734994542027,
+            "meanFullResponseITLSecondsRounded5": 0.00334,
+            "originalReportedTotalTokenThroughput": 111107.0280134,
+            "meanTTFTSeconds": 1.2385517646591702,
+            "meanEndToEndSeconds": 4.493297968770841,
+            "referenceResultId": "446040",
+            "configParameters": {
+              "TP": 2,
+              "ADP": 1,
+              "concurrency": 16,
+              "request_pool_limit": 32,
+              "chunked_prefill_size": 16384,
+              "prefill_decode_interval": 96,
+              "mem_fraction_static": 0.8,
+              "swa_prefix_tails": 1024,
+              "DPA": false,
+              "monokernel_backend": null,
+              "schedule_policy": "fcfs"
+            },
+            "accuracyAccepted": false
+          }
+        },
+        {
+          "configId": "C05",
+          "precision": "fp4",
+          "meanInteractivity": 197.23865877712032,
+          "totalThroughput": 224945.34185683972,
+          "throughput": 112472.67092841986,
+          "interactivity": 138.50415512465375,
+          "interactivityPercentiles": {
+            "p50": 210.08403361344537,
+            "p75": 174.21602787456445,
+            "p90": 138.50415512465375,
+            "p95": 127.06480304955527,
+            "p99": 105.48523206751054
+          },
+          "ttft": 2.2095260444999996,
+          "ttftPercentiles": {
+            "p50": 0.6133460414999999,
+            "p75": 1.039124849,
+            "p90": 2.2095260444999996,
+            "p95": 4.806605769949979,
+            "p99": 14.067942968579974
+          },
+          "endToEnd": 15.094433499999992,
+          "endToEndPercentiles": {
+            "p50": 3.1216131395,
+            "p75": 7.257639717999999,
+            "p90": 15.094433499999992,
+            "p95": 23.808808902399964,
+            "p99": 49.012433068789775
+          },
+          "tp": 2,
+          "prefill_tp": 2,
+          "decode_tp": 2,
+          "prefill_ep": 1,
+          "decode_ep": 1,
+          "dp_attention": false,
+          "prefill_dp_attention": false,
+          "decode_dp_attention": false,
+          "num_prefill_gpu": 2,
+          "num_decode_gpu": 2,
+          "disagg": false,
+          "spec_decoding": "mtp",
+          "concurrency": 32,
+          "strategy": "TP2 ADP1",
+          "label": "C05 TP2 ADP1 C32",
+          "note": "C05; 3600s AgentX native real run; Monokernel off; DPA off; FCFS; pool 64; chunk16384; P/D interval32; SWA tails2048; 4594 successful profiling requests; AIPerf SHA256 993c25c1212f63f7a95a349e3b9d755c1444699d3d356e678f3821c40401e6ce. Original producer rate and observed-duration total retained separately; accuracy not accepted.",
+          "evidence": {
+            "originalAIPerfAggregateSha256": "993c25c1212f63f7a95a349e3b9d755c1444699d3d356e678f3821c40401e6ce",
+            "originalAIPerfJsonlSha256": "f37a12bcbd11922a95306cf4333d166582993c0f63861f7c00f81939de0d2558",
+            "formalRequests": 4594,
+            "fullResponseITLCount": 4592,
+            "formalErrors": 0,
+            "formalCancelled": 0,
+            "formalContextSkips": 0,
+            "observedDurationSeconds": 3614.0326725120003,
+            "inputTokens": 808227078,
+            "outputTokens": 4732737,
+            "meanFullResponseITLSecondsRaw": 0.005074778440483215,
+            "meanFullResponseITLSecondsRounded5": 0.00507,
+            "originalReportedTotalTokenThroughput": 224944.77308233856,
+            "meanTTFTSeconds": 1.272041802079016,
+            "meanEndToEndSeconds": 6.4966469446260335,
+            "referenceResultId": "446043",
+            "configParameters": {
+              "TP": 2,
+              "ADP": 1,
+              "concurrency": 32,
+              "request_pool_limit": 64,
+              "chunked_prefill_size": 16384,
+              "prefill_decode_interval": 32,
+              "mem_fraction_static": 0.8,
+              "swa_prefix_tails": 2048,
+              "DPA": false,
+              "monokernel_backend": null,
+              "schedule_policy": "fcfs"
+            },
+            "accuracyAccepted": false
+          }
+        },
+        {
+          "configId": "C07",
+          "precision": "fp4",
+          "meanInteractivity": 467.2897196261682,
+          "totalThroughput": 25138.02891248027,
+          "throughput": 6284.507228120067,
+          "interactivity": 452.4886877828054,
+          "interactivityPercentiles": {
+            "p50": 471.6981132075472,
+            "p75": 465.1162790697674,
+            "p90": 452.4886877828054,
+            "p95": 420.16806722689074,
+            "p99": 401.60642570281124
+          },
+          "ttft": 1.5272441485000006,
+          "ttftPercentiles": {
+            "p50": 0.6781200665,
+            "p75": 1.12804689775,
+            "p90": 1.5272441485000006,
+            "p95": 1.77190796205,
+            "p99": 3.797114124549995
+          },
+          "endToEnd": 12.410539797899999,
+          "endToEndPercentiles": {
+            "p50": 2.807251301,
+            "p75": 6.60286756,
+            "p90": 12.410539797899999,
+            "p95": 15.125200866500002,
+            "p99": 28.467359611249996
+          },
+          "tp": 4,
+          "prefill_tp": 4,
+          "decode_tp": 4,
+          "prefill_ep": 1,
+          "decode_ep": 1,
+          "dp_attention": false,
+          "prefill_dp_attention": false,
+          "decode_dp_attention": false,
+          "num_prefill_gpu": 4,
+          "num_decode_gpu": 4,
+          "disagg": false,
+          "spec_decoding": "mtp",
+          "concurrency": 1,
+          "strategy": "TP4 ADP1",
+          "label": "C07 TP4 ADP1 C1",
+          "note": "C07; 3600s AgentX native real run; Monokernel off; DPA off; LPM; pool 2; chunk16384; P/D interval192; SWA tails128; 300 successful profiling requests; AIPerf SHA256 af5ae28656876905c969bb5a6d1005ae44eb7e88ffe423010a2ce1875003ac02. Original producer rate and observed-duration total retained separately; accuracy not accepted.",
+          "evidence": {
+            "originalAIPerfAggregateSha256": "af5ae28656876905c969bb5a6d1005ae44eb7e88ffe423010a2ce1875003ac02",
+            "originalAIPerfJsonlSha256": "1d421e2453c3ef1a8120b2d00ec3f6020865d1370ee385bc04c64d42e6eb1b92",
+            "formalRequests": 300,
+            "fullResponseITLCount": 299,
+            "formalErrors": 0,
+            "formalCancelled": 0,
+            "formalContextSkips": 0,
+            "observedDurationSeconds": 3610.4230095360003,
+            "inputTokens": 90165640,
+            "outputTokens": 593278,
+            "meanFullResponseITLSecondsRaw": 0.0021400848437005907,
+            "meanFullResponseITLSecondsRounded5": 0.00214,
+            "originalReportedTotalTokenThroughput": 25137.95293203961,
+            "meanTTFTSeconds": 0.8518280322199999,
+            "meanEndToEndSeconds": 5.066656056433333,
+            "referenceResultId": "446049",
+            "configParameters": {
+              "TP": 4,
+              "ADP": 1,
+              "concurrency": 1,
+              "request_pool_limit": 2,
+              "chunked_prefill_size": 16384,
+              "prefill_decode_interval": 192,
+              "mem_fraction_static": 0.7,
+              "swa_prefix_tails": 128,
+              "DPA": false,
+              "monokernel_backend": null,
+              "schedule_policy": "lpm"
+            },
+            "accuracyAccepted": false
+          }
+        },
+        {
+          "configId": "C08",
+          "precision": "fp4",
+          "meanInteractivity": 458.7155963302752,
+          "totalThroughput": 26051.353964790902,
+          "throughput": 6512.8384911977255,
+          "interactivity": 409.8360655737705,
+          "interactivityPercentiles": {
+            "p50": 469.4835680751174,
+            "p75": 456.62100456621005,
+            "p90": 409.8360655737705,
+            "p95": 396.8253968253968,
+            "p99": 364.9635036496351
+          },
+          "ttft": 1.4368705977,
+          "ttftPercentiles": {
+            "p50": 0.5466201445,
+            "p75": 0.9329233764999999,
+            "p90": 1.4368705977,
+            "p95": 1.73852540005,
+            "p99": 3.2861173642400026
+          },
+          "endToEnd": 10.9306359156,
+          "endToEndPercentiles": {
+            "p50": 1.7883517465,
+            "p75": 5.2994375205,
+            "p90": 10.9306359156,
+            "p95": 14.927841523649995,
+            "p99": 23.29625369526003
+          },
+          "tp": 4,
+          "prefill_tp": 4,
+          "decode_tp": 4,
+          "prefill_ep": 1,
+          "decode_ep": 1,
+          "dp_attention": false,
+          "prefill_dp_attention": false,
+          "decode_dp_attention": false,
+          "num_prefill_gpu": 4,
+          "num_decode_gpu": 4,
+          "disagg": false,
+          "spec_decoding": "mtp",
+          "concurrency": 2,
+          "strategy": "TP4 ADP1",
+          "label": "C08 TP4 ADP1 C2",
+          "note": "C08; 3600s AgentX native real run; Monokernel off; DPA off; LPM; pool 4; chunk16384; P/D interval192; SWA tails128; 458 successful profiling requests; AIPerf SHA256 22ae4a144b6558ddd22d4e7a53820963f46c443dd1a73d82eea30eaa46084e89. Original producer rate and observed-duration total retained separately; accuracy not accepted.",
+          "evidence": {
+            "originalAIPerfAggregateSha256": "22ae4a144b6558ddd22d4e7a53820963f46c443dd1a73d82eea30eaa46084e89",
+            "originalAIPerfJsonlSha256": "346715f6ad347458fc3858a518c82bf93c977ba74a04896268bf7d3e9affd568",
+            "formalRequests": 458,
+            "fullResponseITLCount": 457,
+            "formalErrors": 0,
+            "formalCancelled": 0,
+            "formalContextSkips": 0,
+            "observedDurationSeconds": 3599.49694464,
+            "inputTokens": 93077896,
+            "outputTokens": 693873,
+            "meanFullResponseITLSecondsRaw": 0.00218231811199092,
+            "meanFullResponseITLSecondsRounded5": 0.00218,
+            "originalReportedTotalTokenThroughput": 26047.70878485415,
+            "meanTTFTSeconds": 0.695422660231441,
+            "meanEndToEndSeconds": 3.977816582087336,
+            "referenceResultId": "446050",
+            "configParameters": {
+              "TP": 4,
+              "ADP": 1,
+              "concurrency": 2,
+              "request_pool_limit": 4,
+              "chunked_prefill_size": 16384,
+              "prefill_decode_interval": 192,
+              "mem_fraction_static": 0.7,
+              "swa_prefix_tails": 128,
+              "DPA": false,
+              "monokernel_backend": null,
+              "schedule_policy": "lpm"
+            },
+            "accuracyAccepted": false
+          }
+        },
+        {
+          "configId": "C09",
+          "precision": "fp4",
+          "meanInteractivity": 411.52263374485597,
+          "totalThroughput": 61197.82843216171,
+          "throughput": 15299.457108040428,
+          "interactivity": 355.87188612099646,
+          "interactivityPercentiles": {
+            "p50": 414.9377593360996,
+            "p75": 378.7878787878788,
+            "p90": 355.87188612099646,
+            "p95": 337.83783783783787,
+            "p99": 298.5074626865672
+          },
+          "ttft": 2.0259257197,
+          "ttftPercentiles": {
+            "p50": 0.5959296534999999,
+            "p75": 1.27132064,
+            "p90": 2.0259257197,
+            "p95": 2.8524809408499996,
+            "p99": 5.173046441569979
+          },
+          "endToEnd": 8.788694966200001,
+          "endToEndPercentiles": {
+            "p50": 2.1178050049999997,
+            "p75": 4.119579541749999,
+            "p90": 8.788694966200001,
+            "p95": 12.673572849449993,
+            "p99": 23.69049859919994
+          },
+          "tp": 4,
+          "prefill_tp": 4,
+          "decode_tp": 4,
+          "prefill_ep": 1,
+          "decode_ep": 1,
+          "dp_attention": false,
+          "prefill_dp_attention": false,
+          "decode_dp_attention": false,
+          "num_prefill_gpu": 4,
+          "num_decode_gpu": 4,
+          "disagg": false,
+          "spec_decoding": "mtp",
+          "concurrency": 8,
+          "strategy": "TP4 ADP1",
+          "label": "C09 TP4 ADP1 C8",
+          "note": "C09; 3600s AgentX native real run; Monokernel off; DPA off; LPM; pool 16; chunk16384; P/D interval192; SWA tails512; 1390 successful profiling requests; AIPerf SHA256 24157efe698fb5f84888222fe5ad973c82eddd8c4cfc26c4e0a7586a19de98a7. Original producer rate and observed-duration total retained separately; accuracy not accepted.",
+          "evidence": {
+            "originalAIPerfAggregateSha256": "24157efe698fb5f84888222fe5ad973c82eddd8c4cfc26c4e0a7586a19de98a7",
+            "originalAIPerfJsonlSha256": "0a191237738be156735e80b1bab4b4276f18de4a953ce90445c216c6ff3f85d7",
+            "formalRequests": 1390,
+            "fullResponseITLCount": 1388,
+            "formalErrors": 0,
+            "formalCancelled": 0,
+            "formalContextSkips": 0,
+            "observedDurationSeconds": 3605.214689024,
+            "inputTokens": 219043378,
+            "outputTokens": 1587932,
+            "meanFullResponseITLSecondsRaw": 0.002433958922729903,
+            "meanFullResponseITLSecondsRounded5": 0.00243,
+            "originalReportedTotalTokenThroughput": 61197.679491515664,
+            "meanTTFTSeconds": 0.9467008093791367,
+            "meanEndToEndSeconds": 3.7416328865179858,
+            "referenceResultId": "446052",
+            "configParameters": {
+              "TP": 4,
+              "ADP": 1,
+              "concurrency": 8,
+              "request_pool_limit": 16,
+              "chunked_prefill_size": 16384,
+              "prefill_decode_interval": 192,
+              "mem_fraction_static": 0.7,
+              "swa_prefix_tails": 512,
+              "DPA": false,
+              "monokernel_backend": null,
+              "schedule_policy": "lpm"
+            },
+            "accuracyAccepted": false
+          }
+        },
+        {
+          "configId": "C10",
+          "precision": "fp4",
+          "meanInteractivity": 359.71223021582733,
+          "totalThroughput": 113632.03544112694,
+          "throughput": 28408.008860281734,
+          "interactivity": 303.951367781155,
+          "interactivityPercentiles": {
+            "p50": 363.6363636363637,
+            "p75": 332.22591362126246,
+            "p90": 303.951367781155,
+            "p95": 289.01734104046244,
+            "p99": 252.52525252525254
+          },
+          "ttft": 1.9433224776,
+          "ttftPercentiles": {
+            "p50": 0.6346704404999999,
+            "p75": 1.1174751045,
+            "p90": 1.9433224776,
+            "p95": 2.911895867200001,
+            "p99": 7.3525006948400105
+          },
+          "endToEnd": 8.566614177800004,
+          "endToEndPercentiles": {
+            "p50": 1.9675111044999998,
+            "p75": 3.8971692132499998,
+            "p90": 8.566614177800004,
+            "p95": 13.463799640600001,
+            "p99": 29.946966865389996
+          },
+          "tp": 4,
+          "prefill_tp": 4,
+          "decode_tp": 4,
+          "prefill_ep": 1,
+          "decode_ep": 1,
+          "dp_attention": false,
+          "prefill_dp_attention": false,
+          "decode_dp_attention": false,
+          "num_prefill_gpu": 4,
+          "num_decode_gpu": 4,
+          "disagg": false,
+          "spec_decoding": "mtp",
+          "concurrency": 16,
+          "strategy": "TP4 ADP1",
+          "label": "C10 TP4 ADP1 C16",
+          "note": "C10; 3600s AgentX native real run; Monokernel off; DPA off; FCFS; pool 32; chunk16384; P/D interval96; SWA tails1024; 2638 successful profiling requests; AIPerf SHA256 a20f3b36d8b8ade71272004b0f085d4adce1a0a2ed6175014dce149f17d3e974. Original producer rate and observed-duration total retained separately; accuracy not accepted.",
+          "evidence": {
+            "originalAIPerfAggregateSha256": "a20f3b36d8b8ade71272004b0f085d4adce1a0a2ed6175014dce149f17d3e974",
+            "originalAIPerfJsonlSha256": "7e2c5ae5543ff106608479d465a3f5ec99752b92fced55a029fbcdcd0f4efee6",
+            "formalRequests": 2638,
+            "fullResponseITLCount": 2635,
+            "formalErrors": 0,
+            "formalCancelled": 0,
+            "formalContextSkips": 0,
+            "observedDurationSeconds": 3607.2309926400003,
+            "inputTokens": 407299381,
+            "outputTokens": 2597619,
+            "meanFullResponseITLSecondsRaw": 0.0027797159755648376,
+            "meanFullResponseITLSecondsRounded5": 0.00278,
+            "originalReportedTotalTokenThroughput": 113631.64305111126,
+            "meanTTFTSeconds": 1.008828774540182,
+            "meanEndToEndSeconds": 3.7784949100288094,
+            "referenceResultId": "446048",
+            "configParameters": {
+              "TP": 4,
+              "ADP": 1,
+              "concurrency": 16,
+              "request_pool_limit": 32,
+              "chunked_prefill_size": 16384,
+              "prefill_decode_interval": 96,
+              "mem_fraction_static": 0.7,
+              "swa_prefix_tails": 1024,
+              "DPA": false,
+              "monokernel_backend": null,
+              "schedule_policy": "fcfs"
+            },
+            "accuracyAccepted": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "e2e-simopus-mi355x-20261102-3600s",
+      "name": "E2E-SimOpus-Mi355x-20261102-3600s",
+      "group": "E2E-SimOpus-Mi355x",
+      "hwKey": "mi355x_sglang",
+      "model": "DeepSeek-V4.1-Flash",
+      "islOsl": "Agentic Traces",
+      "precision": "fp4",
+      "color": "#f59e0b",
+      "marker": "diamond",
+      "lineStyle": "solid",
+      "title": "DeepSeek-V4.1-Flash | MI355X / SGLang | AgentX simulation | 3600s | nine ADP1 configs",
+      "note": "2026-11-02 nine-config result snapshot; ADP1, DPA off, Monokernel off. Mean interactivity is reciprocal rounded mean full-response ITL; total throughput includes input+output tokens over original observed duration. All nine original AIPerf populations and token sums verified, no formal errors/cancellations/skips. Offline CPU simulation, SDK fcb8f8ba8cfeefccb569d4c9e9bb4d62fdb3795e; actual1250-key plus Charles TEST manifest ca47f2ab8c31642ee4c659e85716aa6c649b4fc0058c72ecb6fe316b12e39a8e. All evaluated regional costs remain SOL estimates; no new timing or accuracy admission. ADP2/C64 excluded. No performance scaling, fitting, interpolated final points or version freeze. Source and MAPE: data/agentx-mi355x-20261102-3600s.json.",
+      "points": [
+        {
+          "configId": "C01",
+          "precision": "fp4",
+          "meanInteractivity": 411.52263374485597,
+          "totalThroughput": 25415.8210818266,
+          "throughput": 12707.9105409133,
+          "interactivity": 390.62499999999994,
+          "interactivityPercentiles": {
+            "p50": 413.22314049586777,
+            "p75": 409.8360655737705,
+            "p90": 390.62499999999994,
+            "p95": 352.11267605633805,
+            "p99": 344.82758620689657
+          },
+          "ttft": 0.141657394,
+          "ttftPercentiles": {
+            "p50": 0.098634001,
+            "p75": 0.10461141699999998,
+            "p90": 0.141657394,
+            "p95": 0.56501985,
+            "p99": 1.711012743
+          },
+          "endToEnd": 12.304243232,
+          "endToEndPercentiles": {
+            "p50": 2.349614409,
+            "p75": 6.977377756999999,
+            "p90": 12.304243232,
+            "p95": 16.654091727,
+            "p99": 31.773316709
+          },
+          "tp": 2,
+          "prefill_tp": 2,
+          "decode_tp": 2,
+          "prefill_ep": 1,
+          "decode_ep": 1,
+          "dp_attention": false,
+          "prefill_dp_attention": false,
+          "decode_dp_attention": false,
+          "num_prefill_gpu": 2,
+          "num_decode_gpu": 2,
+          "disagg": false,
+          "spec_decoding": "mtp",
+          "concurrency": 1,
+          "strategy": "TP2 ADP1",
+          "label": "C01 TP2 ADP1 C1",
+          "note": "C01; 3600s AgentX offline CPU simulation; Monokernel off; DPA off; LPM; pool 2; chunk16384; P/D interval192; SWA tails128; 301 successful profiling requests; AIPerf SHA256 c4d0533ebf39c4058130f4edd0e2ffd1e8fef60b96dd88c1d2548b96b858b5e4. Original producer rate and observed-duration total retained separately; accuracy not accepted.",
+          "evidence": {
+            "originalAIPerfAggregateSha256": "c4d0533ebf39c4058130f4edd0e2ffd1e8fef60b96dd88c1d2548b96b858b5e4",
+            "originalAIPerfJsonlSha256": "d245566f36a6f202ab42728d260306f4cd49ac00137be6a08ec33f4df49bbc91",
+            "formalRequests": 301,
+            "fullResponseITLCount": 300,
+            "formalErrors": 0,
+            "formalCancelled": 0,
+            "formalContextSkips": 0,
+            "observedDurationSeconds": 3595.1700992,
+            "inputTokens": 90776071,
+            "outputTokens": 598129,
+            "meanFullResponseITLSecondsRaw": 0.0024319496957006886,
+            "meanFullResponseITLSecondsRounded5": 0.00243,
+            "originalReportedTotalTokenThroughput": 25381.722222222223,
+            "meanTTFTSeconds": 0.16628164558803987,
+            "meanEndToEndSeconds": 4.996738878704319,
+            "referenceResultId": "446041",
+            "configParameters": {
+              "TP": 2,
+              "ADP": 1,
+              "concurrency": 1,
+              "request_pool_limit": 2,
+              "chunked_prefill_size": 16384,
+              "prefill_decode_interval": 192,
+              "mem_fraction_static": 0.7,
+              "swa_prefix_tails": 128,
+              "DPA": false,
+              "monokernel_backend": null,
+              "schedule_policy": "lpm"
+            },
+            "accuracyAccepted": false
+          }
+        },
+        {
+          "configId": "C02",
+          "precision": "fp4",
+          "meanInteractivity": 387.59689922480624,
+          "totalThroughput": 35584.163026769405,
+          "throughput": 17792.081513384703,
+          "interactivity": 346.0207612456747,
+          "interactivityPercentiles": {
+            "p50": 387.59689922480624,
+            "p75": 369.00369003690037,
+            "p90": 346.0207612456747,
+            "p95": 332.22591362126246,
+            "p99": 295.85798816568047
+          },
+          "ttft": 1.039717942,
+          "ttftPercentiles": {
+            "p50": 0.204708186,
+            "p75": 0.24302441,
+            "p90": 1.039717942,
+            "p95": 1.6313172452999998,
+            "p99": 2.8713871378399993
+          },
+          "endToEnd": 10.251356607000002,
+          "endToEndPercentiles": {
+            "p50": 1.575701576,
+            "p75": 4.058086853,
+            "p90": 10.251356607000002,
+            "p95": 15.580618653899998,
+            "p99": 27.650713737999972
+          },
+          "tp": 2,
+          "prefill_tp": 2,
+          "decode_tp": 2,
+          "prefill_ep": 1,
+          "decode_ep": 1,
+          "dp_attention": false,
+          "prefill_dp_attention": false,
+          "decode_dp_attention": false,
+          "num_prefill_gpu": 2,
+          "num_decode_gpu": 2,
+          "disagg": false,
+          "spec_decoding": "mtp",
+          "concurrency": 4,
+          "strategy": "TP2 ADP1",
+          "label": "C02 TP2 ADP1 C4",
+          "note": "C02; 3600s AgentX offline CPU simulation; Monokernel off; DPA off; LPM; pool 8; chunk16384; P/D interval192; SWA tails256; 675 successful profiling requests; AIPerf SHA256 87acb98698758af9acc1505c9bcf5df3ee93dfc61ca6e5e8940dc646c5594d44. Original producer rate and observed-duration total retained separately; accuracy not accepted.",
+          "evidence": {
+            "originalAIPerfAggregateSha256": "87acb98698758af9acc1505c9bcf5df3ee93dfc61ca6e5e8940dc646c5594d44",
+            "originalAIPerfJsonlSha256": "a2b1264ae456f8d61ccc0508b379558d318f7076168f4a741578931af90ce793",
+            "formalRequests": 675,
+            "fullResponseITLCount": 673,
+            "formalErrors": 0,
+            "formalCancelled": 0,
+            "formalContextSkips": 0,
+            "observedDurationSeconds": 3627.8199631360003,
+            "inputTokens": 128192349,
+            "outputTokens": 900588,
+            "meanFullResponseITLSecondsRaw": 0.0025781768437809684,
+            "meanFullResponseITLSecondsRounded5": 0.00258,
+            "originalReportedTotalTokenThroughput": 35584.163027377544,
+            "meanTTFTSeconds": 0.4091224388,
+            "meanEndToEndSeconds": 3.8553027959659256,
+            "referenceResultId": "446045",
+            "configParameters": {
+              "TP": 2,
+              "ADP": 1,
+              "concurrency": 4,
+              "request_pool_limit": 8,
+              "chunked_prefill_size": 16384,
+              "prefill_decode_interval": 192,
+              "mem_fraction_static": 0.7,
+              "swa_prefix_tails": 256,
+              "DPA": false,
+              "monokernel_backend": null,
+              "schedule_policy": "lpm"
+            },
+            "accuracyAccepted": false
+          }
+        },
+        {
+          "configId": "C03",
+          "precision": "fp4",
+          "meanInteractivity": 346.0207612456747,
+          "totalThroughput": 60259.66374271209,
+          "throughput": 30129.831871356044,
+          "interactivity": 285.7142857142857,
+          "interactivityPercentiles": {
+            "p50": 355.87188612099646,
+            "p75": 315.45741324921136,
+            "p90": 285.7142857142857,
+            "p95": 269.54177897574124,
+            "p99": 239.23444976076556
+          },
+          "ttft": 1.9379314836000001,
+          "ttftPercentiles": {
+            "p50": 0.37357528199999995,
+            "p75": 1.2632948035,
+            "p90": 1.9379314836000001,
+            "p95": 2.4722090385999995,
+            "p99": 5.695573210880013
+          },
+          "endToEnd": 9.268273939600002,
+          "endToEndPercentiles": {
+            "p50": 2.296929809,
+            "p75": 4.449236876,
+            "p90": 9.268273939600002,
+            "p95": 14.055060859999998,
+            "p99": 27.716734472760063
+          },
+          "tp": 2,
+          "prefill_tp": 2,
+          "decode_tp": 2,
+          "prefill_ep": 1,
+          "decode_ep": 1,
+          "dp_attention": false,
+          "prefill_dp_attention": false,
+          "decode_dp_attention": false,
+          "num_prefill_gpu": 2,
+          "num_decode_gpu": 2,
+          "disagg": false,
+          "spec_decoding": "mtp",
+          "concurrency": 8,
+          "strategy": "TP2 ADP1",
+          "label": "C03 TP2 ADP1 C8",
+          "note": "C03; 3600s AgentX offline CPU simulation; Monokernel off; DPA off; LPM; pool 16; chunk16384; P/D interval192; SWA tails512; 1379 successful profiling requests; AIPerf SHA256 96524fcfd8b5078a21a0b87d86871a49b0e1bd910d9716e2f3e0f686d8cbd98b. Original producer rate and observed-duration total retained separately; accuracy not accepted.",
+          "evidence": {
+            "originalAIPerfAggregateSha256": "96524fcfd8b5078a21a0b87d86871a49b0e1bd910d9716e2f3e0f686d8cbd98b",
+            "originalAIPerfJsonlSha256": "581dd940d1fec79f05a1d72b7ea02673d66e96ae837919e8010b7abae11d2d3e",
+            "formalRequests": 1379,
+            "fullResponseITLCount": 1377,
+            "formalErrors": 0,
+            "formalCancelled": 0,
+            "formalContextSkips": 0,
+            "observedDurationSeconds": 3593.98429312,
+            "inputTokens": 215006368,
+            "outputTokens": 1565917,
+            "meanFullResponseITLSecondsRaw": 0.0028923648370645567,
+            "meanFullResponseITLSecondsRounded5": 0.00289,
+            "originalReportedTotalTokenThroughput": 60158.96805555555,
+            "meanTTFTSeconds": 0.8213181234677303,
+            "meanEndToEndSeconds": 4.054088167621464,
+            "referenceResultId": "446047",
+            "configParameters": {
+              "TP": 2,
+              "ADP": 1,
+              "concurrency": 8,
+              "request_pool_limit": 16,
+              "chunked_prefill_size": 16384,
+              "prefill_decode_interval": 192,
+              "mem_fraction_static": 0.7,
+              "swa_prefix_tails": 512,
+              "DPA": false,
+              "monokernel_backend": null,
+              "schedule_policy": "lpm"
+            },
+            "accuracyAccepted": false
+          }
+        },
+        {
+          "configId": "C04",
+          "precision": "fp4",
+          "meanInteractivity": 271.7391304347826,
+          "totalThroughput": 110933.51788444929,
+          "throughput": 55466.758942224646,
+          "interactivity": 197.62845849802372,
+          "interactivityPercentiles": {
+            "p50": 282.4858757062147,
+            "p75": 237.52969121140143,
+            "p90": 197.62845849802372,
+            "p95": 184.84288354898337,
+            "p99": 169.7792869269949
+          },
+          "ttft": 2.4392170836000004,
+          "ttftPercentiles": {
+            "p50": 0.603122427,
+            "p75": 1.214394474,
+            "p90": 2.4392170836000004,
+            "p95": 4.338448280799994,
+            "p99": 11.84454148348001
+          },
+          "endToEnd": 10.795477289800008,
+          "endToEndPercentiles": {
+            "p50": 2.307082794,
+            "p75": 4.770447831999999,
+            "p90": 10.795477289800008,
+            "p95": 17.02262781439998,
+            "p99": 39.169169995600065
+          },
+          "tp": 2,
+          "prefill_tp": 2,
+          "decode_tp": 2,
+          "prefill_ep": 1,
+          "decode_ep": 1,
+          "dp_attention": false,
+          "prefill_dp_attention": false,
+          "decode_dp_attention": false,
+          "num_prefill_gpu": 2,
+          "num_decode_gpu": 2,
+          "disagg": false,
+          "spec_decoding": "mtp",
+          "concurrency": 16,
+          "strategy": "TP2 ADP1",
+          "label": "C04 TP2 ADP1 C16",
+          "note": "C04; 3600s AgentX offline CPU simulation; Monokernel off; DPA off; FCFS; pool 32; chunk16384; P/D interval96; SWA tails1024; 2569 successful profiling requests; AIPerf SHA256 9791d774d6a39036cb8ba781b65f7b0a53eb16350775df9160c20d10d17196e2. Original producer rate and observed-duration total retained separately; accuracy not accepted.",
+          "evidence": {
+            "originalAIPerfAggregateSha256": "9791d774d6a39036cb8ba781b65f7b0a53eb16350775df9160c20d10d17196e2",
+            "originalAIPerfJsonlSha256": "46184eaf2fd8e4521ed77f14c54e1ca8357410be56a2de606ec605b29b2d1a60",
+            "formalRequests": 2569,
+            "fullResponseITLCount": 2566,
+            "formalErrors": 0,
+            "formalCancelled": 0,
+            "formalContextSkips": 0,
+            "observedDurationSeconds": 3601.262951168,
+            "inputTokens": 396992390,
+            "outputTokens": 2508378,
+            "meanFullResponseITLSecondsRaw": 0.0036760924710048755,
+            "meanFullResponseITLSecondsRounded5": 0.00368,
+            "originalReportedTotalTokenThroughput": 110933.51787884296,
+            "meanTTFTSeconds": 1.1709634683799144,
+            "meanEndToEndSeconds": 4.681684804789413,
+            "referenceResultId": "446040",
+            "configParameters": {
+              "TP": 2,
+              "ADP": 1,
+              "concurrency": 16,
+              "request_pool_limit": 32,
+              "chunked_prefill_size": 16384,
+              "prefill_decode_interval": 96,
+              "mem_fraction_static": 0.8,
+              "swa_prefix_tails": 1024,
+              "DPA": false,
+              "monokernel_backend": null,
+              "schedule_policy": "fcfs"
+            },
+            "accuracyAccepted": false
+          }
+        },
+        {
+          "configId": "C05",
+          "precision": "fp4",
+          "meanInteractivity": 153.1393568147014,
+          "totalThroughput": 210990.908701364,
+          "throughput": 105495.454350682,
+          "interactivity": 121.95121951219511,
+          "interactivityPercentiles": {
+            "p50": 147.27540500736376,
+            "p75": 130.20833333333334,
+            "p90": 121.95121951219511,
+            "p95": 117.2332942555686,
+            "p99": 109.64912280701755
+          },
+          "ttft": 2.371704471300002,
+          "ttftPercentiles": {
+            "p50": 0.515409359,
+            "p75": 0.9172335475,
+            "p90": 2.371704471300002,
+            "p95": 5.757179360949992,
+            "p99": 13.14839637636987
+          },
+          "endToEnd": 19.2873930069,
+          "endToEndPercentiles": {
+            "p50": 3.7249481529999997,
+            "p75": 8.821902071999999,
+            "p90": 19.2873930069,
+            "p95": 29.271457486149956,
+            "p99": 59.79580294036987
+          },
+          "tp": 2,
+          "prefill_tp": 2,
+          "decode_tp": 2,
+          "prefill_ep": 1,
+          "decode_ep": 1,
+          "dp_attention": false,
+          "prefill_dp_attention": false,
+          "decode_dp_attention": false,
+          "num_prefill_gpu": 2,
+          "num_decode_gpu": 2,
+          "disagg": false,
+          "spec_decoding": "mtp",
+          "concurrency": 32,
+          "strategy": "TP2 ADP1",
+          "label": "C05 TP2 ADP1 C32",
+          "note": "C05; 3600s AgentX offline CPU simulation; Monokernel off; DPA off; FCFS; pool 64; chunk16384; P/D interval32; SWA tails2048; 4378 successful profiling requests; AIPerf SHA256 4c3299e8c1fce4c5793f4f7b03576f5fc76aacecf6ea94bf0a1fe813266e5306. Original producer rate and observed-duration total retained separately; accuracy not accepted.",
+          "evidence": {
+            "originalAIPerfAggregateSha256": "4c3299e8c1fce4c5793f4f7b03576f5fc76aacecf6ea94bf0a1fe813266e5306",
+            "originalAIPerfJsonlSha256": "e2630e2125f19d36fbae48eafa0990b9767dcea1c140455b46cc43e35d87739a",
+            "formalRequests": 4378,
+            "fullResponseITLCount": 4376,
+            "formalErrors": 0,
+            "formalCancelled": 0,
+            "formalContextSkips": 0,
+            "observedDurationSeconds": 3624.201657344,
+            "inputTokens": 760177769,
+            "outputTokens": 4495832,
+            "meanFullResponseITLSecondsRaw": 0.006528377436546651,
+            "meanFullResponseITLSecondsRounded5": 0.00653,
+            "originalReportedTotalTokenThroughput": 210990.9087111445,
+            "meanTTFTSeconds": 1.2071548360874829,
+            "meanEndToEndSeconds": 7.990195748552078,
+            "referenceResultId": "446043",
+            "configParameters": {
+              "TP": 2,
+              "ADP": 1,
+              "concurrency": 32,
+              "request_pool_limit": 64,
+              "chunked_prefill_size": 16384,
+              "prefill_decode_interval": 32,
+              "mem_fraction_static": 0.8,
+              "swa_prefix_tails": 2048,
+              "DPA": false,
+              "monokernel_backend": null,
+              "schedule_policy": "fcfs"
+            },
+            "accuracyAccepted": false
+          }
+        },
+        {
+          "configId": "C07",
+          "precision": "fp4",
+          "meanInteractivity": 471.6981132075472,
+          "totalThroughput": 27463.217704023667,
+          "throughput": 6865.804426005917,
+          "interactivity": 450.45045045045043,
+          "interactivityPercentiles": {
+            "p50": 471.6981132075472,
+            "p75": 467.2897196261682,
+            "p90": 450.45045045045043,
+            "p95": 425.531914893617,
+            "p99": 413.22314049586777
+          },
+          "ttft": 0.16354562720000013,
+          "ttftPercentiles": {
+            "p50": 0.10122822699999999,
+            "p75": 0.120667677,
+            "p90": 0.16354562720000013,
+            "p95": 0.5205671751999988,
+            "p99": 1.3773535126799996
+          },
+          "endToEnd": 10.8795188778,
+          "endToEndPercentiles": {
+            "p50": 2.124305453,
+            "p75": 6.059412414,
+            "p90": 10.8795188778,
+            "p95": 14.407389137199988,
+            "p99": 27.490938536399995
+          },
+          "tp": 4,
+          "prefill_tp": 4,
+          "decode_tp": 4,
+          "prefill_ep": 1,
+          "decode_ep": 1,
+          "dp_attention": false,
+          "prefill_dp_attention": false,
+          "decode_dp_attention": false,
+          "num_prefill_gpu": 4,
+          "num_decode_gpu": 4,
+          "disagg": false,
+          "spec_decoding": "mtp",
+          "concurrency": 1,
+          "strategy": "TP4 ADP1",
+          "label": "C07 TP4 ADP1 C1",
+          "note": "C07; 3600s AgentX offline CPU simulation; Monokernel off; DPA off; LPM; pool 2; chunk16384; P/D interval192; SWA tails128; 313 successful profiling requests; AIPerf SHA256 6b4275579bd63d2e8bb42c3e707e83fda9849615b3a06ac5c419b66fce4605ef. Original producer rate and observed-duration total retained separately; accuracy not accepted.",
+          "evidence": {
+            "originalAIPerfAggregateSha256": "6b4275579bd63d2e8bb42c3e707e83fda9849615b3a06ac5c419b66fce4605ef",
+            "originalAIPerfJsonlSha256": "4f12132d1cd4aebd5df2de691790d2b6af1794dc699bc928dd1958f3468359bf",
+            "formalRequests": 313,
+            "fullResponseITLCount": 312,
+            "formalErrors": 0,
+            "formalCancelled": 0,
+            "formalContextSkips": 0,
+            "observedDurationSeconds": 3602.958912768,
+            "inputTokens": 98327363,
+            "outputTokens": 621482,
+            "meanFullResponseITLSecondsRaw": 0.0021228887714378653,
+            "meanFullResponseITLSecondsRounded5": 0.00212,
+            "originalReportedTotalTokenThroughput": 27463.217704206603,
+            "meanTTFTSeconds": 0.1651624828945687,
+            "meanEndToEndSeconds": 4.397513063862619,
+            "referenceResultId": "446049",
+            "configParameters": {
+              "TP": 4,
+              "ADP": 1,
+              "concurrency": 1,
+              "request_pool_limit": 2,
+              "chunked_prefill_size": 16384,
+              "prefill_decode_interval": 192,
+              "mem_fraction_static": 0.7,
+              "swa_prefix_tails": 128,
+              "DPA": false,
+              "monokernel_backend": null,
+              "schedule_policy": "lpm"
+            },
+            "accuracyAccepted": false
+          }
+        },
+        {
+          "configId": "C08",
+          "precision": "fp4",
+          "meanInteractivity": 462.96296296296293,
+          "totalThroughput": 27540.42078620058,
+          "throughput": 6885.105196550145,
+          "interactivity": 416.6666666666667,
+          "interactivityPercentiles": {
+            "p50": 469.4835680751174,
+            "p75": 456.62100456621005,
+            "p90": 416.6666666666667,
+            "p95": 406.5040650406504,
+            "p99": 371.74721189591077
+          },
+          "ttft": 0.3990147316000003,
+          "ttftPercentiles": {
+            "p50": 0.12342030699999999,
+            "p75": 0.13785041774999998,
+            "p90": 0.3990147316000003,
+            "p95": 0.9675258930999995,
+            "p99": 1.60314527062
+          },
+          "endToEnd": 10.461171588200003,
+          "endToEndPercentiles": {
+            "p50": 1.4535306865,
+            "p75": 4.76171005075,
+            "p90": 10.461171588200003,
+            "p95": 14.031601028849995,
+            "p99": 24.095713732030035
+          },
+          "tp": 4,
+          "prefill_tp": 4,
+          "decode_tp": 4,
+          "prefill_ep": 1,
+          "decode_ep": 1,
+          "dp_attention": false,
+          "prefill_dp_attention": false,
+          "decode_dp_attention": false,
+          "num_prefill_gpu": 4,
+          "num_decode_gpu": 4,
+          "disagg": false,
+          "spec_decoding": "mtp",
+          "concurrency": 2,
+          "strategy": "TP4 ADP1",
+          "label": "C08 TP4 ADP1 C2",
+          "note": "C08; 3600s AgentX offline CPU simulation; Monokernel off; DPA off; LPM; pool 4; chunk16384; P/D interval192; SWA tails128; 452 successful profiling requests; AIPerf SHA256 70b3d9168155280c3cf61a2bcc5dcd55e20595e55d6d40950295160b29088d76. Original producer rate and observed-duration total retained separately; accuracy not accepted.",
+          "evidence": {
+            "originalAIPerfAggregateSha256": "70b3d9168155280c3cf61a2bcc5dcd55e20595e55d6d40950295160b29088d76",
+            "originalAIPerfJsonlSha256": "8f9fcd76fe76d76f7b0ec81edeb4f7f3d79977c67d2159ee7062e335668222ae",
+            "formalRequests": 452,
+            "fullResponseITLCount": 451,
+            "formalErrors": 0,
+            "formalCancelled": 0,
+            "formalContextSkips": 0,
+            "observedDurationSeconds": 3605.937097728,
+            "inputTokens": 98602048,
+            "outputTokens": 706977,
+            "meanFullResponseITLSecondsRaw": 0.0021633981652504366,
+            "meanFullResponseITLSecondsRounded5": 0.00216,
+            "originalReportedTotalTokenThroughput": 27540.42078504731,
+            "meanTTFTSeconds": 0.23664597792699116,
+            "meanEndToEndSeconds": 3.6109377963495572,
+            "referenceResultId": "446050",
+            "configParameters": {
+              "TP": 4,
+              "ADP": 1,
+              "concurrency": 2,
+              "request_pool_limit": 4,
+              "chunked_prefill_size": 16384,
+              "prefill_decode_interval": 192,
+              "mem_fraction_static": 0.7,
+              "swa_prefix_tails": 128,
+              "DPA": false,
+              "monokernel_backend": null,
+              "schedule_policy": "lpm"
+            },
+            "accuracyAccepted": false
+          }
+        },
+        {
+          "configId": "C09",
+          "precision": "fp4",
+          "meanInteractivity": 414.9377593360996,
+          "totalThroughput": 63558.23811332967,
+          "throughput": 15889.559528332418,
+          "interactivity": 359.71223021582733,
+          "interactivityPercentiles": {
+            "p50": 416.6666666666667,
+            "p75": 389.1050583657588,
+            "p90": 359.71223021582733,
+            "p95": 343.6426116838488,
+            "p99": 318.47133757961785
+          },
+          "ttft": 1.5379659757,
+          "ttftPercentiles": {
+            "p50": 0.177985324,
+            "p75": 0.91352486925,
+            "p90": 1.5379659757,
+            "p95": 1.7808189368499998,
+            "p99": 3.627348935
+          },
+          "endToEnd": 7.940840766800002,
+          "endToEndPercentiles": {
+            "p50": 1.871900932,
+            "p75": 3.852866372,
+            "p90": 7.940840766800002,
+            "p95": 11.652255945050005,
+            "p99": 22.65017435933005
+          },
+          "tp": 4,
+          "prefill_tp": 4,
+          "decode_tp": 4,
+          "prefill_ep": 1,
+          "decode_ep": 1,
+          "dp_attention": false,
+          "prefill_dp_attention": false,
+          "decode_dp_attention": false,
+          "num_prefill_gpu": 4,
+          "num_decode_gpu": 4,
+          "disagg": false,
+          "spec_decoding": "mtp",
+          "concurrency": 8,
+          "strategy": "TP4 ADP1",
+          "label": "C09 TP4 ADP1 C8",
+          "note": "C09; 3600s AgentX offline CPU simulation; Monokernel off; DPA off; LPM; pool 16; chunk16384; P/D interval192; SWA tails512; 1412 successful profiling requests; AIPerf SHA256 6accda16c6010dbc1150e2b333db1b64447b42ad3ad6587d4afb2a43f2e3c4f7. Original producer rate and observed-duration total retained separately; accuracy not accepted.",
+          "evidence": {
+            "originalAIPerfAggregateSha256": "6accda16c6010dbc1150e2b333db1b64447b42ad3ad6587d4afb2a43f2e3c4f7",
+            "originalAIPerfJsonlSha256": "558f574d17ceb4fdbe317341794c8307ad727a04fa2245543c9bec783e34eeec",
+            "formalRequests": 1412,
+            "fullResponseITLCount": 1410,
+            "formalErrors": 0,
+            "formalCancelled": 0,
+            "formalContextSkips": 0,
+            "observedDurationSeconds": 3604.9110988800003,
+            "inputTokens": 227490315,
+            "outputTokens": 1631483,
+            "meanFullResponseITLSecondsRaw": 0.002413187817992616,
+            "meanFullResponseITLSecondsRounded5": 0.00241,
+            "originalReportedTotalTokenThroughput": 63558.23811650326,
+            "meanTTFTSeconds": 0.6063448105502833,
+            "meanEndToEndSeconds": 3.4008750057698305,
+            "referenceResultId": "446052",
+            "configParameters": {
+              "TP": 4,
+              "ADP": 1,
+              "concurrency": 8,
+              "request_pool_limit": 16,
+              "chunked_prefill_size": 16384,
+              "prefill_decode_interval": 192,
+              "mem_fraction_static": 0.7,
+              "swa_prefix_tails": 512,
+              "DPA": false,
+              "monokernel_backend": null,
+              "schedule_policy": "lpm"
+            },
+            "accuracyAccepted": false
+          }
+        },
+        {
+          "configId": "C10",
+          "precision": "fp4",
+          "meanInteractivity": 354.6099290780142,
+          "totalThroughput": 115032.9876162059,
+          "throughput": 28758.246904051473,
+          "interactivity": 287.35632183908046,
+          "interactivityPercentiles": {
+            "p50": 363.6363636363637,
+            "p75": 322.5806451612903,
+            "p90": 287.35632183908046,
+            "p95": 269.54177897574124,
+            "p99": 251.8891687657431
+          },
+          "ttft": 1.3160078928999999,
+          "ttftPercentiles": {
+            "p50": 0.399423916,
+            "p75": 0.86120526525,
+            "p90": 1.3160078928999999,
+            "p95": 2.3662204056999987,
+            "p99": 6.712886498059977
+          },
+          "endToEnd": 8.209688926699998,
+          "endToEndPercentiles": {
+            "p50": 1.672342723,
+            "p75": 3.5820691435,
+            "p90": 8.209688926699998,
+            "p95": 12.922433043849981,
+            "p99": 30.235578747299975
+          },
+          "tp": 4,
+          "prefill_tp": 4,
+          "decode_tp": 4,
+          "prefill_ep": 1,
+          "decode_ep": 1,
+          "dp_attention": false,
+          "prefill_dp_attention": false,
+          "decode_dp_attention": false,
+          "num_prefill_gpu": 4,
+          "num_decode_gpu": 4,
+          "disagg": false,
+          "spec_decoding": "mtp",
+          "concurrency": 16,
+          "strategy": "TP4 ADP1",
+          "label": "C10 TP4 ADP1 C16",
+          "note": "C10; 3600s AgentX offline CPU simulation; Monokernel off; DPA off; FCFS; pool 32; chunk16384; P/D interval96; SWA tails1024; 2660 successful profiling requests; AIPerf SHA256 0e8ba576401ccfd90067904145c0fa0d3db87f5b6fe21bc96ed8f9d857627aa9. Original producer rate and observed-duration total retained separately; accuracy not accepted.",
+          "evidence": {
+            "originalAIPerfAggregateSha256": "0e8ba576401ccfd90067904145c0fa0d3db87f5b6fe21bc96ed8f9d857627aa9",
+            "originalAIPerfJsonlSha256": "93a2a4540e3a022ef1aad288603802259c47326cba552f7642e07f6323e91262",
+            "formalRequests": 2660,
+            "fullResponseITLCount": 2657,
+            "formalErrors": 0,
+            "formalCancelled": 0,
+            "formalContextSkips": 0,
+            "observedDurationSeconds": 3604.350904832,
+            "inputTokens": 411986009,
+            "outputTokens": 2633244,
+            "meanFullResponseITLSecondsRaw": 0.002821287049309458,
+            "meanFullResponseITLSecondsRounded5": 0.00282,
+            "originalReportedTotalTokenThroughput": 115032.9876113229,
+            "meanTTFTSeconds": 0.732223034887218,
+            "meanEndToEndSeconds": 3.534520714248496,
+            "referenceResultId": "446048",
+            "configParameters": {
+              "TP": 4,
+              "ADP": 1,
+              "concurrency": 16,
+              "request_pool_limit": 32,
+              "chunked_prefill_size": 16384,
+              "prefill_decode_interval": 96,
+              "mem_fraction_static": 0.7,
+              "swa_prefix_tails": 1024,
+              "DPA": false,
+              "monokernel_backend": null,
+              "schedule_policy": "fcfs"
+            },
+            "accuracyAccepted": false
+          }
+        }
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "reference": "AgentX-Local-Mi355X",
+      "configCount": 9,
+      "meanInteractivityMAPEPercent": 5.0466248494234325,
+      "totalThroughputMAPEPercent": 4.086235490934168,
+      "points": [
+        {
+          "config": "C01",
+          "mean_interactivity": {
+            "simulation": 411.52263374485597,
+            "reference": 423.728813559322,
+            "absolutePercentageError": 2.8806584362139898
+          },
+          "total_throughput": {
+            "simulation": 25415.8210818266,
+            "reference": 24174.33462291459,
+            "absolutePercentageError": 5.135555862353369
+          }
+        },
+        {
+          "config": "C02",
+          "mean_interactivity": {
+            "simulation": 387.59689922480624,
+            "reference": 396.8253968253968,
+            "absolutePercentageError": 2.325581395348819
+          },
+          "total_throughput": {
+            "simulation": 35584.163026769405,
+            "reference": 33882.1928632234,
+            "absolutePercentageError": 5.023199562131553
+          }
+        },
+        {
+          "config": "C03",
+          "mean_interactivity": {
+            "simulation": 346.0207612456747,
+            "reference": 362.3188405797102,
+            "absolutePercentageError": 4.498269896193796
+          },
+          "total_throughput": {
+            "simulation": 60259.66374271209,
+            "reference": 60138.171501602126,
+            "absolutePercentageError": 0.2020218408315344
+          }
+        },
+        {
+          "config": "C04",
+          "mean_interactivity": {
+            "simulation": 271.7391304347826,
+            "reference": 299.4011976047904,
+            "absolutePercentageError": 9.239130434782606
+          },
+          "total_throughput": {
+            "simulation": 110933.51788444929,
+            "reference": 111107.27639609098,
+            "absolutePercentageError": 0.15638805781023057
+          }
+        },
+        {
+          "config": "C05",
+          "mean_interactivity": {
+            "simulation": 153.1393568147014,
+            "reference": 197.23865877712032,
+            "absolutePercentageError": 22.358346094946402
+          },
+          "total_throughput": {
+            "simulation": 210990.908701364,
+            "reference": 224945.34185683972,
+            "absolutePercentageError": 6.203477271539426
+          }
+        },
+        {
+          "config": "C07",
+          "mean_interactivity": {
+            "simulation": 471.6981132075472,
+            "reference": 467.2897196261682,
+            "absolutePercentageError": 0.9433962264151052
+          },
+          "total_throughput": {
+            "simulation": 27463.217704023667,
+            "reference": 25138.02891248027,
+            "absolutePercentageError": 9.249686201088792
+          }
+        },
+        {
+          "config": "C08",
+          "mean_interactivity": {
+            "simulation": 462.96296296296293,
+            "reference": 458.7155963302752,
+            "absolutePercentageError": 0.92592592592593
+          },
+          "total_throughput": {
+            "simulation": 27540.42078620058,
+            "reference": 26051.353964790902,
+            "absolutePercentageError": 5.715890327321138
+          }
+        },
+        {
+          "config": "C09",
+          "mean_interactivity": {
+            "simulation": 414.9377593360996,
+            "reference": 411.52263374485597,
+            "absolutePercentageError": 0.8298755186721962
+          },
+          "total_throughput": {
+            "simulation": 63558.23811332967,
+            "reference": 61197.82843216171,
+            "absolutePercentageError": 3.8570154229973896
+          }
+        },
+        {
+          "config": "C10",
+          "mean_interactivity": {
+            "simulation": 354.6099290780142,
+            "reference": 359.71223021582733,
+            "absolutePercentageError": 1.4184397163120477
+          },
+          "total_throughput": {
+            "simulation": 115032.9876162059,
+            "reference": 113632.03544112694,
+            "absolutePercentageError": 1.2328848723340835
+          }
+        }
+      ]
+    },
+    {
+      "reference": "InferenceX-AgentX / run39596624542",
+      "configCount": 9,
+      "meanInteractivityMAPEPercent": 25.69347253268436,
+      "totalThroughputMAPEPercent": 4.015051519748053,
+      "points": [
+        {
+          "config": "C01",
+          "mean_interactivity": {
+            "simulation": 411.52263374485597,
+            "reference": 552.4861878453039,
+            "absolutePercentageError": 25.514403292181075
+          },
+          "total_throughput": {
+            "simulation": 25415.8210818266,
+            "reference": 26942.37111,
+            "absolutePercentageError": 5.665982485137699
+          }
+        },
+        {
+          "config": "C02",
+          "mean_interactivity": {
+            "simulation": 387.59689922480624,
+            "reference": 512.8205128205128,
+            "absolutePercentageError": 24.418604651162777
+          },
+          "total_throughput": {
+            "simulation": 35584.163026769405,
+            "reference": 36913.55505,
+            "absolutePercentageError": 3.6013654643393567
+          }
+        },
+        {
+          "config": "C03",
+          "mean_interactivity": {
+            "simulation": 346.0207612456747,
+            "reference": 458.7155963302752,
+            "absolutePercentageError": 24.567474048442918
+          },
+          "total_throughput": {
+            "simulation": 60259.66374271209,
+            "reference": 62048.31321,
+            "absolutePercentageError": 2.8826721868075666
+          }
+        },
+        {
+          "config": "C04",
+          "mean_interactivity": {
+            "simulation": 271.7391304347826,
+            "reference": 352.11267605633805,
+            "absolutePercentageError": 22.826086956521742
+          },
+          "total_throughput": {
+            "simulation": 110933.51788444929,
+            "reference": 114619.65616,
+            "absolutePercentageError": 3.215973942903083
+          }
+        },
+        {
+          "config": "C05",
+          "mean_interactivity": {
+            "simulation": 153.1393568147014,
+            "reference": 201.61290322580646,
+            "absolutePercentageError": 24.042879019908113
+          },
+          "total_throughput": {
+            "simulation": 210990.908701364,
+            "reference": 225852.80128,
+            "absolutePercentageError": 6.580344584794872
+          }
+        },
+        {
+          "config": "C07",
+          "mean_interactivity": {
+            "simulation": 471.6981132075472,
+            "reference": 662.251655629139,
+            "absolutePercentageError": 28.773584905660364
+          },
+          "total_throughput": {
+            "simulation": 27463.217704023667,
+            "reference": 28934.26691,
+            "absolutePercentageError": 5.08410740300429
+          }
+        },
+        {
+          "config": "C08",
+          "mean_interactivity": {
+            "simulation": 462.96296296296293,
+            "reference": 645.1612903225806,
+            "absolutePercentageError": 28.240740740740744
+          },
+          "total_throughput": {
+            "simulation": 27540.42078620058,
+            "reference": 29366.76982,
+            "absolutePercentageError": 6.219100857853299
+          }
+        },
+        {
+          "config": "C09",
+          "mean_interactivity": {
+            "simulation": 414.9377593360996,
+            "reference": 568.1818181818181,
+            "absolutePercentageError": 26.970954356846466
+          },
+          "total_throughput": {
+            "simulation": 63558.23811332967,
+            "reference": 64602.7521,
+            "absolutePercentageError": 1.6168258359233634
+          }
+        },
+        {
+          "config": "C10",
+          "mean_interactivity": {
+            "simulation": 354.6099290780142,
+            "reference": 478.4688995215311,
+            "absolutePercentageError": 25.886524822695034
+          },
+          "total_throughput": {
+            "simulation": 115032.9876162059,
+            "reference": 116511.62608,
+            "absolutePercentageError": 1.2690909169689513
+          }
+        }
+      ]
+    }
+  ]
+}

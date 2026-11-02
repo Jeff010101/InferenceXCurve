@@ -6,9 +6,11 @@ import agentxCompat1200 from './data/agentxSimOpusMi355x20261029_1200s.json';
 import fixedRealrun from './data/fixedRealrunMi355x20261030.json';
 import fixed180Baseline from './data/fixed180SimOpusMi355xBaseline.json';
 import fixed16220261101 from './data/fixed162SimOpusMi355x20261101.json';
+import agentx20261102 from './data/agentxMi355x20261102_3600s.json';
 
 export const fixed180BaselineSeries = fixed180Baseline.series as InferenceCurveSeries[];
 export const fixed16220261101Series = fixed16220261101.series as InferenceCurveSeries[];
+export const agentx20261102Series = agentx20261102.series as InferenceCurveSeries[];
 
 type FixedRealrunPoint = (typeof fixedRealrun.points)[number];
 
@@ -258,4 +260,4 @@ export const exampleSeries: InferenceCurveSeries[] = [{
     label: point.label,
     note: point.note
   }))
-}, ...fixedLengthComparisonSeries];
+}, ...agentx20261102Series, ...fixedLengthComparisonSeries];

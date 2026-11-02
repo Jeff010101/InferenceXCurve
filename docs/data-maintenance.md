@@ -44,6 +44,50 @@ Use the same `Model=DeepSeek-V4.1-Flash` for every curve of this model. Distingu
 reference, measured and simulation results with curve IDs/names/groups, and
 keep Agentic Traces versus fixed-length workloads as separate scenarios.
 
+## 2026-11-02 nine-config AgentX native and simulation snapshot
+
+The snapshot adds **AgentX-Local-Mi355X** in **Local-real-run** and
+**E2E-SimOpus-Mi355x-20261102-3600s** in **E2E-SimOpus-Mi355x**. Both retain
+C01-C05/C07-C10: TP2/ADP1 C1/C4/C8/C16/C32 and TP4/ADP1 C1/C2/C8/C16.
+The ADP2/C64 reference point stays outside this nine-config comparison.
+The requested horizon is 3600 seconds; rates use each original observed duration.
+New workspaces load both lines. Existing nonempty workspaces receive missing
+IDs once. Same-ID edits, intentionally empty workspaces and later deletions
+remain unchanged. Import the [native-series JSON](../public/data/agentx-mi355x-20261102-3600s.json)
+to add the lines explicitly without resetting settings; clear the import suffix.
+
+The [maintained source JSON](../src/data/agentxMi355x20261102_3600s.json) and its
+byte-identical import copy retain all 18 original AIPerf aggregate and JSONL hashes,
+formal request/token counts, actual durations, full-response ITL, configuration
+settings and unmodified producer-reported throughput separately from plotted rates.
+Native C05/C10 use the predeclared clean r1444 repeats, preserving older one-error
+diagnostics in their original evidence. C08's post-completion outer cleanup failure
+remains explicit. All 18 selected formal populations have zero request errors,
+cancellations and context skips. Raw AIPerf exports remain in the separately
+retained results package; this public projection does not publish private paths
+or replace original evidence.
+
+Native and simulation Monokernel/DPA are off. Public C05 also has Monokernel off;
+the other eight public points report AMD. Per-point latency percentiles remain
+separate from mean interactivity. Agentic `ttft`/`endToEnd` retain legacy P90
+semantics; their actual mean values live in each point's evidence.
+
+For each metric, `MAPE = 100 * mean(abs(simulation/reference -1))`, with equal
+weight over the nine exact TP/ADP/concurrency matches. The public comparator is
+the existing frozen InferenceX run 39596624542, 2026-10-22. There is no nearest-point
+matching, interpolated curve comparison, Pareto-only subset or pooled-token weighting.
+
+| Reference | Configs | Mean-interactivity MAPE | Total-throughput MAPE |
+| --- | ---: | ---: | ---: |
+| AgentX-Local-Mi355X |9 |5.0466% |4.0862% |
+| InferenceX-AgentX / run39596624542 |9 |25.6935% |4.0151% |
+
+The JSON retains unrounded MAPE and every point's numerator/denominator and
+absolute percentage error. C05 still exceeds the 20% mean-interactivity threshold
+(22.36%). Low average error is not per-point acceptance, a new timing qualification,
+a version freeze or a causal explanation of the native/public gap. All nine
+points remain in the data even when only five are nondominated on the chosen axes.
+
 ## First AgentX simulation baseline
 
 The ordinary workspace also includes group **E2E-SimOpus-Mi355x**, curve
