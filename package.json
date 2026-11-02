@@ -10,6 +10,7 @@
     "check:model-tco": "node scripts/check-model-tco.mjs",
     "check:sequence-scenario": "node scripts/check-sequence-scenario.mjs",
     "check:benchmark-formats": "node scripts/check-benchmark-formats.mjs",
+    "check:agentx20261102": "node scripts/check-agentx-nine-20261102.mjs",
     "export:benchmark": "node scripts/export-benchmark-results.mjs",
     "preview": "vite preview --host 0.0.0.0"
   },

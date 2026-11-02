@@ -23,6 +23,21 @@ selected ADP1 configurations from the completed offline compatibility run.
 The requested curve name is retained; its source batch is `agentx-compat1200-20261030`.
 Existing browser workspaces can add it using the
 [editor CSV](public/data/e2e-simopus-mi355x-20261029-1200s.editor.csv).
+
+The 2026-11-02 AgentX snapshot adds **AgentX-Local-Mi355X** to **Local-real-run**
+and **E2E-SimOpus-Mi355x-20261102-3600s** to **E2E-SimOpus-Mi355x**.
+Each contains the same nine ADP1 configurations with 3600-second native or offline
+simulation runs; DPA and Monokernel are disabled. Existing nonempty workspaces
+receive missing lines once, preserving same-ID edits and later deletions.
+An empty workspace can import the [native-series JSON](public/data/agentx-mi355x-20261102-3600s.json)
+without resetting its settings. Clear the preview's Line ID Suffix to keep the
+stable IDs. Compare **Mean Interactivity** and **Total Throughput (All GPUs)**.
+Over all nine matched configurations, simulation/native MAPE is 5.0466% for
+mean interactivity and 4.0862% for total throughput; simulation/public MAPE is
+25.6935% and 4.0151%. These averages do not waive C05's 22.36% mean-interactivity
+error or establish accuracy acceptance. See the
+[comparison definitions](docs/data-maintenance.md#2026-11-02-nine-config-agentx-native-and-simulation-snapshot).
+
 Under **Fixed Sequence Length**, the `Fixed-RealRun-Mi355x` group holds the measured
 `Fixed-RealRun-Mi355x-20261030` run: 18 workloads (128K and 256K context, OSL 1K/2K,
 cold or cached prefix + E) with nine TP2/TP4 configurations each. Choose the context
