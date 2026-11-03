@@ -238,6 +238,20 @@ fixed-length serving run, and regional cost validation is not an E2E point.
 
 ## Keep sources and versions separate
 
+`src/data/inferencexAgentx20261015.json` adds the historical public line
+`InferenceX-AgentX-20261015` in `InferenceX reference`. It selects the same nine
+ADP1 configurations C01-C05/C07-C10 from the 2026-10-15 snapshot; other
+concurrencies and ADP2 are outside this line's scope. Original row IDs, all source
+metrics, workflow/date/image identities and the fetched response SHA256 remain
+attached. `public/data/inferencex-agentx-20261015.json` is its byte-identical
+export. The Line Note records the declared SGLang 0.5.21 / ROCm720 image and the
+observed low-concurrency attention settings. An absent historical Monokernel
+field remains unknown. Preserve the current public reference and all measured
+and simulated curves. The one-time `agentxHistory20261015Added` migration adds
+only its missing ID to nonempty workspaces; same-ID edits, intentional empty
+workspaces and subsequent deletions remain untouched. Validate with
+`node scripts/check-agentx-history-20261015.mjs` and `npm run build`.
+
 Use separate curve IDs and names for each source, workload and result version:
 
 | Source class | Suggested display name | Evidence to retain |
