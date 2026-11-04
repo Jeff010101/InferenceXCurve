@@ -132,6 +132,9 @@ accuracy status. Never replace older curves or relabel means as percentiles.
 `fixed16220261103Added` adds only missing IDs once without replacing saved edits,
 resetting axes, repopulating empty workspaces or restoring later deletions.
 See `docs/fixed162-simopus-20261103.md`.
+The 20261103 curves use red `#ef4444`; `fixed16220261103ColorsAdded` migrates only
+their old green/default saved colors once, preserving other versions and custom
+or subsequently edited colors. Color changes never rewrite point metrics.
 
 `fixed162SimOpusMi355x20261101.json` adds a separate 18-workload, nine-configuration
 version named `E2E-SimOpus-Mi355x-20261101 / Cold` or `/ E512`, `/ E1K`, `/ E2K`,

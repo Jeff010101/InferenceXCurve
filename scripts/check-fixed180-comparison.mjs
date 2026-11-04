@@ -320,6 +320,24 @@ try {
     transforms.restorePersistedSeriesDrafts(JSON.parse(JSON.stringify(transforms.seriesToDrafts(latestSimulation))))
   ) });
   compareMetrics(latestImported, latestSimulation);
+  assert.ok(latestSimulation.every(line => line.color === '#ef4444'));
+  const oldGreen = structuredClone(latestSimulation[0]); oldGreen.color = '#22c55e';
+  const autoLatest = structuredClone(latestSimulation[1]); autoLatest.color = '';
+  const customBlue = structuredClone(latestSimulation[2]); customBlue.color = '#123abc';
+  const otherGreen = structuredClone(newSimulation[0]); otherGreen.color = '#22c55e';
+  const colorLines = [oldGreen, autoLatest, customBlue, otherGreen];
+  const colorSaved = { ...saved, fixed180BaselineAdded: true, fixed16220261031Added: true,
+    currentSeries: colorLines, seriesDrafts: transforms.seriesToDrafts(colorLines) };
+  const recolored = initial(colorSaved);
+  for (const collection of [recolored.currentSeries, recolored.seriesDrafts]) {
+    assert.equal(collection[0].color, '#ef4444');
+    assert.equal(collection[1].color, '#ef4444');
+    assert.equal(collection[2].color, '#123abc');
+    assert.equal(collection[3].color, '#22c55e');
+  }
+  compareMetrics(recolored.currentSeries, colorLines);
+  assert.equal(initial({ ...colorSaved, fixed16220261103ColorsAdded: true }).currentSeries[0].color, '#22c55e',
+    'A later intentional color edit survives the one-time migration');
   const upgradeLatest = { ...saved, fixed180BaselineAdded: true, fixed16220261031Added: true,
     fixed16220261103Added: false, state: { chartMetric: 'ttft', chartYMetric: 'throughput', mtpFilter: 'MTP' } };
   const addedLatest = initial(upgradeLatest);
