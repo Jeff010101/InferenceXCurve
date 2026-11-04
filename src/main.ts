@@ -3,7 +3,7 @@ import { getTheme, THEME_CHANGE_EVENT, type Theme } from './theme';
 
 import { strFromU8, unzipSync } from 'fflate';
 
-import { exampleSeries, fixedLengthComparisonSeries, fixed16220261101Series, agentx20261102Series, agentxHistory20261015Series } from './exampleData';
+import { exampleSeries, fixedLengthComparisonSeries, fixed16220261101Series, fixed16220261103Series, agentx20261102Series, agentxHistory20261015Series } from './exampleData';
 import {
   formatExtendLabel,
   formatIslOslLabel,
@@ -260,6 +260,7 @@ interface PersistedAppData {
   fixed180LabelsAdded?: boolean;
   fixed16220261031Added?: boolean;
   fixed16220261101LabelsAdded?: boolean;
+  fixed16220261103Added?: boolean;
   agentx20261102Added?: boolean;
   agentxHistory20261015Added?: boolean;
   currentSeries: InferenceCurveSeries[];
@@ -686,6 +687,7 @@ function createInitialDataState(): InitialDataState {
   const repositoryAdditions = [
     ...(!persisted.fixed180BaselineAdded ? fixedLengthComparisonSeries : []),
     ...(!persisted.fixed16220261031Added ? fixed16220261101Series : []),
+    ...(!persisted.fixed16220261103Added ? fixed16220261103Series : []),
     ...(!persisted.agentx20261102Added ? agentx20261102Series : []),
     ...(!persisted.agentxHistory20261015Added ? agentxHistory20261015Series : [])
   ];
@@ -731,6 +733,7 @@ function loadPersistedAppData(): PersistedAppData | null {
       fixed180LabelsAdded: data.fixed180LabelsAdded === true,
       fixed16220261031Added: data.fixed16220261031Added === true,
       fixed16220261101LabelsAdded: data.fixed16220261101LabelsAdded === true,
+      fixed16220261103Added: data.fixed16220261103Added === true,
       agentx20261102Added: data.agentx20261102Added === true,
       agentxHistory20261015Added: data.agentxHistory20261015Added === true,
       currentSeries: Array.isArray(data.currentSeries) ? readNativeSeries(data.currentSeries) : [],
@@ -1068,6 +1071,7 @@ function saveLocalDataNow(): void {
       fixed180LabelsAdded: true,
       fixed16220261031Added: true,
       fixed16220261101LabelsAdded: true,
+      fixed16220261103Added: true,
       agentx20261102Added: true,
       agentxHistory20261015Added: true,
       currentSeries: getSeriesForPersistence(),
