@@ -261,6 +261,7 @@ interface PersistedAppData {
   fixed16220261031Added?: boolean;
   fixed16220261101LabelsAdded?: boolean;
   fixed16220261103Added?: boolean;
+  fixed16220261103ColorsAdded?: boolean;
   agentx20261102Added?: boolean;
   agentxHistory20261015Added?: boolean;
   currentSeries: InferenceCurveSeries[];
@@ -683,6 +684,15 @@ function createInitialDataState(): InitialDataState {
       }
     }
   }
+  if (!persisted.fixed16220261103ColorsAdded) {
+    const latestColors = new Map(fixed16220261103Series.map((line) => [line.id, line.color]));
+    for (const line of [...restoredSeries, ...restoredDrafts]) {
+      const color = line.color?.trim().toLowerCase();
+      if (latestColors.has(line.id) && (!color || color === '#22c55e')) {
+        line.color = latestColors.get(line.id)!;
+      }
+    }
+  }
   const existingIds = new Set([...restoredSeries, ...restoredDrafts].map((line) => line.id));
   const repositoryAdditions = [
     ...(!persisted.fixed180BaselineAdded ? fixedLengthComparisonSeries : []),
@@ -734,6 +744,7 @@ function loadPersistedAppData(): PersistedAppData | null {
       fixed16220261031Added: data.fixed16220261031Added === true,
       fixed16220261101LabelsAdded: data.fixed16220261101LabelsAdded === true,
       fixed16220261103Added: data.fixed16220261103Added === true,
+      fixed16220261103ColorsAdded: data.fixed16220261103ColorsAdded === true,
       agentx20261102Added: data.agentx20261102Added === true,
       agentxHistory20261015Added: data.agentxHistory20261015Added === true,
       currentSeries: Array.isArray(data.currentSeries) ? readNativeSeries(data.currentSeries) : [],
@@ -1072,6 +1083,7 @@ function saveLocalDataNow(): void {
       fixed16220261031Added: true,
       fixed16220261101LabelsAdded: true,
       fixed16220261103Added: true,
+      fixed16220261103ColorsAdded: true,
       agentx20261102Added: true,
       agentxHistory20261015Added: true,
       currentSeries: getSeriesForPersistence(),

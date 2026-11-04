@@ -63,4 +63,8 @@ nonempty saved workspaces. Existing same-ID edits, axes, filters, intentional
 empty workspaces and later deletions are preserved. Fresh workspaces and Reset
 All include this version alongside earlier data. No API sync is enabled.
 
+The 20261103 version now uses red (`#ef4444`). A separate one-time color update
+changes only its old green/default colors in saved workspaces. Other versions,
+custom colors, metrics, names and later intentional color edits stay intact.
+
 Validate with `npm run build` and `node scripts/check-fixed180-comparison.mjs`.
