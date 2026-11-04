@@ -60,7 +60,7 @@ function restore(saved) {
   const context = vm.createContext({
     structuredClone, exampleSeries: structuredClone([...existing, history]),
     agentx20261102Series: [], agentxHistory20261015Series: [structuredClone(history)],
-    fixedLengthComparisonSeries: [], fixed16220261101Series: [], ALL_VALUE: '__all__',
+    fixedLengthComparisonSeries: [], fixed16220261101Series: [], fixed16220261103Series: [], ALL_VALUE: '__all__',
     loadPersistedAppData: () => structuredClone(saved),
     draftsFromSeriesForRestore: (lines) => structuredClone(lines),
     draftsToSeriesAllowEmpty: (lines) => structuredClone(lines),

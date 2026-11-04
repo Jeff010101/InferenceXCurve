@@ -123,6 +123,16 @@ The InferenceX API does **not** send an `Access-Control-Allow-Origin` header (th
 
 ## Agent Notes: Adding Benchmark Data
 
+`fixed162SimOpusMi355x20261103.json` adds 18 separately named conditional-AL
+curves dated20261103, with nine unchanged successful originals each. Keep the
+user-requested display date distinct from actual completion. Preserve given AL
+as an extra input, full SDK/SG and source digests, nominal comparisonContext,
+direct mean/all-GPU/per-GPU metrics and explicit pending evidence/failed TTFT
+accuracy status. Never replace older curves or relabel means as percentiles.
+`fixed16220261103Added` adds only missing IDs once without replacing saved edits,
+resetting axes, repopulating empty workspaces or restoring later deletions.
+See `docs/fixed162-simopus-20261103.md`.
+
 `fixed162SimOpusMi355x20261101.json` adds a separate 18-workload, nine-configuration
 version named `E2E-SimOpus-Mi355x-20261101 / Cold` or `/ E512`, `/ E1K`, `/ E2K`,
 `/ E4K` in the existing simulation group. Preserve its actual total ISL, explicit

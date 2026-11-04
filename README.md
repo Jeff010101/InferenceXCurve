@@ -64,6 +64,12 @@ The generic Plot Tool starts empty;
 no API sync configurations are enabled automatically. The old `?reference=...`
 link redirects to the ordinary InferenceX workspace.
 
+The latest fixed-length version is **E2E-SimOpus-Mi355x-20261103 / Cold** or
+**/ E512**, **/ E1K**, **/ E2K**, **/ E4K**, covering 18 workloads and 162 sealed
+simulation points. It uses given published mean AL as an extra condition; TTFT
+MAPE remains 33.47% and final evidence acceptance is pending. See the
+[20261103 data and import guide](docs/fixed162-simopus-20261103.md).
+
 See [Data maintenance guide](docs/data-maintenance.md) for choosing a workspace,
 keeping real/reference/simulation curves distinct, metric units, and backups.
 The site is a static browser app. The repository holds the baseline data and

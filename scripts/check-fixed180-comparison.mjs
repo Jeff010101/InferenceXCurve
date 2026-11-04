@@ -22,6 +22,7 @@ try {
   const data = await server.ssrLoadModule('/src/exampleData.ts');
   const simulation = data.fixed180BaselineSeries;
   const newSimulation = data.fixed16220261101Series;
+  const latestSimulation = data.fixed16220261103Series;
   const all = data.fixedLengthComparisonSeries;
   const common = {
     ...scenario, ...chart, ...sync, ...data,
@@ -53,7 +54,8 @@ try {
 
   assert.equal(simulation.length, 18);
   assert.equal(newSimulation.length, 18);
-  assert.equal(all.length, 54);
+  assert.equal(latestSimulation.length, 18);
+  assert.equal(all.length, 72);
   assert.equal(simulation.flatMap(s => s.points).length, 162);
   const groups = new Map();
   for (const line of all) {
@@ -64,7 +66,7 @@ try {
   }
   assert.equal(groups.size, 18);
   for (const lines of groups.values()) {
-    assert.equal(lines.length, 3);
+    assert.equal(lines.length, 4);
     assert.equal(new Set(lines.map(s => s.group)).size, 2);
     assert.deepEqual(lines[0].points.map(p => `${p.prefill_tp}/${p.concurrency}`).sort(), lines[1].points.map(p => `${p.prefill_tp}/${p.concurrency}`).sort());
   }
@@ -122,13 +124,16 @@ try {
   const saved = { currentSeries: [prior, edited], seriesDrafts: transforms.seriesToDrafts([prior, edited]), state: {}, inferenceXSync: {} };
   function initial(persisted) {
     return api(['createInitialDataState'], {
-      loadPersistedAppData: () => structuredClone(persisted),
+      loadPersistedAppData: () => structuredClone({
+        fixed16220261103Added: true, agentx20261102Added: true,
+        agentxHistory20261015Added: true, ...persisted
+      }),
       createInferenceXSyncState: () => ({})
     }).createInitialDataState();
   }
   const migrated = initial(saved);
-  assert.equal(migrated.currentSeries.length, 55);
-  assert.equal(migrated.seriesDrafts.length, 55);
+  assert.equal(migrated.currentSeries.length, 73);
+  assert.equal(migrated.seriesDrafts.length, 73);
   assert.equal(migrated.currentSeries.find(s => s.id === edited.id).name, edited.name);
   assert.equal(migrated.currentSeries.find(s => s.id === edited.id).points[0].meanInteractivity, 123.456);
   assert.equal(migrated.state.chartMetric, 'meanInteractivity');
@@ -225,11 +230,11 @@ try {
   switching.restoreActiveSeriesForCurrentView();
   assert.deepEqual([...fresh.selectedPrecisions], ['fp4']);
   const shown = switching.getFilteredSeriesForChart();
-  assert.equal(shown.length, 15, 'First Agentic to Fixed switch shows five real/historical/new case groups');
-  assert.equal(fresh.activeSeriesIds.size, 15);
-  assert.equal(chart.getInferenceCurveColorSourceSeries(shown, fresh.activeSeriesIds, ['fp4'], 'meanInteractivity').length, 15);
+  assert.equal(shown.length, 20, 'First Agentic to Fixed switch shows all four versions for five cases');
+  assert.equal(fresh.activeSeriesIds.size, 20);
+  assert.equal(chart.getInferenceCurveColorSourceSeries(shown, fresh.activeSeriesIds, ['fp4'], 'meanInteractivity').length, 20);
   const prepared = chart.prepareInferenceCurveSeries(shown, false, 'dark', shown, 'meanInteractivity', false, undefined, 'maximize', 'p90', 'totalThroughput');
-  assert.equal(prepared.flatMap(s => s.points).length, 135);
+  assert.equal(prepared.flatMap(s => s.points).length, 180);
   assert.ok(prepared.flatMap(s => s.points).every(p => p.precision === 'fp4'));
 
   const publicBytes = fs.readFileSync('public/data/e2e-simopus-mi355x-20261101.json');
@@ -283,7 +288,66 @@ try {
   compareMetrics(newCsvApi.seriesFromEditorRecords(newCsvRows.slice(1).map(row =>
     Object.fromEntries(newCsvRows[0].map((header, i) => [header, row[i]]))
   )), newSimulation);
-  console.log('Fixed comparison passed: 18 real/historical/new groups, 162 new points, unchanged metrics, context guards, JSON/draft/CSV roundtrip, additive migration, and first Agentic-to-Fixed switch.');
+  const latestBytes = fs.readFileSync('public/data/e2e-simopus-mi355x-20261103.json');
+  assert.deepEqual(latestBytes, fs.readFileSync('src/data/fixed162SimOpusMi355x20261103.json'));
+  const latest = JSON.parse(latestBytes);
+  const latestManifest = JSON.parse(fs.readFileSync('public/data/e2e-simopus-mi355x-20261103.manifest.json'));
+  assert.equal(createHash('sha256').update(latestBytes).digest('hex'), latestManifest.sha256);
+  assert.equal(latestBytes.length, latestManifest.bytes);
+  assert.equal(latest.provenance.formalRequests, 15840);
+  assert.equal(latest.accuracyAccepted, false);
+  assert.equal(latest.independentNaturalAcceptancePrediction, false);
+  assert.equal(latest.inputMode, 'conditional_given_published_mean_AL');
+  assert.equal(latestSimulation.flatMap(s => s.points).length, 162);
+  assert.ok(!/[A-Z]:\\|\/mnt\/|\/data\/|\.dcgpu/.test(latestBytes.toString()), 'Public exports omit internal paths');
+  const suffixes20261103 = new Set();
+  for (const line of latestSimulation) {
+    assert.ok(line.name.startsWith('E2E-SimOpus-Mi355x-20261103 / '));
+    assert.equal(line.mtp, 'MTP');
+    suffixes20261103.add(line.name.split(' / ')[1]);
+    for (const point of line.points) {
+      assert.equal(point.completed_requests, point.concurrency * 10);
+      assert.equal(point.failed_requests, 0);
+      assert.equal(point.totalThroughput / point.num_prefill_gpu, point.throughput);
+      assert.ok(Math.abs(point.meanInteractivity * point.mean_tpot_seconds - 1) < 1e-14);
+      assert.equal(point.interactivity, undefined);
+      assert.equal(point.interactivityPercentiles, undefined);
+      assert.match(point.source_result_sha256, /^[a-f0-9]{64}$/);
+    }
+  }
+  assert.deepEqual([...suffixes20261103].sort(), ['Cold', 'E1K', 'E2K', 'E4K', 'E512']);
+  const latestImported = transforms.readNativeSeries({ series: transforms.draftsToSeriesAllowEmpty(
+    transforms.restorePersistedSeriesDrafts(JSON.parse(JSON.stringify(transforms.seriesToDrafts(latestSimulation))))
+  ) });
+  compareMetrics(latestImported, latestSimulation);
+  const upgradeLatest = { ...saved, fixed180BaselineAdded: true, fixed16220261031Added: true,
+    fixed16220261103Added: false, state: { chartMetric: 'ttft', chartYMetric: 'throughput', mtpFilter: 'MTP' } };
+  const addedLatest = initial(upgradeLatest);
+  assert.equal(addedLatest.currentSeries.length, 20);
+  assert.equal(addedLatest.state.chartMetric, 'ttft');
+  assert.equal(addedLatest.state.chartYMetric, 'throughput');
+  assert.equal(addedLatest.currentSeries.find(s => s.id === edited.id).points[0].meanInteractivity, 123.456);
+  const customLatest = structuredClone(latestSimulation[0]);
+  customLatest.name = 'Keep my name'; customLatest.points[0].totalThroughput = 456.789;
+  const editedLatest = initial({ ...upgradeLatest, currentSeries: [customLatest], seriesDrafts: transforms.seriesToDrafts([customLatest]) });
+  assert.equal(editedLatest.currentSeries.length, 18);
+  assert.equal(editedLatest.currentSeries[0].name, 'Keep my name');
+  assert.equal(editedLatest.currentSeries[0].points[0].totalThroughput, 456.789);
+  assert.equal(initial({ ...upgradeLatest, fixed16220261103Added: true }).currentSeries.length, 2);
+  assert.equal(initial({ ...upgradeLatest, currentSeries: [], seriesDrafts: [] }).currentSeries.length, 0);
+  const latestCsvApi = api(['buildChartCsvRows', 'seriesFromEditorRecords'], {
+    state: { ...state, activeSeriesIds: new Set(latestSimulation.map(s => s.id)) },
+    getSeriesForPersistence: () => latestSimulation,
+    getChartColorSourceSeries: () => latestSimulation,
+    shouldEnforceEndToEndPareto: () => false,
+    getTcoHourlyCosts: () => undefined
+  });
+  const latestCsvRows = latestCsvApi.buildChartCsvRows('all');
+  assert.equal(latestCsvRows.length, 163);
+  compareMetrics(latestCsvApi.seriesFromEditorRecords(latestCsvRows.slice(1).map(row =>
+    Object.fromEntries(latestCsvRows[0].map((header, i) => [header, row[i]]))
+  )), latestSimulation);
+  console.log('Fixed comparison passed: 18 workload groups/four versions, latest162 metrics/JSON/CSV, source digests and edit/empty/deletion-safe migration.');
 } finally {
   await server.close();
 }
